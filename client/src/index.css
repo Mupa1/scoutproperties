@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border font-light list-none p-0 m-0;
+  }
+
+  body {
+    @apply overflow-hidden text-gray-600;
+  }
+
+  a {
+    @apply no-underline decoration-inherit font-inter transition ease-in-out duration-[400ms] hover:scale-105;
+  }
+}
+
+@layer utilities {
+  .layout {
+    @apply h-screen max-w-7xl mx-auto;
+  }
+
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+
+  .hero-w-space {
+    @apply w-44 flex-none space-y-8;
+  }
+}
