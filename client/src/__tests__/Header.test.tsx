@@ -1,3 +1,4 @@
+import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
@@ -5,8 +6,15 @@ import Header from '@/components/shared/Header';
 import { headerNavItems } from '@/entities/header-nav-items';
 
 describe('Header component', () => {
+  const renderer = () =>
+    render(
+      <MemoryRouter>
+        <Header />
+      </MemoryRouter>,
+    );
+  
   test('renders navigation links', () => {
-    render(<Header />);
+    renderer();
     const navLinks = headerNavItems.map((item) => screen.getByText(item.name));
     navLinks.forEach((link) => {
       expect(link).toBeInTheDocument();
@@ -14,13 +22,13 @@ describe('Header component', () => {
   });
 
   test('renders login link', () => {
-    render(<Header />);
+    renderer();
     const loginLink = screen.getByText('Log in');
     expect(loginLink).toBeInTheDocument();
   });
 
   test('opens mobile menu when menu button is clicked', () => {
-    render(<Header />);
+    renderer();
     const menuButton = screen.getByRole('button', { name: /open main menu/i });
     fireEvent.click(menuButton);
     const closeButton = screen.getByRole('button', { name: /close menu/i });
@@ -28,7 +36,7 @@ describe('Header component', () => {
   });
 
   test('closes mobile menu when close button is clicked', () => {
-    render(<Header />);
+    renderer();
     const menuButton = screen.getByRole('button', { name: /open main menu/i });
     fireEvent.click(menuButton);
     const closeButton = screen.getByRole('button', { name: /close menu/i });
@@ -37,7 +45,7 @@ describe('Header component', () => {
   });
 
   test('renders Scout properties logo', () => {
-    render(<Header />);
+    renderer();
     const logo = screen.getAllByAltText('scout properties logo');
     expect(logo.length).toBeGreaterThan(0);
   });
