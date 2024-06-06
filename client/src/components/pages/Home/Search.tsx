@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { IoSearch } from 'react-icons/io5';
 
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
+import { Button } from '../../ui/Button';
+import { Input } from '../../ui/Input';
 
 const types = ['Buy', 'Rent'] as const;
 type SearchType = (typeof types)[number];
 
-const SearchBar = () => {
+const Search = () => {
   const [search, setSearch] = useState({
     type: 'Buy',
     location: '',
@@ -81,4 +81,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default Search;
