@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
 import Header from '@/components/shared/Header';
@@ -12,7 +12,7 @@ describe('Header component', () => {
         <Header />
       </MemoryRouter>,
     );
-  
+
   test('renders navigation links', () => {
     renderer();
     const navLinks = headerNavItems.map((item) => screen.getByText(item.name));
@@ -35,13 +35,15 @@ describe('Header component', () => {
     expect(closeButton).toBeInTheDocument();
   });
 
-  test('closes mobile menu when close button is clicked', () => {
+  test('closes mobile menu when close button is clicked', async () => {
     renderer();
     const menuButton = screen.getByRole('button', { name: /open main menu/i });
     fireEvent.click(menuButton);
     const closeButton = screen.getByRole('button', { name: /close menu/i });
     fireEvent.click(closeButton);
-    expect(closeButton).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(closeButton).not.toBeInTheDocument();
+    });
   });
 
   test('renders Scout properties logo', () => {

@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
-import SearchBar from '@/components/shared/SearchBar';
+import Search from '@/components/pages/Home/Search';
 
-describe('SearchBar component', () => {
+describe('Search component', () => {
   test('renders Buy and Rent buttons', () => {
-    render(<SearchBar />);
+    render(<Search />);
     const buyButton = screen.getByText('Buy');
     const rentButton = screen.getByText('Rent');
 
@@ -14,7 +14,7 @@ describe('SearchBar component', () => {
   });
 
   test('renders input fields for location, min price, and max price', () => {
-    render(<SearchBar />);
+    render(<Search />);
     const locationInput = screen.getByPlaceholderText('City');
     const minPriceInput = screen.getByPlaceholderText('Min Price');
     const maxPriceInput = screen.getByPlaceholderText('Max Price');
@@ -25,28 +25,34 @@ describe('SearchBar component', () => {
   });
 
   test('changes search type when Buy or Rent button is clicked', () => {
-    render(<SearchBar />);
+    render(<Search />);
     const buyButton = screen.getByText('Buy');
     const rentButton = screen.getByText('Rent');
 
     fireEvent.click(rentButton);
-    expect(rentButton).toHaveClass('bg-gray-600');
-    expect(buyButton).not.toHaveClass('bg-gray-600');
+    expect(rentButton).toHaveClass('bg-secondary-500');
+    expect(buyButton).not.toHaveClass('bg-secondary-500');
 
     fireEvent.click(buyButton);
-    expect(buyButton).toHaveClass('bg-gray-600');
-    expect(rentButton).not.toHaveClass('bg-gray-600');
+    expect(buyButton).toHaveClass('bg-secondary-500');
+    expect(rentButton).not.toHaveClass('bg-secondary-500');
   });
 
   test('calls the search function with correct parameters on form submit', () => {
-    render(<SearchBar />);
-    const locationInput = screen.getByPlaceholderText('City');
-    const minPriceInput = screen.getByPlaceholderText('Min Price');
-    const maxPriceInput = screen.getByPlaceholderText('Max Price');
+    render(<Search />);
+    const locationInput = screen.getByPlaceholderText(
+      'City',
+    ) as HTMLInputElement;
+    const minPriceInput = screen.getByPlaceholderText(
+      'Min Price',
+    ) as HTMLInputElement;
+    const maxPriceInput = screen.getByPlaceholderText(
+      'Max Price',
+    ) as HTMLInputElement;
     const searchButton = screen.getByTestId('search-submit-button');
 
     fireEvent.change(locationInput, {
-      target: { value: 'New York' },
+      target: { value: 'Mannheim' },
     });
     fireEvent.change(minPriceInput, { target: { value: '1000' } });
     fireEvent.change(maxPriceInput, {
@@ -55,8 +61,8 @@ describe('SearchBar component', () => {
 
     fireEvent.click(searchButton);
 
-    expect((locationInput as HTMLInputElement).value).toBe('New York');
-    expect((minPriceInput as HTMLInputElement).value).toBe('1000');
-    expect((maxPriceInput as HTMLInputElement).value).toBe('5000');
+    expect(locationInput.value).toBe('Mannheim');
+    expect(minPriceInput.value).toBe('1000');
+    expect(maxPriceInput.value).toBe('5000');
   });
 });

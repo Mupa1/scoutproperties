@@ -8,24 +8,36 @@
   }
 
   body {
-    @apply overflow-hidden text-gray-600;
+    @apply text-gray-600 font-light;
   }
 
   a {
     @apply no-underline decoration-inherit font-inter transition ease-in-out duration-[400ms] hover:scale-105;
   }
+
+  p {
+    @apply leading-6 md:leading-8;
+  }
 }
 
 @layer utilities {
-  .layout {
-    @apply h-screen max-w-7xl mx-auto;
-  }
-
   .flex-center {
     @apply flex justify-center items-center;
   }
 
+  .flex-between {
+    @apply flex justify-between items-center;
+  }
+
   .hero-w-space {
     @apply w-44 flex-none space-y-8;
+  }
+
+  .sm-header-links {
+    @apply block rounded-lg py-2 text-base font-semibold leading-7 text-gray-900;
+  }
+
+  .listing-amenities {
+    @apply bg-secondary-50 rounded-lg flex items-center gap-2 px-1;
   }
 }

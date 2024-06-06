@@ -5,10 +5,12 @@ import Header from '@/components/shared/Header';
 
 const RootLayout: FC = () => {
   return (
-    <main className="layout">
+    <div className="h-screen flex flex-col max-w-7xl mx-auto">
       <Header />
-      <Outlet />
-    </main>
+      <div className="flex flex-1 overflow-hidden px-6 lg:px-8 ">
+        <Outlet />
+      </div>
+    </div>
   );
 };
 

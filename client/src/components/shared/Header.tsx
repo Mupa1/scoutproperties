@@ -10,9 +10,9 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="absolute inset-x-0 top-0 z-50">
+    <header className="sticky inset-x-0 top-0 z-50 bg-white">
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        className="flex-between mx-auto max-w-7xl px-6 py-2 lg:px-8"
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
@@ -47,7 +47,10 @@ const Header = () => {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link to="#" className="text-sm font-semibold leading-6 text-gray-900">
+          <Link
+            to="#"
+            className="text-sm font-semibold leading-6 text-gray-900"
+          >
             Log in <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
@@ -57,9 +60,9 @@ const Header = () => {
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
       >
-        <div className="fixed inset-0 z-50" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center justify-between">
+        <div className="stick inset-0 z-50" />
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-2 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+          <div className="flex-between">
             <Link to="#">
               <span className="sr-only">Scout properties logo</span>
               <img
@@ -91,10 +94,7 @@ const Header = () => {
                 ))}
               </div>
               <div className="py-6">
-                <Link
-                  to="#"
-                  className="sm-header-links"
-                >
+                <Link to="#" className="sm-header-links">
                   Log in
                 </Link>
               </div>
