@@ -17,7 +17,7 @@ const MapMarker: FC<ListingProps> = ({ listingsData }) => {
   return (
     <Marker position={[latitude, longitude]}>
       <Popup>
-        <div className="flex-3 bg-secondary-50 group-hover:opacity-75">
+        <div className="flex-3 bg-primary-50 group-hover:opacity-75">
           <img
             src={images[0] || imagePlaceholder}
             alt={title}
@@ -46,7 +46,7 @@ const MapMarker: FC<ListingProps> = ({ listingsData }) => {
   );
 };
 
-const Map: FC<ListingsProps> = ({ listingsData }) => {
+export const Map: FC<ListingsProps> = ({ listingsData }) => {
   const position: LatLngExpression = [49.5200765, 8.524684];
   return (
     <MapContainer
@@ -54,7 +54,7 @@ const Map: FC<ListingsProps> = ({ listingsData }) => {
       zoom={7}
       scrollWheelZoom={false}
       className="w-full map rounded-md overflow-hidden"
-      style={{ height: 'calc(100vh - 150px)' }}
+      style={{ height: 'calc(100vh - 144px)' }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -66,5 +66,3 @@ const Map: FC<ListingsProps> = ({ listingsData }) => {
     </MapContainer>
   );
 };
-
-export default Map;

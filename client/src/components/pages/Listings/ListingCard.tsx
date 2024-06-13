@@ -20,14 +20,14 @@ type ListingCardType = {
   };
 };
 
-const ListingCard: FC<ListingCardType> = ({ data }) => {
+export const ListingCard: FC<ListingCardType> = ({ data }) => {
   const { id, title, images, bedroom, bathroom, price, address } = data;
   return (
     <div
       key={id}
-      className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
+      className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-100"
     >
-      <div className="aspect-h-1 aspect-w-3 bg-secondary-50 group-hover:opacity-75 h:60 sm:h-40">
+      <div className="aspect-h-1 aspect-w-3 group-hover:opacity-75 h:60 sm:h-40">
         <img
           src={images[0] || imagePlaceholder}
           alt={title}
@@ -66,5 +66,3 @@ const ListingCard: FC<ListingCardType> = ({ data }) => {
     </div>
   );
 };
-
-export default ListingCard;

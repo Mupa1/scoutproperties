@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/Button';
 
-const NoMatch = () => {
+export const NoMatch = () => {
   const navigate = useNavigate();
 
   const handleBackClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -12,7 +12,7 @@ const NoMatch = () => {
   };
 
   return (
-    <section className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+    <section className="grid min-h-screen place-items-center px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center">
         <p className="text-base font-semibold text-primary-500">404</p>
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
@@ -41,5 +41,3 @@ const NoMatch = () => {
     </section>
   );
 };
-
-export default NoMatch;

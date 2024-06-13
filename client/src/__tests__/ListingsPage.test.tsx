@@ -2,7 +2,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import ListingsPage from '@/pages/root/Listings';
+import { ListingsPage } from '@/pages/root/Listings';
 
 describe('Listings', () => {
   const renderer = () =>

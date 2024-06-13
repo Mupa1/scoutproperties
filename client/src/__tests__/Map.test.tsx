@@ -5,7 +5,7 @@ import { describe, expect, test, vi } from 'vitest';
 
 import 'leaflet/dist/leaflet.css';
 
-import Map from '@/components/pages/Listings/Map';
+import { Map } from '@/components/pages/Listings/Map';
 import { ListingsProps } from '@/types';
 
 const listingsData: ListingsProps['listingsData'] = [

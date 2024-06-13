@@ -1,8 +1,24 @@
 import { MemoryRouter } from 'react-router-dom';
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import App from '@/App';
+
+beforeAll(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+});
 
 describe('App', () => {
   const renderer = () =>
@@ -14,9 +30,11 @@ describe('App', () => {
 
   it('renders App without crashing', () => {
     renderer();
-    expect(screen.getByText('Home')).toBeInTheDocument();
-    expect(screen.getByText('About')).toBeInTheDocument();
-    expect(screen.getByText('Contact')).toBeInTheDocument();
-    expect(screen.getByText('Agents')).toBeInTheDocument();
+
+    const nav = screen.getByRole('navigation');
+
+    expect(within(nav).getByText('Home')).toBeInTheDocument();
+    expect(within(nav).getByText('About')).toBeInTheDocument();
+    expect(within(nav).getByText('Contact')).toBeInTheDocument();
   });
 });

@@ -2,7 +2,7 @@ import { MemoryRouter, useNavigate } from 'react-router-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-import NoMatch from '@/pages/NoMatch';
+import { NoMatch } from '@/pages/NoMatch';
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {

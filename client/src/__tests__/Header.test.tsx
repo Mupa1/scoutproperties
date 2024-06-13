@@ -2,8 +2,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
-import Header from '@/components/shared/Header';
-import { headerNavItems } from '@/entities/header-nav-items';
+import { Header } from '@/components/shared/Header';
+import { navItems } from '@/entities/header-nav-items';
 
 describe('Header component', () => {
   const renderer = () =>
@@ -15,7 +15,7 @@ describe('Header component', () => {
 
   test('renders navigation links', () => {
     renderer();
-    const navLinks = headerNavItems.map((item) => screen.getByText(item.name));
+    const navLinks = navItems.map((item) => screen.getByText(item.name));
     navLinks.forEach((link) => {
       expect(link).toBeInTheDocument();
     });
@@ -27,11 +27,13 @@ describe('Header component', () => {
     expect(loginLink).toBeInTheDocument();
   });
 
-  test('opens mobile menu when menu button is clicked', () => {
+  test('opens mobile menu when menu button is clicked', async () => {
     renderer();
     const menuButton = screen.getByRole('button', { name: /open main menu/i });
     fireEvent.click(menuButton);
-    const closeButton = screen.getByRole('button', { name: /close menu/i });
+    const closeButton = await screen.findByRole('button', {
+      name: /close menu/i,
+    });
     expect(closeButton).toBeInTheDocument();
   });
 
@@ -39,7 +41,9 @@ describe('Header component', () => {
     renderer();
     const menuButton = screen.getByRole('button', { name: /open main menu/i });
     fireEvent.click(menuButton);
-    const closeButton = screen.getByRole('button', { name: /close menu/i });
+    const closeButton = await screen.findByRole('button', {
+      name: /close menu/i,
+    });
     fireEvent.click(closeButton);
     await waitFor(() => {
       expect(closeButton).not.toBeInTheDocument();

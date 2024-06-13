@@ -10,8 +10,8 @@ const button = tv({
   variants: {
     color: {
       primary: 'bg-primary-500 text-white ',
-      secondary: 'bg-secondary-500 text-white',
-      neutral: 'border-2 border-black/10',
+      secondary: 'bg-primary-950 text-white',
+      neutral: 'border-2 border-black',
       inverted: 'bg-white border-2 border-primary-500',
     },
   },
