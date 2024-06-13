@@ -8,7 +8,7 @@
   }
 
   body {
-    @apply text-gray-600 font-light;
+    @apply text-gray-700 font-light bg-white;
   }
 
   a {
@@ -17,6 +17,10 @@
 
   p {
     @apply leading-6 md:leading-8;
+  }
+
+  h5 {
+    @apply font-bold;
   }
 }
 
@@ -33,11 +37,25 @@
     @apply w-44 flex-none space-y-8;
   }
 
-  .sm-header-links {
-    @apply block rounded-lg py-2 text-base font-semibold leading-7 text-gray-900;
+  .sm-nav-links {
+    @apply block rounded-lg py-2 text-base font-semibold leading-7;
   }
 
   .listing-amenities {
-    @apply bg-secondary-50 rounded-lg flex items-center gap-2 px-1;
+    @apply bg-primary-50 rounded-lg flex items-center gap-2 px-1;
+  }
+
+  .swiper-slide img {
+    @apply block w-full h-screen object-cover;
+  }
+
+  .listings {
+    height: calc(100vh - 400px);
+  }
+
+  @screen md {
+    .listings {
+      height: calc(100vh - 144px);
+    }
   }
 }

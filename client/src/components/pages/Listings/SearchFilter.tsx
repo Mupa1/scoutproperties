@@ -1,9 +1,18 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { IoSearch } from 'react-icons/io5';
 
 import { Button } from '../../ui/Button';
 import { Input } from '../../ui/Input';
 import { Select } from '../../ui/Select';
+
+type SearchFormData = {
+  type: string;
+  property: string;
+  location: string;
+  minPrice: number;
+  maxPrice: number;
+  bedrooms: number;
+};
 
 const typesOptions = [
   { id: 1, name: 'Buy or Rent' },
@@ -19,24 +28,20 @@ const propertyOptions = [
   { id: 5, name: 'Land' },
 ];
 
-const SearchFilter = () => {
-  const [search, setSearch] = useState({
-    type: 'Buy',
-    location: '',
-    minPrice: 0,
-    maxPrice: 0,
+export const SearchFilter = () => {
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      type: 'Buy or Rent',
+      property: 'All Properties',
+      location: '',
+      minPrice: 0,
+      maxPrice: 10000000,
+      bedrooms: 0,
+    },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const numericValue = Number(value);
-    const newValue = numericValue >= 0 ? numericValue : 0;
-    setSearch((prev) => ({ ...prev, [name]: newValue }));
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('Form submitted', search);
+  const onSubmit = (data: SearchFormData) => {
+    console.log('Form submitted', data);
   };
 
   return (
@@ -44,47 +49,53 @@ const SearchFilter = () => {
       role="form"
       data-testid="search-filter-form"
       className="w-full sm:flex z-50 my-5"
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <Input
         data-testid="search-filter-location"
         className="flex-1 w-full"
         type="text"
-        name="location"
         placeholder="City"
-        onChange={handleChange}
+        {...register('location')}
       />
-      <Select className="flex-1" options={typesOptions} id="types" />
-      <Select className="flex-1" options={propertyOptions} id="property" />
+      <Select
+        className="flex-1"
+        options={typesOptions}
+        id="types"
+        {...register('type')}
+      />
+      <Select
+        className="flex-1"
+        options={propertyOptions}
+        id="property"
+        {...register('property')}
+      />
       <Input
         data-testid="search-filter-minPrice"
         className="flex-1 w-full"
         type="number"
-        name="minPrice"
         min={0}
         max={10000000}
         placeholder="Min Price"
-        onChange={handleChange}
+        {...register('minPrice', { valueAsNumber: true })}
       />
       <Input
         data-testid="search-filter-maxPrice"
         className="flex-1 w-full"
         type="number"
-        name="maxPrice"
         min={0}
         max={10000000}
         placeholder="Max Price"
-        onChange={handleChange}
+        {...register('maxPrice', { valueAsNumber: true })}
       />
       <Input
         data-testid="search-filter-bedrooms"
         className="flex-1 w-full"
         type="number"
-        name="bedrooms"
         min={0}
         max={5}
         placeholder="Bedroom(s)"
-        onChange={handleChange}
+        {...register('bedrooms', { valueAsNumber: true })}
       />
       <Button
         className="w-full sm:w-auto"
@@ -97,5 +108,3 @@ const SearchFilter = () => {
     </form>
   );
 };
-
-export default SearchFilter;

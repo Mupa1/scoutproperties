@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
-import SearchFilter from '@/components/pages/Listings/SearchFilter';
+import { SearchFilter } from '@/components/pages/Listings/SearchFilter';
 
 describe('SearchFilter Component', () => {
   test('renders all input fields and button', () => {

@@ -1,26 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HiMiniXMark } from 'react-icons/hi2';
 import { RiMenuFill } from 'react-icons/ri';
+import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogPanel } from '@headlessui/react';
+import { motion } from 'framer-motion';
 
-import { headerNavItems } from '@/entities/header-nav-items';
+import { navItems } from '@/entities/header-nav-items';
 
-const Header = () => {
+export const Header = () => {
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const isHomePage = location.pathname === '/';
+  useEffect(() => {
+    const controlHeader = () => {
+      if (typeof window !== 'undefined') {
+        const currentScrollY = window.scrollY;
+        setShowHeader(currentScrollY <= lastScrollY);
+        setLastScrollY(currentScrollY);
+        setIsScrolled(currentScrollY > 0);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', controlHeader);
+
+      return () => {
+        window.removeEventListener('scroll', controlHeader);
+      };
+    }
+  }, [lastScrollY]);
 
   return (
-    <header className="sticky inset-x-0 top-0 z-50 bg-white">
+    <motion.header
+      initial={{ y: 0 }}
+      animate={{ y: showHeader ? 0 : -100 }}
+      transition={{ duration: 0.3 }}
+      className={`header fixed inset-x-0 top-0 z-50 py-2 ${isHomePage && !isScrolled ? 'text-white' : 'bg-gray-50'} ${isScrolled && isHomePage && 'bg-gray-50 text-gray-700'}`}
+    >
       <nav
         className="flex-between mx-auto max-w-7xl px-6 py-2 lg:px-8"
         aria-label="Global"
       >
-        <div className="flex lg:flex-1">
+        <div className="lg:flex-1">
           <Link to="/">
             <span className="sr-only">Scout properties logo</span>
             <img
               className="h-10 w-auto"
-              src="/logoBig.svg"
+              src="scout-logo.svg"
               alt="scout properties logo"
             />
           </Link>
@@ -28,7 +58,7 @@ const Header = () => {
         <div className="flex lg:hidden">
           <button
             type="button"
-            className="flex-center rounded-md text-gray-700"
+            className="flex-center rounded-md"
             onClick={() => setMobileMenuOpen(true)}
           >
             <span className="sr-only">Open main menu</span>
@@ -36,21 +66,18 @@ const Header = () => {
           </button>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
-          {headerNavItems.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.name}
               to={item.href}
-              className="text-sm font-semibold leading-6 text-gray-900"
+              className="text-sm font-semibold leading-6"
             >
               {item.name}
             </Link>
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link
-            to="#"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
+          <Link to="#" className="text-sm font-semibold leading-6">
             Log in <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
@@ -61,19 +88,19 @@ const Header = () => {
         onClose={setMobileMenuOpen}
       >
         <div className="stick inset-0 z-50" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-2 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-50 px-6 py-4 sm:max-w-sm">
           <div className="flex-between">
             <Link to="#">
               <span className="sr-only">Scout properties logo</span>
               <img
                 className="h-10 w-auto"
-                src="/logoBig.svg"
+                src="scout-logo.svg"
                 alt="scout properties logo"
               />
             </Link>
             <button
               type="button"
-              className="rounded-md text-gray-700"
+              className="rounded-md"
               onClick={() => setMobileMenuOpen(false)}
             >
               <span className="sr-only">Close menu</span>
@@ -83,18 +110,14 @@ const Header = () => {
           <div className="mt-6 flow-root">
             <div className="divide-y divide-gray-500/10">
               <div className="space-y-2">
-                {headerNavItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className="sm-header-links"
-                  >
+                {navItems.map((item) => (
+                  <Link key={item.name} to={item.href} className="sm-nav-links">
                     {item.name}
                   </Link>
                 ))}
               </div>
               <div className="py-6">
-                <Link to="#" className="sm-header-links">
+                <Link to="#" className="sm-nav-links">
                   Log in
                 </Link>
               </div>
@@ -102,8 +125,6 @@ const Header = () => {
           </div>
         </DialogPanel>
       </Dialog>
-    </header>
+    </motion.header>
   );
 };
-
-export default Header;
