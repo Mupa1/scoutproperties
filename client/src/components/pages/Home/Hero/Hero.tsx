@@ -3,7 +3,7 @@ import { Search } from './Search';
 
 export const Hero = () => {
   return (
-    <section>
+    <div>
       <div className="h-screen relative w-100">
         <div className="absolute top-0 left-0 z-30 h-screen w-full bg-black bg-opacity-50 flex flex-col items-center justify-center">
           <div className="w-100 text-center m-auto z-40 max-w-7xl px-12 lg:px-8">
@@ -20,6 +20,6 @@ export const Hero = () => {
         </div>
         <HeroImages />
       </div>
-    </section>
+    </div>
   );
 };

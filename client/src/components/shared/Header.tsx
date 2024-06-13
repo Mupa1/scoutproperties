@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Dialog, DialogPanel } from '@headlessui/react';
 import { motion } from 'framer-motion';
 
-import { navItems } from '@/entities/header-nav-items';
+import { navItems } from '@/entities/nav-items';
 
 export const Header = () => {
   const location = useLocation();
@@ -33,6 +33,10 @@ export const Header = () => {
       };
     }
   }, [lastScrollY]);
+
+  const handleLinkClick = () => {
+    setMobileMenuOpen(false);
+  };
 
   return (
     <motion.header
@@ -111,13 +115,18 @@ export const Header = () => {
             <div className="divide-y divide-gray-500/10">
               <div className="space-y-2">
                 {navItems.map((item) => (
-                  <Link key={item.name} to={item.href} className="sm-nav-links">
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="sm-nav-links"
+                    onClick={handleLinkClick}
+                  >
                     {item.name}
                   </Link>
                 ))}
               </div>
               <div className="py-6">
-                <Link to="#" className="sm-nav-links">
+                <Link to="#" className="sm-nav-links" onClick={handleLinkClick}>
                   Log in
                 </Link>
               </div>

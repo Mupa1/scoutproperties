@@ -2,8 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import RootLayout from './layouts/RootLayout';
 import { NoMatch } from './pages/NoMatch';
-import { HomePage } from './pages/root/HomePage';
-import { ListingsPage } from './pages/root/Listings';
+import { About, HomePage, ListingsPage } from './pages/root';
 
 const App = () => {
   return (
@@ -11,6 +10,7 @@ const App = () => {
       <Routes>
         <Route element={<RootLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
         <Route path="/listings" element={<ListingsPage />} />

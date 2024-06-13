@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { navItems } from '@/entities/header-nav-items';
+import { navItems } from '@/entities/nav-items';
 
 import { ExternalLink } from './ExternalLink';
 import { SocialIcons } from './SocialIcons';

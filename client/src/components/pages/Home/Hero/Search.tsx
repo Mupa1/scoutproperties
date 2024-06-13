@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { IoSearch } from 'react-icons/io5';
 
-import { Button } from '../../../ui/Button';
-import { Input } from '../../../ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 const types = ['Buy', 'Rent'] as const;
 type SearchType = (typeof types)[number];
