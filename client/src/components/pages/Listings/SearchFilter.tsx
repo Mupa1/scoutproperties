@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form';
 import { IoSearch } from 'react-icons/io5';
 
-import { Button } from '../../ui/Button';
-import { Input } from '../../ui/Input';
-import { Select } from '../../ui/Select';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
 
 type SearchFormData = {
   type: string;
