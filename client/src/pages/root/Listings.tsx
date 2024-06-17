@@ -8,13 +8,13 @@ import { listingsData } from '@/lib/dummy-data';
 
 export const ListingsPage: FC = () => {
   return (
-    <section className="h-screen w-full fixed">
+    <section className="h-screen w-full fixed px-6 md:px-8">
       <Header />
       <div className="w-full">
-        <div className="px-6 sticky top-20">
+        <div className="sticky top-20 z-50 pt-4 md:pt-0 pb-4">
           <SearchFilter />
         </div>
-        <div className="flex mt-20 px-6 listings">
+        <div className="flex mt-20 md:mt-36 listings">
           <div className="flex-2 h-full  w-full hidden md:block overflow-y-hidden sm:pr-2">
             <div className="w-full h-full">
               <Map listingsData={listingsData} />

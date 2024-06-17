@@ -53,8 +53,8 @@ export const Map: FC<ListingsProps> = ({ listingsData }) => {
       center={position}
       zoom={7}
       scrollWheelZoom={false}
-      className="w-full map rounded-md overflow-hidden"
-      style={{ height: 'calc(100vh - 144px)' }}
+      className="z-10 w-full map rounded-md overflow-hidden"
+      style={{ height: 'calc(100vh - 161px)' }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

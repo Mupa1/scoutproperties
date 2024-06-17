@@ -14,8 +14,8 @@ export const Footer = () => {
             <Link to="/">
               <span className="sr-only">Scout properties logo</span>
               <img
-                className="h-10 w-auto grayscale"
-                src="scout-logo.svg"
+                className="h-10 w-auto"
+                src="/scout-logo.svg"
                 alt="scout properties logo"
               />
             </Link>

@@ -50,12 +50,12 @@
   }
 
   .listings {
-    height: calc(100vh - 400px);
+    height: calc(100vh - 108px);
   }
 
-  @screen md {
+  @screen sm {
     .listings {
-      height: calc(100vh - 144px);
+      height: calc(100vh - 161px);
     }
   }
 }

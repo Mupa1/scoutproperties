@@ -32,7 +32,7 @@ export const NoMatch = () => {
           </Button>
           <Link
             to="/"
-            className="flex-center gap-2 w-36 font-normal border-2 border-primary-500 bg-primary-500 px-3.5 py-2.5 text-white shadow-sm"
+            className="flex-center gap-2 w-36 rounded-md font-normal border-2 border-primary-500 bg-primary-500 px-3.5 py-2.5 text-white shadow-sm"
           >
             Homepage <FaHome />
           </Link>

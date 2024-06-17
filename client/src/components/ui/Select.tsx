@@ -12,7 +12,7 @@ import {
 import clsx from 'clsx';
 
 type SelectTypes = {
-  id: string;
+  label?: string;
   className?: string;
   options: {
     id?: number;
@@ -21,16 +21,16 @@ type SelectTypes = {
 };
 
 const Select = forwardRef<HTMLDivElement, SelectTypes>(
-  ({ id, options, className }, ref) => {
+  ({ label, options, className }, ref) => {
     const [selected, setSelected] = useState(options[0]);
 
     return (
       <Listbox value={selected} onChange={setSelected}>
         {({ open }) => (
           <div className={className} ref={ref}>
-            <Label className="sr-only">{id}</Label>
+            <Label className="">{label}</Label>
             <div className="relative">
-              <ListboxButton className="relative flex-1 w-full cursor-default rounded-sm bg-white py-2.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm sm:leading-6">
+              <ListboxButton className="relative flex-1 w-full cursor-default rounded-md bg-white py-2.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-black/10 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm sm:leading-6">
                 <span className="block truncate">{selected.name}</span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                   <HiMiniChevronUpDown
@@ -46,7 +46,7 @@ const Select = forwardRef<HTMLDivElement, SelectTypes>(
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-primary-50 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                   {options.map((option) => (
                     <ListboxOption
                       key={option.id}

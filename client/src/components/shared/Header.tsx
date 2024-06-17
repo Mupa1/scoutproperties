@@ -15,6 +15,7 @@ export const Header = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const isHomePage = location.pathname === '/';
+  const isListings = location.pathname === '/listings';
   useEffect(() => {
     const controlHeader = () => {
       if (typeof window !== 'undefined') {
@@ -46,7 +47,7 @@ export const Header = () => {
       className={`header fixed inset-x-0 top-0 z-50 py-2 ${isHomePage && !isScrolled ? 'text-white' : 'bg-gray-50'} ${isScrolled && isHomePage && 'bg-gray-50 text-gray-700'}`}
     >
       <nav
-        className="flex-between mx-auto max-w-7xl px-6 py-2 lg:px-8"
+        className={`flex-between mx-auto ${isListings ? '' : 'max-w-7xl'} px-6 py-2 lg:px-8`}
         aria-label="Global"
       >
         <div className="lg:flex-1">
@@ -54,7 +55,7 @@ export const Header = () => {
             <span className="sr-only">Scout properties logo</span>
             <img
               className="h-10 w-auto"
-              src="scout-logo.svg"
+              src="/scout-logo.svg"
               alt="scout properties logo"
             />
           </Link>
@@ -91,14 +92,14 @@ export const Header = () => {
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
       >
-        <div className="stick inset-0 z-50" />
+        <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-gray-50 px-6 py-4 sm:max-w-sm">
           <div className="flex-between">
             <Link to="#">
               <span className="sr-only">Scout properties logo</span>
               <img
                 className="h-10 w-auto"
-                src="scout-logo.svg"
+                src="/scout-logo.svg"
                 alt="scout properties logo"
               />
             </Link>
@@ -126,7 +127,12 @@ export const Header = () => {
                 ))}
               </div>
               <div className="py-6">
-                <Link to="#" className="sm-nav-links" onClick={handleLinkClick}>
+                <Link
+                  to="#"
+                  className="sm-nav-links"
+                  onClick={handleLinkClick}
+                  tabIndex={0}
+                >
                   Log in
                 </Link>
               </div>

@@ -1,5 +1,7 @@
+import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { IoSearch } from 'react-icons/io5';
+import { IoFilter, IoSearch } from 'react-icons/io5';
+import { IoCloseSharp } from 'react-icons/io5';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -28,8 +30,10 @@ const propertyOptions = [
   { id: 5, name: 'Land' },
 ];
 
-export const SearchFilter = () => {
-  const { register, handleSubmit } = useForm({
+export const SearchFilter: FC = () => {
+  const [showFilters, setShowFilters] = useState(false);
+
+  const { register, handleSubmit } = useForm<SearchFormData>({
     defaultValues: {
       type: 'Buy or Rent',
       property: 'All Properties',
@@ -44,67 +48,92 @@ export const SearchFilter = () => {
     console.log('Form submitted', data);
   };
 
+  const handleFilterButtonClick = () => {
+    setShowFilters((prev) => !prev);
+  };
+
   return (
-    <form
-      role="form"
-      data-testid="search-filter-form"
-      className="w-full sm:flex z-50 my-5"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <Input
-        data-testid="search-filter-location"
-        className="flex-1 w-full"
-        type="text"
-        placeholder="City"
-        {...register('location')}
-      />
-      <Select
-        className="flex-1"
-        options={typesOptions}
-        id="types"
-        {...register('type')}
-      />
-      <Select
-        className="flex-1"
-        options={propertyOptions}
-        id="property"
-        {...register('property')}
-      />
-      <Input
-        data-testid="search-filter-minPrice"
-        className="flex-1 w-full"
-        type="number"
-        min={0}
-        max={10000000}
-        placeholder="Min Price"
-        {...register('minPrice', { valueAsNumber: true })}
-      />
-      <Input
-        data-testid="search-filter-maxPrice"
-        className="flex-1 w-full"
-        type="number"
-        min={0}
-        max={10000000}
-        placeholder="Max Price"
-        {...register('maxPrice', { valueAsNumber: true })}
-      />
-      <Input
-        data-testid="search-filter-bedrooms"
-        className="flex-1 w-full"
-        type="number"
-        min={0}
-        max={5}
-        placeholder="Bedroom(s)"
-        {...register('bedrooms', { valueAsNumber: true })}
-      />
+    <div className="absolute">
       <Button
-        className="w-full sm:w-auto"
-        data-testid="search-filter-submit-button"
-        variant="primary"
-        type="submit"
+        variant="neutral"
+        onClick={handleFilterButtonClick}
+        className="md:hidden flex-1 border-0 -mt-6 px-0"
       >
-        <IoSearch />
+        {showFilters ? (
+          <IoCloseSharp size={20} title="Hide Filters" />
+        ) : (
+          <>
+            <IoFilter size={18} title="Show Filters" />
+            Filters
+          </>
+        )}
       </Button>
-    </form>
+
+      {/* {showFilters && ( */}
+      <form
+        role="form"
+        data-testid="search-filter-form"
+        className={`text-sm ${showFilters ? 'block p-2 border rounded-md' : 'hidden'} relative md:sticky w-full grid md:flex items-start md:items-end gap-3 z-50 bg-white`}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className="grid grid-cols-2 md:flex gap-2">
+          <Input
+            data-testid="search-filter-location"
+            className="w-full md:w-48"
+            type="text"
+            label="City"
+            {...register('location')}
+          />
+          <Select
+            className="md:w-30"
+            options={typesOptions}
+            label="Types"
+            {...register('type')}
+          />
+          <Select
+            className="md:w-30"
+            options={propertyOptions}
+            label="Property"
+            {...register('property')}
+          />
+          <Input
+            data-testid="search-filter-minPrice"
+            className="md:w-30"
+            type="number"
+            min={0}
+            max={10000000}
+            label="Min Price"
+            {...register('minPrice', { valueAsNumber: true })}
+          />
+          <Input
+            data-testid="search-filter-maxPrice"
+            className="md:w-30"
+            type="number"
+            min={0}
+            max={10000000}
+            label="Max Price"
+            {...register('maxPrice', { valueAsNumber: true })}
+          />
+          <Input
+            data-testid="search-filter-bedrooms"
+            className="md:w-30"
+            type="number"
+            min={0}
+            max={5}
+            label="Bedroom(s)"
+            {...register('bedrooms', { valueAsNumber: true })}
+          />
+        </div>
+        <Button
+          className="w-full sm:w-auto h-[2.75rem]"
+          data-testid="search-filter-submit-button"
+          variant="primary"
+          type="submit"
+        >
+          <IoSearch />
+        </Button>
+      </form>
+      {/* )} */}
+    </div>
   );
 };
