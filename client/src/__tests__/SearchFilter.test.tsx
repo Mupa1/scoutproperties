@@ -1,23 +1,29 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
 import { SearchFilter } from '@/components/pages/Listings/SearchFilter';
 
+const mockOnSubmit = vi.fn();
+
 describe('SearchFilter Component', () => {
+  const renderer = () => render(<SearchFilter onSubmit={mockOnSubmit} />);
+
   test('renders all input fields and button', () => {
-    render(<SearchFilter />);
+    renderer();
 
     expect(screen.getByPlaceholderText('City')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Min Price')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Max Price')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Bedroom(s)')).toBeInTheDocument();
+    expect(screen.getByTestId('search-filter-type')).toBeInTheDocument();
+    expect(screen.getByTestId('search-filter-property')).toBeInTheDocument();
+    expect(screen.getByTestId('search-filter-minPrice')).toBeInTheDocument();
+    expect(screen.getByTestId('search-filter-maxPrice')).toBeInTheDocument();
+    expect(screen.getByTestId('search-filter-bedrooms')).toBeInTheDocument();
     expect(
       screen.getByTestId('search-filter-submit-button'),
     ).toBeInTheDocument();
   });
 
   test('updates location state on input change', () => {
-    render(<SearchFilter />);
+    renderer();
     const locationInput = screen.getByPlaceholderText(
       'City',
     ) as HTMLInputElement;
@@ -27,7 +33,7 @@ describe('SearchFilter Component', () => {
   });
 
   test('updates minPrice state on input change', () => {
-    render(<SearchFilter />);
+    renderer();
     const minPriceInput = screen.getByTestId(
       'search-filter-minPrice',
     ) as HTMLInputElement;
@@ -37,7 +43,7 @@ describe('SearchFilter Component', () => {
   });
 
   test('updates maxPrice state on input change', () => {
-    render(<SearchFilter />);
+    renderer();
     const maxPriceInput = screen.getByTestId(
       'search-filter-maxPrice',
     ) as HTMLInputElement;
@@ -47,12 +53,23 @@ describe('SearchFilter Component', () => {
   });
 
   test('updates bedrooms state on input change', () => {
-    render(<SearchFilter />);
+    renderer();
     const bedroomsInput = screen.getByTestId(
       'search-filter-bedrooms',
     ) as HTMLInputElement;
 
     fireEvent.change(bedroomsInput, { target: { value: '3' } });
     expect(bedroomsInput.value).toBe('3');
+  });
+
+  test('toggles filter visibility when clicking filter button', () => {
+    renderer();
+    const filterButton = screen.getByRole('button', { name: /filters/i });
+
+    fireEvent.click(filterButton);
+    expect(screen.getByRole('form')).toHaveClass('block');
+
+    fireEvent.click(filterButton);
+    expect(screen.getByRole('form')).toHaveClass('hidden');
   });
 });

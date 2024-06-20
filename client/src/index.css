@@ -49,6 +49,10 @@
     @apply block w-full h-screen object-cover;
   }
 
+  .listing-image-wrapper .swiper-slide img {
+    @apply block w-full h-full object-cover;
+  }
+
   .listings {
     height: calc(100vh - 108px);
   }

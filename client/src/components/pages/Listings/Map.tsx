@@ -5,6 +5,9 @@ import { MdOutlineBed } from 'react-icons/md';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import { LatLngExpression } from 'leaflet';
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -12,6 +15,13 @@ import imagePlaceholder from '@/assets/image-placeholder.svg';
 import { ListingProps, ListingsProps } from '@/types';
 
 const MapMarker: FC<ListingProps> = ({ listingsData }) => {
+  const DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+  });
+
+  L.Marker.prototype.options.icon = DefaultIcon;
+
   const { id, bedroom, bathroom, latitude, longitude, images, title, price } =
     listingsData;
   return (
@@ -25,7 +35,10 @@ const MapMarker: FC<ListingProps> = ({ listingsData }) => {
           />
         </div>
         <>
-          <Link className="hover:underline text-xs" to={`/${id}`}>
+          <Link
+            className="hover:underline text-xs"
+            to={`/listing-details/${id}`}
+          >
             {title}
           </Link>
           <p className="flex items-center font-bold text-xs -pt-4 text-gray-500">

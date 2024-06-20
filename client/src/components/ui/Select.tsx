@@ -14,6 +14,7 @@ import clsx from 'clsx';
 type SelectTypes = {
   label?: string;
   className?: string;
+  'data-testid'?: string;
   options: {
     id?: number;
     name?: string;
@@ -21,13 +22,13 @@ type SelectTypes = {
 };
 
 const Select = forwardRef<HTMLDivElement, SelectTypes>(
-  ({ label, options, className }, ref) => {
+  ({ label, options, className, 'data-testid': dataTestId }, ref) => {
     const [selected, setSelected] = useState(options[0]);
 
     return (
       <Listbox value={selected} onChange={setSelected}>
         {({ open }) => (
-          <div className={className} ref={ref}>
+          <div className={className} ref={ref} data-testid={dataTestId}>
             <Label className="">{label}</Label>
             <div className="relative">
               <ListboxButton className="relative flex-1 w-full cursor-default rounded-md bg-white py-2.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-black/10 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm sm:leading-6">

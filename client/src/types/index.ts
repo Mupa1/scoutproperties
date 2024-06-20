@@ -1,7 +1,7 @@
 type ListingsDataType = {
   id: number;
   title: string;
-  images: string[];
+  images: string;
   bedroom: number;
   bathroom: number;
   price: number;
@@ -16,4 +16,13 @@ export type ListingsProps = {
 
 export type ListingProps = {
   listingsData: ListingsDataType;
+};
+
+export type SearchFormData = {
+  type: string;
+  property: string;
+  location: string;
+  minPrice: number;
+  maxPrice: number;
+  bedrooms: number;
 };

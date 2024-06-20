@@ -6,14 +6,10 @@ import { IoCloseSharp } from 'react-icons/io5';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { SearchFormData } from '@/types';
 
-type SearchFormData = {
-  type: string;
-  property: string;
-  location: string;
-  minPrice: number;
-  maxPrice: number;
-  bedrooms: number;
+type SearchFilterProps = {
+  onSubmit: (data: SearchFormData) => void;
 };
 
 const typesOptions = [
@@ -30,7 +26,7 @@ const propertyOptions = [
   { id: 5, name: 'Land' },
 ];
 
-export const SearchFilter: FC = () => {
+export const SearchFilter: FC<SearchFilterProps> = ({ onSubmit }) => {
   const [showFilters, setShowFilters] = useState(false);
 
   const { register, handleSubmit } = useForm<SearchFormData>({
@@ -43,10 +39,6 @@ export const SearchFilter: FC = () => {
       bedrooms: 0,
     },
   });
-
-  const onSubmit = (data: SearchFormData) => {
-    console.log('Form submitted', data);
-  };
 
   const handleFilterButtonClick = () => {
     setShowFilters((prev) => !prev);
@@ -69,7 +61,6 @@ export const SearchFilter: FC = () => {
         )}
       </Button>
 
-      {/* {showFilters && ( */}
       <form
         role="form"
         data-testid="search-filter-form"
@@ -85,12 +76,14 @@ export const SearchFilter: FC = () => {
             {...register('location')}
           />
           <Select
+            data-testid="search-filter-type"
             className="md:w-30"
             options={typesOptions}
             label="Types"
             {...register('type')}
           />
           <Select
+            data-testid="search-filter-property"
             className="md:w-30"
             options={propertyOptions}
             label="Property"
@@ -133,7 +126,6 @@ export const SearchFilter: FC = () => {
           <IoSearch />
         </Button>
       </form>
-      {/* )} */}
     </div>
   );
 };

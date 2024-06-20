@@ -12,7 +12,7 @@ const listingsData: ListingsProps['listingsData'] = [
   {
     id: 1,
     title: 'Test Listing 1',
-    images: [],
+    images: '',
     bedroom: 2,
     bathroom: 1,
     price: 100000,
@@ -23,7 +23,7 @@ const listingsData: ListingsProps['listingsData'] = [
   {
     id: 2,
     title: 'Test Listing 2',
-    images: ['image-url'],
+    images: 'image-url',
     bedroom: 3,
     bathroom: 2,
     price: 150000,
@@ -48,9 +48,19 @@ vi.mock('react-leaflet', () => {
   };
 });
 
-vi.mock('leaflet', () => ({
-  Icon: () => ({}),
-}));
+vi.mock('leaflet', async (importOriginal) => {
+  const actual = (await importOriginal()) as typeof import('leaflet');
+  return {
+    ...actual,
+    icon: vi.fn().mockReturnValue({}),
+    Marker: {
+      ...actual.Marker,
+      prototype: {
+        options: {},
+      },
+    },
+  };
+});
 
 const renderer = () =>
   render(
@@ -67,13 +77,11 @@ describe('Map Component', () => {
 
   test('renders the correct number of markers', () => {
     renderer();
-
     expect(screen.getAllByTestId('marker')).toHaveLength(listingsData.length);
   });
 
   test('renders popup content correctly for each marker', () => {
     renderer();
-
     listingsData.forEach((listing) => {
       expect(screen.getByText(listing.title)).toBeInTheDocument();
       expect(screen.getByText(`${listing.price} €`)).toBeInTheDocument();

@@ -19,6 +19,10 @@ export default {
         'primary-900': '#27300c',
         'primary-950': '#0e1104',
       },
+      height: {
+        '60vh': '60vh',
+        '80vh': '80vh',
+      },
     },
   },
   plugins: [],

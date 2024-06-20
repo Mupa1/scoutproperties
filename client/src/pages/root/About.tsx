@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { AboutHeroImages } from '@/components/pages/About/AboutHeroImages';
 import { BackgroundPatterns } from '@/components/pages/About/BackgroundPatterns';
 
-export const About: FC = () => {
+export const AboutPage: FC = () => {
   return (
     <section>
       <div className="relative isolate">
