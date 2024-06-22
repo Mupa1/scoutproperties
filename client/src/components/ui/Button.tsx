@@ -6,7 +6,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const button = tv({
-  base: 'flex-center rounded-sm gap-2 px-3.5 py-2.5 leading-6 font-normal shadow-sm transition ease-in-out duration-[400ms] hover:scale-105',
+  base: 'flex-center rounded-md gap-2 px-3.5 py-2.5 leading-6 font-normal shadow-sm transition ease-in-out duration-[400ms] hover:scale-105',
   variants: {
     color: {
       primary: 'bg-primary-500 text-white ',

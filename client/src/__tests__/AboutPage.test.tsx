@@ -2,13 +2,13 @@ import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { About } from '@/pages/root';
+import { AboutPage } from '@/pages/root';
 
-describe('About', () => {
+describe('AboutPage', () => {
   const renderer = () =>
     render(
       <MemoryRouter initialEntries={['/about']}>
-        <About />
+        <AboutPage />
       </MemoryRouter>,
     );
 

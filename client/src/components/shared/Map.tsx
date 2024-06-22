@@ -1,10 +1,14 @@
 import { FC } from 'react';
-import { LuBath } from 'react-icons/lu';
+import { FaBath } from 'react-icons/fa';
+import { IoIosBed } from 'react-icons/io';
 import { LuDot } from 'react-icons/lu';
-import { MdOutlineBed } from 'react-icons/md';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
+import clsx from 'clsx';
 import { LatLngExpression } from 'leaflet';
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -12,6 +16,13 @@ import imagePlaceholder from '@/assets/image-placeholder.svg';
 import { ListingProps, ListingsProps } from '@/types';
 
 const MapMarker: FC<ListingProps> = ({ listingsData }) => {
+  const DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+  });
+
+  L.Marker.prototype.options.icon = DefaultIcon;
+
   const { id, bedroom, bathroom, latitude, longitude, images, title, price } =
     listingsData;
   return (
@@ -25,18 +36,21 @@ const MapMarker: FC<ListingProps> = ({ listingsData }) => {
           />
         </div>
         <>
-          <Link className="hover:underline text-xs" to={`/${id}`}>
+          <Link
+            className="hover:underline text-xs"
+            to={`/listing-details/${id}`}
+          >
             {title}
           </Link>
           <p className="flex items-center font-bold text-xs -pt-4 text-gray-500">
             <span className="listing-amenities">
               {bedroom}
-              <MdOutlineBed />
+              <IoIosBed size={16} />
             </span>
             <LuDot />
             <span className="listing-amenities">
               {bathroom}
-              <LuBath />
+              <FaBath />
             </span>
           </p>
           <b className="text-lg font-bold text-gray-900">{price} €</b>
@@ -46,15 +60,14 @@ const MapMarker: FC<ListingProps> = ({ listingsData }) => {
   );
 };
 
-export const Map: FC<ListingsProps> = ({ listingsData }) => {
+export const Map: FC<ListingsProps> = ({ listingsData, className }) => {
   const position: LatLngExpression = [49.5200765, 8.524684];
   return (
     <MapContainer
       center={position}
       zoom={7}
       scrollWheelZoom={false}
-      className="w-full map rounded-md overflow-hidden"
-      style={{ height: 'calc(100vh - 144px)' }}
+      className={clsx(className, 'z-10 w-full map rounded-md overflow-hidden')}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

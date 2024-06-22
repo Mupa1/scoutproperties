@@ -33,7 +33,7 @@ export const Search = () => {
   return (
     <form
       role="form"
-      className="max-w-80 m-auto"
+      className="max-w-80 m-auto flex flex-col items-center"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="flex-center mb-4">
@@ -51,7 +51,7 @@ export const Search = () => {
       <div className="flex">
         <Input
           data-testid="location"
-          className="w-28 flex-1"
+          className="w-56 flex-1"
           type="text"
           placeholder="City"
           {...register('location')}
