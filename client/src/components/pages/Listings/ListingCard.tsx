@@ -1,8 +1,8 @@
 import { FC } from 'react';
+import { FaBath } from 'react-icons/fa';
+import { IoIosBed } from 'react-icons/io';
 import { IoHeartOutline } from 'react-icons/io5';
-import { LuBath } from 'react-icons/lu';
 import { LuDot } from 'react-icons/lu';
-import { MdOutlineBed } from 'react-icons/md';
 import { RiMapPinLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ type ListingCardType = {
   data: {
     id: number;
     title: string;
-    images: string;
+    images: string[];
     bedroom: number;
     bathroom: number;
     price: number;
@@ -30,7 +30,7 @@ export const ListingCard: FC<ListingCardType> = ({ data }) => {
       <Link to={`/listing-details/${id}`}>
         <div className="aspect-h-1 aspect-w-3 group-hover:opacity-75 h:60 sm:h-40">
           <img
-            src={images || imagePlaceholder}
+            src={images[0] || imagePlaceholder}
             alt={title}
             className="h-full w-full object-cover object-center"
           />
@@ -40,19 +40,19 @@ export const ListingCard: FC<ListingCardType> = ({ data }) => {
         <b className="text-lg font-bold text-gray-900">{price} €</b>
         <Link
           to={`/listing-details/${id}`}
-          className="text-sm font-medium text-gray-900 hover:underline"
+          className="text-sm pb-1 font-medium text-gray-900 hover:underline"
         >
           {title}
         </Link>
         <p className="flex items-center font-bold text-sm gap-1 text-gray-500">
           <span className="listing-amenities">
             {bedroom}
-            <MdOutlineBed />
+            <IoIosBed size={16} />
           </span>
           <LuDot />
           <span className="listing-amenities">
             {bathroom}
-            <LuBath />
+            <FaBath />
           </span>
         </p>
         <div className="flex items-center pt-2 gap-1">

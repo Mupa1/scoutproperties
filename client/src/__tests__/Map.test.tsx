@@ -5,14 +5,14 @@ import { describe, expect, test, vi } from 'vitest';
 
 import 'leaflet/dist/leaflet.css';
 
-import { Map } from '@/components/pages/Listings/Map';
+import { Map } from '@/components/shared/Map';
 import { ListingsProps } from '@/types';
 
 const listingsData: ListingsProps['listingsData'] = [
   {
     id: 1,
     title: 'Test Listing 1',
-    images: '',
+    images: [''],
     bedroom: 2,
     bathroom: 1,
     price: 100000,
@@ -23,7 +23,7 @@ const listingsData: ListingsProps['listingsData'] = [
   {
     id: 2,
     title: 'Test Listing 2',
-    images: 'image-url',
+    images: ['image-url'],
     bedroom: 3,
     bathroom: 2,
     price: 150000,
@@ -85,8 +85,8 @@ describe('Map Component', () => {
     listingsData.forEach((listing) => {
       expect(screen.getByText(listing.title)).toBeInTheDocument();
       expect(screen.getByText(`${listing.price} €`)).toBeInTheDocument();
-      expect(screen.getAllByText(`${listing.bedroom}`)[0]).toBeInTheDocument();
-      expect(screen.getAllByText(`${listing.bathroom}`)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(listing.bedroom)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(listing.bathroom)[0]).toBeInTheDocument();
     });
   });
 });

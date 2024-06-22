@@ -18,6 +18,7 @@ export default {
         'primary-800': '#405013',
         'primary-900': '#27300c',
         'primary-950': '#0e1104',
+        'secondary-500': '#16539B',
       },
       height: {
         '60vh': '60vh',

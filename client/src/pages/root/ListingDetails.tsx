@@ -9,7 +9,7 @@ export const ListingDetailsPage: FC = () => {
     <section className="min-h-screen mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <ListingImages images={listingDetailsData.images} />
-        <Details />
+        <Details listingDetailsData={listingDetailsData} />
       </div>
     </section>
   );

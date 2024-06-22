@@ -19,6 +19,10 @@
     @apply leading-6 md:leading-8;
   }
 
+  h3 {
+    @apply font-bold;
+  }
+
   h5 {
     @apply font-bold;
   }
@@ -42,7 +46,7 @@
   }
 
   .listing-amenities {
-    @apply bg-primary-50 rounded-lg flex items-center gap-2 px-1;
+    @apply flex items-center gap-2 px-1 -ml-1;
   }
 
   .swiper-slide img {
