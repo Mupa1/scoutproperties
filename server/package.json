@@ -16,9 +16,13 @@
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.5.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.14.8",
     "@types/supertest": "^6.0.2",
+    "@types/swagger-ui-express": "^4.1.6",
+    "@types/yamljs": "^0.2.34",
     "dotenv": "^16.4.5",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
@@ -35,7 +39,11 @@
     "typescript-eslint": "^7.13.1"
   },
   "dependencies": {
-    "@types/jest": "^29.5.12",
-    "express": "^4.19.2"
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
+    "path": "^0.12.7",
+    "prisma": "^5.15.1",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   }
 }
