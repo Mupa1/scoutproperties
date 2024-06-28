@@ -1,8 +1,8 @@
-import globals from 'globals';
 import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import * as importPlugin from 'eslint-plugin-import';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default [
   { files: ['**/*.{js,mjs,cjs,ts}'] },
@@ -14,16 +14,31 @@ export default [
   eslintPluginPrettierRecommended,
   {
     plugins: {
-      import: importPlugin,
+      'simple-import-sort': simpleImportSort,
     },
     rules: {
-      'import/order': [
+      'simple-import-sort/imports': [
         'error',
         {
-          groups: [['builtin', 'external', 'internal']],
-          'newlines-between': 'always',
+          groups: [
+            // Side effect imports.
+            ['^\\u0000'],
+            // Node.js builtins prefixed with `node:`.
+            ['^node:'],
+            // Packages.
+            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+            ['^@?\\w'],
+            // Absolute imports and other imports such as `@/foo`.
+            // Anything not matched in another group.
+            ['^'],
+            // Relative imports.
+            // Anything that starts with a dot.
+            ['^\\.'],
+          ],
         },
       ],
+      'simple-import-sort/exports': 'error',
     },
   },
+  { env: { node: true, es2020: true } },
 ];

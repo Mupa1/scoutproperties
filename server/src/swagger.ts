@@ -1,7 +1,7 @@
 import express from 'express';
+import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import yamljs from 'yamljs';
-import path from 'path';
 
 const router = express.Router();
 

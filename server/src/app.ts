@@ -1,11 +1,15 @@
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express from 'express';
 
-import swaggerRouter from './swagger';
 import authRoute from './routes/auth.route';
+import swaggerRouter from './swagger';
 
 const app = express();
 
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
   res.send('Scoutproperties API');

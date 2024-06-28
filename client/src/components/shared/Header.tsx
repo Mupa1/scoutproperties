@@ -1,9 +1,20 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { FaUser } from 'react-icons/fa';
 import { HiMiniXMark } from 'react-icons/hi2';
+import { IoLogOut } from 'react-icons/io5';
+import { PiSignInBold } from 'react-icons/pi';
 import { RiMenuFill } from 'react-icons/ri';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { Dialog, DialogPanel } from '@headlessui/react';
+import {
+  Dialog,
+  DialogPanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from '@headlessui/react';
 import { motion } from 'framer-motion';
 
 import { navItems } from '@/entities/nav-items';
@@ -39,6 +50,10 @@ export const Header = () => {
     setMobileMenuOpen(false);
   };
 
+  const user = JSON.parse(localStorage.getItem('user')) || null;
+  console.log('user', user);
+
+  const { username, email } = user.data;
   return (
     <motion.header
       initial={{ y: 0 }}
@@ -82,10 +97,70 @@ export const Header = () => {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link to="#" className="text-sm font-semibold leading-6">
-            Log in <span aria-hidden="true">&rarr;</span>
+          <Link
+            to="/sign-in"
+            className="text-sm font-semibold leading-6 flex-center gap-2"
+          >
+            Sign in
+            <span aria-hidden="true">
+              <PiSignInBold size={20} />
+            </span>
           </Link>
         </div>
+        <Menu as="div" className="relative inline-block ml-auto">
+          <div>
+            <MenuButton className="flex gap-3 text-left items-center rounded-full focus:outline-none">
+              <span className="sr-only">Open menu</span>
+              <img
+                src={user.imageUrl || '/images/user-placeholder.svg'}
+                alt="profile"
+                className="h-8 w-8 rounded-full"
+              />
+              <div className="lg:flex flex-col hidden">
+                <p>{user?.name}</p>
+                <p className="text-sm text-gray-500">{user?.username}</p>
+              </div>
+            </MenuButton>
+          </div>
+
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <MenuItems className="absolute right-0 z-10 mt-1 w-32 origin-top-right rounded-md border border-white/5 bg-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1">
+                <MenuItem>
+                  {() => (
+                    <Link
+                      to={`/profile/${user.id}`}
+                      className={`flex gap-x-3 items-center px-4 py-2 text-sm`}
+                    >
+                      <FaUser className="h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  {() => (
+                    <button
+                      type="button"
+                      className={`flex gap-x-3 items-center w-full px-4 py-2 text-left text-sm`}
+                      // onClick={(e) => handleSignOut(e)}
+                    >
+                      <IoLogOut className="h-4 w-4" />
+                      <span>Sign out</span>
+                    </button>
+                  )}
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </Transition>
+        </Menu>
       </nav>
       <Dialog
         className="lg:hidden"
@@ -126,14 +201,12 @@ export const Header = () => {
                   </Link>
                 ))}
               </div>
-              <div className="py-6">
-                <Link
-                  to="#"
-                  className="sm-nav-links"
-                  onClick={handleLinkClick}
-                  tabIndex={0}
-                >
-                  Log in
+              <div className="py-2">
+                <Link to="/sign-in" className="sm-nav-links gap-2 items-center">
+                  Sign in
+                  <span aria-hidden="true">
+                    <PiSignInBold size={20} />
+                  </span>
                 </Link>
               </div>
             </div>

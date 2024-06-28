@@ -7,6 +7,8 @@ import {
   HomePage,
   ListingDetailsPage,
   ListingsPage,
+  Signin,
+  Signup,
 } from './pages/root';
 
 const App = () => {
@@ -15,6 +17,10 @@ const App = () => {
       <Routes>
         <Route element={<RootLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="/sign-up" element={<Signup />} />
+          <Route path="/sign-in" element={<Signin />} />
+          <Route path="/sign-up" element={<Signup />} />
+          <Route path="/sign-in" element={<Signin />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/listing-details/:id" element={<ListingDetailsPage />} />
           <Route path="*" element={<NoMatch />} />

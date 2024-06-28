@@ -28,9 +28,9 @@ paths:
                   type: string
       responses:
         '201':
-          description: User registered successfully
-        '400':
-          description: Invalid input
+          description: User registered successfully!
+        '500':
+          description: Failed to register user! Please try again!
   /api/auth/login:
     post:
       summary: Log in a user
@@ -48,15 +48,15 @@ paths:
                   type: string
       responses:
         '200':
-          description: User logged in successfully
-        '400':
-          description: Invalid input
+          description: User logged in successfully!
         '401':
-          description: Unauthorized
+          description: Invalid Credentials!
+        '500':
+          description: Failed to login user!
   /api/auth/logout:
     post:
       summary: Log out a user
       tags: [Auth]
       responses:
         '200':
-          description: User logged out successfully
+          description: User logged out successfully!
