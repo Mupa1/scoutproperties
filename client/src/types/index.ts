@@ -1,12 +1,17 @@
 export type NewUser = {
+  name: string;
   email: string;
   username: string;
   password: string;
 };
 
 export type User = {
+  id: string;
+  username: string;
+  name: string;
   email: string;
-  password: string;
+  avatar: string;
+  password?: string;
 };
 
 export type AuthErrorType = {

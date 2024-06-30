@@ -1,10 +1,9 @@
 import { Fragment, useEffect, useState } from 'react';
-import { FaUser } from 'react-icons/fa';
+import { FaRegUser } from 'react-icons/fa';
 import { HiMiniXMark } from 'react-icons/hi2';
-import { IoLogOut } from 'react-icons/io5';
-import { PiSignInBold } from 'react-icons/pi';
+import { PiSignInBold, PiSignOutBold } from 'react-icons/pi';
 import { RiMenuFill } from 'react-icons/ri';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
   Dialog,
@@ -17,16 +16,22 @@ import {
 } from '@headlessui/react';
 import { motion } from 'framer-motion';
 
+import { useUserContext } from '@/context/useUserContext';
 import { navItems } from '@/entities/nav-items';
+import { useSignout } from '@/lib/react-query/mutations';
 
 export const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { currentUser, updateUser } = useUserContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { mutate: signOut } = useSignout();
   const isHomePage = location.pathname === '/';
   const isListings = location.pathname === '/listings';
+
   useEffect(() => {
     const controlHeader = () => {
       if (typeof window !== 'undefined') {
@@ -50,10 +55,21 @@ export const Header = () => {
     setMobileMenuOpen(false);
   };
 
-  const user = JSON.parse(localStorage.getItem('user')) || null;
-  console.log('user', user);
+  const handleSignOut = async () => {
+    try {
+      signOut();
+      updateUser(null);
+      navigate('/');
+      setMobileMenuOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const { username, email } = user.data;
+  const username = currentUser?.username;
+  const name = currentUser?.name;
+  const avatar = currentUser?.avatar || '/user-placeholder.svg';
+
   return (
     <motion.header
       initial={{ y: 0 }}
@@ -96,71 +112,73 @@ export const Header = () => {
             </Link>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link
-            to="/sign-in"
-            className="text-sm font-semibold leading-6 flex-center gap-2"
+        {currentUser ? (
+          <Menu
+            as="div"
+            className="relative hidden lg:flex lg:items-center lg:flex-1 lg:justify-end"
           >
-            Sign in
-            <span aria-hidden="true">
-              <PiSignInBold size={20} />
-            </span>
-          </Link>
-        </div>
-        <Menu as="div" className="relative inline-block ml-auto">
-          <div>
-            <MenuButton className="flex gap-3 text-left items-center rounded-full focus:outline-none">
-              <span className="sr-only">Open menu</span>
-              <img
-                src={user.imageUrl || '/images/user-placeholder.svg'}
-                alt="profile"
-                className="h-8 w-8 rounded-full"
-              />
-              <div className="lg:flex flex-col hidden">
-                <p>{user?.name}</p>
-                <p className="text-sm text-gray-500">{user?.username}</p>
-              </div>
-            </MenuButton>
-          </div>
+            <>
+              <MenuButton className="flex-center gap-3 text-left rounded-full focus:outline-none">
+                <span className="sr-only">Open menu</span>
+                <img
+                  src={avatar}
+                  alt="profile"
+                  className="h-8 w-8 rounded-full"
+                />
+                <div className="lg:flex gap-0 flex-col hidden">
+                  <p className="leading-4">{name}</p>
+                  <p className="text-sm text-gray-400 leading-4">{username}</p>
+                </div>
+              </MenuButton>
+            </>
 
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <MenuItems className="absolute right-0 z-10 mt-1 w-32 origin-top-right rounded-md border border-white/5 bg-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1">
-                <MenuItem>
-                  {() => (
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <MenuItems className="absolute right-0 z-10 mt-[8rem] w-32 rounded-md border border-white/5 text-gray-700 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="py-1">
+                  <MenuItem>
                     <Link
-                      to={`/profile/${user.id}`}
+                      to="/profile"
                       className={`flex gap-x-3 items-center px-4 py-2 text-sm`}
                     >
-                      <FaUser className="h-4 w-4" />
+                      <FaRegUser />
                       <span>My Profile</span>
                     </Link>
-                  )}
-                </MenuItem>
-                <MenuItem>
-                  {() => (
+                  </MenuItem>
+                  <MenuItem>
                     <button
                       type="button"
-                      className={`flex gap-x-3 items-center w-full px-4 py-2 text-left text-sm`}
-                      // onClick={(e) => handleSignOut(e)}
+                      className="flex gap-x-3 items-center w-full px-4 py-2 text-left text-sm hover-transition"
+                      onClick={handleSignOut}
                     >
-                      <IoLogOut className="h-4 w-4" />
+                      <PiSignOutBold />
                       <span>Sign out</span>
                     </button>
-                  )}
-                </MenuItem>
-              </div>
-            </MenuItems>
-          </Transition>
-        </Menu>
+                  </MenuItem>
+                </div>
+              </MenuItems>
+            </Transition>
+          </Menu>
+        ) : (
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+            <Link
+              to="/sign-in"
+              className="text-sm font-semibold leading-6 flex-center gap-2"
+            >
+              Sign in
+              <span aria-hidden="true">
+                <PiSignInBold size={20} />
+              </span>
+            </Link>
+          </div>
+        )}
       </nav>
       <Dialog
         className="lg:hidden"
@@ -189,7 +207,13 @@ export const Header = () => {
           </div>
           <div className="mt-6 flow-root">
             <div className="divide-y divide-gray-500/10">
-              <div className="space-y-2">
+              {currentUser ? (
+                <div className="divide-b mb-3 rounded-md">
+                  <p>{name}</p>
+                  <p className="text-sm text-gray-400">{username}</p>
+                </div>
+              ) : null}
+              <div>
                 {navItems.map((item) => (
                   <Link
                     key={item.name}
@@ -202,12 +226,40 @@ export const Header = () => {
                 ))}
               </div>
               <div className="py-2">
-                <Link to="/sign-in" className="sm-nav-links gap-2 items-center">
-                  Sign in
-                  <span aria-hidden="true">
-                    <PiSignInBold size={20} />
-                  </span>
-                </Link>
+                {currentUser ? (
+                  <>
+                    <Link
+                      to="/profile"
+                      className="sm-nav-links gap-2 items-center"
+                    >
+                      <span aria-hidden="true">
+                        <FaRegUser />
+                      </span>
+                      My Profile
+                    </Link>
+                    <button
+                      type="button"
+                      className="sm-nav-links gap-2 items-center hover-transition"
+                      onClick={handleSignOut}
+                    >
+                      <span aria-hidden="true">
+                        <PiSignOutBold />
+                      </span>
+                      Sign out
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/sign-in"
+                    className="sm-nav-links gap-2 items-center"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span aria-hidden="true">
+                      <PiSignInBold size={20} />
+                    </span>
+                    Sign in
+                  </Link>
+                )}
               </div>
             </div>
           </div>

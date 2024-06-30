@@ -12,6 +12,7 @@ import {
   Loader,
   successToast,
 } from '@/components/ui';
+import { useUserContext } from '@/context/useUserContext';
 import { useSignin } from '@/lib/react-query/mutations';
 import { SigninValidation } from '@/lib/validations';
 import { AuthErrorType } from '@/types';
@@ -19,6 +20,7 @@ import { AuthErrorType } from '@/types';
 export const Signin = () => {
   const [signinError, setSigninError] = useState('');
   const navigate = useNavigate();
+  const { updateUser } = useUserContext();
 
   const {
     register,
@@ -44,9 +46,9 @@ export const Signin = () => {
         successToast(response.data.message);
 
         reset();
+        updateUser(response.data);
         navigate('/');
       }
-      localStorage.setItem('user', JSON.stringify(response));
     } catch (err) {
       const error = err as AuthErrorType;
 

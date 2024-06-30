@@ -13,12 +13,13 @@ if (!JWT_SECRET_KEY) {
 }
 
 export const register = async (req: Request, res: Response) => {
-  const { email, username, password } = req.body;
+  const { name, email, username, password } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
       data: {
+        name,
         username,
         email,
         password: hashedPassword,

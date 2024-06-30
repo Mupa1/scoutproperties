@@ -12,6 +12,7 @@ import {
   Loader,
   successToast,
 } from '@/components/ui';
+import { useUserContext } from '@/context/useUserContext';
 import { useSignup } from '@/lib/react-query/mutations';
 import { SignupValidation } from '@/lib/validations';
 import { AuthErrorType } from '@/types';
@@ -19,6 +20,7 @@ import { AuthErrorType } from '@/types';
 export const Signup = () => {
   const [signupError, setSignupError] = useState('');
   const navigate = useNavigate();
+    const { updateUser } = useUserContext();
 
   const {
     register,
@@ -28,6 +30,7 @@ export const Signup = () => {
   } = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
     defaultValues: {
+      name: '',
       username: '',
       email: '',
       password: '',
@@ -40,11 +43,12 @@ export const Signup = () => {
     data: z.infer<typeof SignupValidation>,
   ) => {
     try {
-      const signup = await signupUser(data);
-      if (signup?.status === 201) {
-        successToast(signup.data.message);
+      const response = await signupUser(data);
+      if (response?.status === 201) {
+        successToast(response.data.message);
 
         reset();
+        updateUser(response.data);
         navigate('/sign-in');
       }
     } catch (err) {
@@ -66,13 +70,19 @@ export const Signup = () => {
         <div className="mt-10">
           <form onSubmit={handleSubmit(handleSignup)}>
             <Input
+              label="Name"
+              id="name"
+              type="text"
+              error={errors?.name?.message}
+              {...register('name')}
+            />
+            <Input
               label="Username"
               id="username"
               type="text"
               error={errors?.username?.message}
               {...register('username')}
             />
-
             <Input
               label="Email"
               id="email"
@@ -80,7 +90,6 @@ export const Signup = () => {
               error={errors?.email?.message}
               {...register('email')}
             />
-
             <Input
               label="Password"
               id="password"
@@ -88,7 +97,6 @@ export const Signup = () => {
               error={errors?.password?.message}
               {...register('password')}
             />
-
             <div>
               <Button type="submit" className="w-full mt-3" variant="primary">
                 {isPending ? <Loader /> : 'Sign Up'}
