@@ -4,16 +4,17 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "prebuild": "ls -la node_modules/@types",
+    "clean": "rm -rf dist",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node -r tsconfig-paths/register dist/server.js",
     "dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/server.ts",
     "lint": "eslint . --ignore-pattern 'dist/**' --max-warnings 0",
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write 'src/**/*.ts'",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "prepare": "yarn install && yarn clean && yarn build"
   },
   "author": "",
   "license": "MIT",
