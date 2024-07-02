@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "prebuild": "ls -la node_modules/@types",
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/server.ts",
