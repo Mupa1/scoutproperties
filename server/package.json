@@ -10,7 +10,9 @@
     "lint": "eslint . --ignore-pattern 'dist/**' --max-warnings 0",
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier --write 'src/**/*.ts'",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "author": "",
   "license": "MIT",

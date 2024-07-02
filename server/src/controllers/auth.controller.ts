@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
@@ -25,10 +26,16 @@ export const register = async (req: Request, res: Response) => {
         password: hashedPassword,
       },
     });
-
     res.status(201).json({ message: 'User registered successfully!' });
+    return newUser;
   } catch (err) {
-    console.log(err);
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      if (err.code === 'P2002') {
+        return res.status(400).json({
+          message: 'User with this email or username already exists!',
+        });
+      }
+    }
     res
       .status(500)
       .json({ message: 'Failed to register user! Please try again!' });
@@ -62,12 +69,14 @@ export const login = async (req: Request, res: Response) => {
     res
       .cookie('token', token, {
         httpOnly: true,
+        secure: true,
         maxAge: age,
       })
       .status(200)
       .json(userData);
+    return userPassword;
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ message: 'Failed to login user!' });
   }
 };

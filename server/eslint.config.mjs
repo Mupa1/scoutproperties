@@ -7,7 +7,13 @@ import tseslint from 'typescript-eslint';
 export default [
   { files: ['**/*.{js,mjs,cjs,ts}'] },
   {
-    languageOptions: { globals: globals.browser },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+      ecmaVersion: 2020,
+    },
   },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
@@ -40,5 +46,4 @@ export default [
       'simple-import-sort/exports': 'error',
     },
   },
-  { env: { node: true, es2020: true } },
 ];

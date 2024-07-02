@@ -20,7 +20,7 @@ import { AuthErrorType } from '@/types';
 export const Signup = () => {
   const [signupError, setSignupError] = useState('');
   const navigate = useNavigate();
-    const { updateUser } = useUserContext();
+  const { updateUser } = useUserContext();
 
   const {
     register,
@@ -39,9 +39,7 @@ export const Signup = () => {
 
   const { mutateAsync: signupUser, isPending } = useSignup();
 
-  const handleSignup = async (
-    data: z.infer<typeof SignupValidation>,
-  ) => {
+  const handleSignup = async (data: z.infer<typeof SignupValidation>) => {
     try {
       const response = await signupUser(data);
       if (response?.status === 201) {

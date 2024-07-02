@@ -73,6 +73,7 @@ export const SearchFilter: FC<SearchFilterProps> = ({ onSubmit }) => {
             className="w-full md:w-48"
             type="text"
             label="City"
+            placeholder="City"
             {...register('location')}
           />
           <Select

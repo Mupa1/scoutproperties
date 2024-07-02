@@ -32,7 +32,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           />
         </div>
         <div className="mb-2">
-          <ErrorMessage error={error} id={id} />
+          {error ? <ErrorMessage error={error} id={id} /> : null}
         </div>
       </>
     );

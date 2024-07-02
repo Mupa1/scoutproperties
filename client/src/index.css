@@ -80,6 +80,6 @@
   }
 
   .hover-transition {
-    @apply transition ease-in-out duration-[400ms] hover:scale-105
+    @apply transition ease-in-out duration-[400ms] hover:scale-105;
   }
 }

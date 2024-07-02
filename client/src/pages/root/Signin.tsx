@@ -37,9 +37,7 @@ export const Signin = () => {
 
   const { mutateAsync: signinUser, isPending } = useSignin();
 
-  const handleSignin = async (
-    data: z.infer<typeof SigninValidation>,
-  ) => {
+  const handleSignin = async (data: z.infer<typeof SigninValidation>) => {
     try {
       const response = await signinUser(data);
       if (response?.status === 200) {
