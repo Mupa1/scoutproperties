@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node -r tsconfig-paths/register dist/server.js",
+    "start": "node dist/server.js",
     "dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/server.ts",
     "lint": "eslint . --ignore-pattern 'dist/**' --max-warnings 0",
     "lint:fix": "npm run lint -- --fix",

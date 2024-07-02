@@ -10,7 +10,6 @@
     "rootDir": "./src",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types", "./src/types"],
     "types": ["node", "jest"],
 
     "baseUrl": "./",
