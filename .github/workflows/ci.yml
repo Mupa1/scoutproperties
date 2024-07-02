@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.9.0'
+      - name: Install dependencies
+        run: yarn install
+      - name: Run ESLint
+        run: yarn lint
+
+  lint-server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.9.0'
+      - name: Install dependencies
+        run: yarn install
+      - name: Run ESLint
+        run: yarn lint
+
+  test-client:
+    runs-on: ubuntu-latest
+    needs: [lint-client]
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.9.0'
+      - name: Install dependencies
+        run: yarn install
+      - name: Run tests
+        run: yarn test
+
+  test-server:
+    runs-on: ubuntu-latest
+    needs: [lint-server]
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.9.0'
+      - name: Set environment variables
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+      - name: Install dependencies
+        run: yarn install
+      - name: Run tests
+        run: yarn test
+
+  build-client:
+    runs-on: ubuntu-latest
+    needs: [test-client, test-server]
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.9.0'
+      - name: Install dependencies
+        run: yarn install
+      - name: Build project
+        run: yarn run build
+      - name: Create artifacts directory
+        run: mkdir -p ~/artifacts
+      - name: Copy artifacts
+        run: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
+
+  build-server:
+    runs-on: ubuntu-latest
+    needs: build-client
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.9.0'
+      - name: Set environment variables
+        run: |
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+      - name: Install dependencies
+        run: yarn install
+      - name: Build project
+        run: yarn run build
+      - name: Create artifacts directory
+        run: mkdir -p ~/artifacts
+      - name: Copy artifacts
+        run: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true

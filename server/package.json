@@ -1,8 +1,8 @@
 {
-  "name": "server11",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "build": "tsc",
     "start": "ts-node -r tsconfig-paths/register dist/server.js",
