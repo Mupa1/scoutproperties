@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../lib/prisma';
 dotenv.config();
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;

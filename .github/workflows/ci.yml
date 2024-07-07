@@ -85,7 +85,7 @@ jobs:
 
   build-client:
     runs-on: ubuntu-latest
-    needs: [test-client, test-server]
+    needs: [test-client]
     defaults:
       run:
         working-directory: ./client
@@ -107,7 +107,7 @@ jobs:
 
   build-server:
     runs-on: ubuntu-latest
-    needs: build-client
+    needs: [test-server]
     defaults:
       run:
         working-directory: ./server
