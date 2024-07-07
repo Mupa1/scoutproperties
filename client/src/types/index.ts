@@ -1,3 +1,27 @@
+export type NewUser = {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+};
+
+export type User = {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  avatar: string;
+  password?: string;
+};
+
+export type AuthErrorType = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
 type ListingsDataType = {
   id: number;
   title: string;

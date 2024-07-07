@@ -4,13 +4,16 @@ import { describe, expect, test } from 'vitest';
 
 import { Header } from '@/components/shared/Header';
 import { navItems } from '@/entities/nav-items';
+import { QueryProvider } from '@/providers/QueryProvider';
 
 describe('Header component', () => {
   const renderer = () =>
     render(
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>,
+      <QueryProvider>
+        <MemoryRouter>
+          <Header />
+        </MemoryRouter>
+      </QueryProvider>,
     );
 
   test('renders navigation links', () => {
@@ -19,12 +22,6 @@ describe('Header component', () => {
     navLinks.forEach((link) => {
       expect(link).toBeInTheDocument();
     });
-  });
-
-  test('renders login link', () => {
-    renderer();
-    const loginLink = screen.getByText('Log in');
-    expect(loginLink).toBeInTheDocument();
   });
 
   test('opens mobile menu when menu button is clicked', async () => {

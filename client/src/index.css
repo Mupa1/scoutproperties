@@ -42,7 +42,19 @@
   }
 
   .sm-nav-links {
-    @apply block rounded-lg py-2 text-base font-semibold leading-7;
+    @apply flex rounded-lg py-2 text-base font-normal leading-7;
+  }
+
+  .auth-form-title {
+    @apply pt-32 text-2xl text-center font-bold leading-9 tracking-tight;
+  }
+
+  .auth-wrapper {
+    @apply flex-center min-h-screen;
+  }
+
+  .auth-form-wrapper {
+    @apply mx-auto w-full max-w-sm px-6 -mt-20;
   }
 
   .listing-amenities {
@@ -65,5 +77,9 @@
     .listings {
       height: calc(100vh - 161px);
     }
+  }
+
+  .hover-transition {
+    @apply transition ease-in-out duration-[400ms] hover:scale-105;
   }
 }

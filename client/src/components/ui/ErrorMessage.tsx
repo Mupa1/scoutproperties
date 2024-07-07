@@ -1,10 +1,13 @@
 import { FC } from 'react';
 
-type ErrorMessage = { error: string; id?: string };
+type ErrorMessage = { error: string | undefined; id?: string };
 
 export const ErrorMessage: FC<ErrorMessage> = ({ error, id }) => {
   return (
-    <p className="mt-2 text-sm text-red-600" id={`${id}-error`}>
+    <p
+      className={`text-sm text-red-600 h-3 ${error ? 'visible' : 'invisible'}`}
+      id={`${id}-error`}
+    >
       {error}
     </p>
   );

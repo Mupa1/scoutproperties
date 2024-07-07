@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import App from '@/App';
+import { QueryProvider } from '@/providers/QueryProvider';
 
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', {
@@ -23,9 +24,11 @@ beforeAll(() => {
 describe('App', () => {
   const renderer = () =>
     render(
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>,
+      <QueryProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </QueryProvider>,
     );
 
   it('renders App without crashing', () => {

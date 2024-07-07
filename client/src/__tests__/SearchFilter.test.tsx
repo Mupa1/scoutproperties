@@ -2,11 +2,17 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 
 import { SearchFilter } from '@/components/pages/Listings/SearchFilter';
+import { QueryProvider } from '@/providers/QueryProvider';
 
 const mockOnSubmit = vi.fn();
 
 describe('SearchFilter Component', () => {
-  const renderer = () => render(<SearchFilter onSubmit={mockOnSubmit} />);
+  const renderer = () =>
+    render(
+      <QueryProvider>
+        <SearchFilter onSubmit={mockOnSubmit} />
+      </QueryProvider>,
+    );
 
   test('renders all input fields and button', () => {
     renderer();
