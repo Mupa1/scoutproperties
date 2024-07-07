@@ -38,7 +38,7 @@ describe('Auth API', () => {
     it('should register a new user', async () => {
       (prisma.user.create as jest.Mock).mockResolvedValue(mockUser);
 
-      const response = await request(app).post('/api/auth/register').send({
+      const response = await request(app).post('/auth/register').send({
         name: 'John Doe',
         username: 'johndoe',
         email: 'john@example.com',
@@ -57,7 +57,7 @@ describe('Auth API', () => {
 
       (prisma.user.create as jest.Mock).mockRejectedValueOnce(error);
 
-      const response = await request(app).post('/api/auth/register').send({
+      const response = await request(app).post('/auth/register').send({
         name: 'Jane Doe',
         username: 'janedoe',
         email: 'john@example.com',
@@ -75,7 +75,7 @@ describe('Auth API', () => {
     it('should login a user', async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
-      const response = await request(app).post('/api/auth/login').send({
+      const response = await request(app).post('/auth/login').send({
         email: 'john@example.com',
         password: 'password123',
       });
@@ -87,7 +87,7 @@ describe('Auth API', () => {
     it('should fail to login with invalid credentials', async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-      const response = await request(app).post('/api/auth/login').send({
+      const response = await request(app).post('/auth/login').send({
         email: 'nonexistent@example.com',
         password: 'wrongpassword',
       });
@@ -99,7 +99,7 @@ describe('Auth API', () => {
 
   describe('POST /api/auth/logout', () => {
     it('should logout a user', async () => {
-      const response = await request(app).post('/api/auth/logout');
+      const response = await request(app).post('/auth/logout');
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('User logged out successfully!');
     });

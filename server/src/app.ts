@@ -7,8 +7,7 @@ import swaggerRouter from './swagger';
 
 const app = express();
 
-const CLIENT_URL =
-  process.env.CLIENT_URL || 'https://scoutproperties.vercel.app';
+const CLIENT_URL = process.env.CLIENT_URL || 'https://scout-properties.com';
 
 app.use(cors({ origin: CLIENT_URL, credentials: true }));
 app.use(express.json());
@@ -19,6 +18,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api-docs', swaggerRouter);
-app.use('/api/auth', authRoute);
+app.use('/auth', authRoute);
 
 export default app;
