@@ -23,7 +23,7 @@ export const Profile: FC = () => {
               alt="profile"
               className="h-24 w-24 rounded-full"
             />
-            <div className="lg:flex gap-4 flex-col hidden">
+            <div className="flex gap-4 flex-col">
               <p className="text-gray-500 leading-4">{username}</p>
               <p className="leading-4">{name}</p>
               <p className="text-gray-500 leading-4 mb-3">{email}</p>
