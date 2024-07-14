@@ -6,4 +6,7 @@ const apiKey =
 export const axiosInstance = axios.create({
   baseURL: apiKey,
   withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });

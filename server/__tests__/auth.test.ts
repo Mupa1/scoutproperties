@@ -34,7 +34,7 @@ describe('Auth API', () => {
     await prisma.$disconnect();
   });
 
-  describe('POST /api/auth/register', () => {
+  describe('POST /auth/register', () => {
     it('should register a new user', async () => {
       (prisma.user.create as jest.Mock).mockResolvedValue(mockUser);
 
