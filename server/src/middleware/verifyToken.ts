@@ -1,15 +1,13 @@
 import dotenv from 'dotenv';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
+
+import { CustomRequest } from '../types';
 
 dotenv.config();
 
-interface CustomRequest extends Request {
-  userId?: string;
-}
-
 interface JwtPayload {
-  userId: string;
+  id: string;
 }
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
@@ -39,8 +37,8 @@ export const verifyToken = (
 
       const payload = decoded as JwtPayload;
 
-      if (payload && payload.userId) {
-        req.userId = payload.userId;
+      if (payload && payload.id) {
+        req.userId = payload.id;
       }
 
       next();

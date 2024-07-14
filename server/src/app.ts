@@ -3,7 +3,8 @@ import cors, { CorsOptions } from 'cors';
 import express from 'express';
 
 import authRoute from './routes/auth.route';
-import swaggerRouter from './swagger';
+import swaggerRoute from './routes/swagger.route';
+import userRoute from './routes/user.route';
 
 const app = express();
 
@@ -32,7 +33,8 @@ app.get('/', (req, res) => {
   res.send('Scoutproperties API');
 });
 
-// app.use('/api-docs', swaggerRouter);
+app.use('/api-docs', swaggerRoute);
 app.use('/auth', authRoute);
+app.use('/users', userRoute);
 
 export default app;
