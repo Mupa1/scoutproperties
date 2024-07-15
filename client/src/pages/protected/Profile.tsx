@@ -1,4 +1,6 @@
 import { FC } from 'react';
+import { FaRegEdit } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 import { ListingCard } from '@/components/pages/Listings/ListingCard';
 import { useUserContext } from '@/context/useUserContext';
@@ -16,7 +18,13 @@ export const Profile: FC = () => {
     <section className="min-h-screen mt-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 grid gap-3">
         <>
-          <h2 className="font-bold mt-4">Personal Information</h2>
+          <div className="flex-between mt-4">
+            <h2 className="font-bold">Personal Information</h2>
+            <Link to="/profile/update" className="flex-center gap-2">
+              <FaRegEdit />
+              Edit Profile
+            </Link>
+          </div>
           <div className="flex flex-wrap gap-3">
             <img
               src={avatar}

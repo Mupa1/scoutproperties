@@ -15,7 +15,7 @@ import {
 import { useUserContext } from '@/context/useUserContext';
 import { useSignin } from '@/lib/react-query/mutations';
 import { SigninValidation } from '@/lib/validations';
-import { AuthErrorType } from '@/types';
+import { ErrorType } from '@/types';
 
 export const Signin = () => {
   const [signinError, setSigninError] = useState('');
@@ -48,8 +48,7 @@ export const Signin = () => {
         navigate('/');
       }
     } catch (err) {
-      const error = err as AuthErrorType;
-
+      const error = err as ErrorType;
       if (error?.response?.data?.message) {
         failureToast(error.response.data.message);
         setSigninError(error.response.data.message);

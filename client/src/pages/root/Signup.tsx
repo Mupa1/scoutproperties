@@ -15,7 +15,7 @@ import {
 import { useUserContext } from '@/context/useUserContext';
 import { useSignup } from '@/lib/react-query/mutations';
 import { SignupValidation } from '@/lib/validations';
-import { AuthErrorType } from '@/types';
+import { ErrorType } from '@/types';
 
 export const Signup = () => {
   const [signupError, setSignupError] = useState('');
@@ -50,7 +50,7 @@ export const Signup = () => {
         navigate('/sign-in');
       }
     } catch (err) {
-      const error = err as AuthErrorType;
+      const error = err as ErrorType;
       if (error?.response?.data?.message) {
         failureToast(error.response.data.message);
         setSignupError(error.response.data.message);
