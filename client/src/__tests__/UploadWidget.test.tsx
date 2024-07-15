@@ -42,7 +42,7 @@ describe('UploadWidget', () => {
 
   test('opens the upload widget when the button is clicked', async () => {
     window.cloudinary = {
-      createUploadWidget: vi.fn().mockImplementation((options, callback) => {
+      createUploadWidget: vi.fn().mockImplementation((_, callback) => {
         return {
           open: vi.fn().mockImplementation(() => {
             callback(null, {
@@ -67,7 +67,7 @@ describe('UploadWidget', () => {
 
   test('handles upload widget error correctly', async () => {
     window.cloudinary = {
-      createUploadWidget: vi.fn().mockImplementation((options, callback) => {
+      createUploadWidget: vi.fn().mockImplementation((_, callback) => {
         return {
           open: vi.fn().mockImplementation(() => {
             callback('Upload Widget Error', null);
