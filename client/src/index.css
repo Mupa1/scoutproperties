@@ -82,4 +82,8 @@
   .hover-transition {
     @apply transition ease-in-out duration-[400ms] hover:scale-105;
   }
+
+  .cloudinary-button {
+    @apply bg-secondary-500 rounded-md flex items-center gap-2 !important;
+  }
 }

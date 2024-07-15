@@ -9,7 +9,7 @@ const button = tv({
   base: 'flex-center rounded-md gap-2 px-3.5 py-2.5 leading-6 font-normal shadow-sm hover-transition',
   variants: {
     color: {
-      primary: 'bg-primary-500 text-white ',
+      primary: 'bg-primary-500 text-white border-2 border-primary-500',
       secondary: 'bg-primary-950 text-white',
       neutral: 'border-2 border-black',
       inverted: 'bg-white border-2 border-primary-500',

@@ -2,7 +2,12 @@ import { useMutation } from '@tanstack/react-query';
 
 import { NewUser } from '@/types';
 
-import { signinUser, signOut, signupUser } from '../services/api';
+import {
+  signinUser,
+  signOut,
+  signupUser,
+  updateCurrentUser,
+} from '../services/api';
 
 export const useSignup = () => {
   return useMutation({
@@ -19,5 +24,12 @@ export const useSignin = () => {
 export const useSignout = () => {
   return useMutation({
     mutationFn: signOut,
+  });
+};
+
+export const useUpdateUser = () => {
+  return useMutation({
+    mutationFn: (data: { id: string; user: Partial<NewUser> }) =>
+      updateCurrentUser(data.id, data.user),
   });
 };

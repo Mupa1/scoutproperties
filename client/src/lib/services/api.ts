@@ -31,3 +31,13 @@ export const signOut = async () => {
     throw error;
   }
 };
+
+export const updateCurrentUser = async (id: string, data: Partial<NewUser>) => {
+  try {
+    const response = await axiosInstance.put(`/users/${id}`, data);
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

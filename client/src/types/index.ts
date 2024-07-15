@@ -14,7 +14,7 @@ export type User = {
   password?: string;
 };
 
-export type AuthErrorType = {
+export type ErrorType = {
   response?: {
     data?: {
       message?: string;
@@ -69,3 +69,40 @@ export type ListingDetailsProps = {
   size: number;
   description: string;
 };
+
+interface UploadInfo {
+  secure_url: string;
+}
+
+type CloudinaryEvent = 'success';
+
+interface Event<T extends CloudinaryEvent> {
+  info: UploadInfo & { secure_url: string };
+  event: T;
+}
+
+interface UploadConfigProps {
+  cloudName: string;
+  uploadPreset: string;
+  multiple?: boolean;
+  maxImageFileSize?: number;
+  folder?: string;
+}
+
+export interface UploadWidgetProps {
+  uwConfig: UploadConfigProps;
+  setAvatar: (url: string) => void;
+}
+
+declare global {
+  interface Window {
+    cloudinary: {
+      createUploadWidget: <T extends CloudinaryEvent>(
+        options: UploadConfigProps,
+        callback: (error: string, result: Event<T>) => void,
+      ) => {
+        open: () => void;
+      };
+    };
+  }
+}
