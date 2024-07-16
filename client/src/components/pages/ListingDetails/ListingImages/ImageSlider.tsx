@@ -30,7 +30,7 @@ export const ImageSlider: FC<{ images: string[]; onClose: () => void }> = ({
       pagination={{ clickable: true }}
       navigation
       modules={[Pagination, Navigation, HashNavigation]}
-      className="mySwiper z-20 h-80vh shadow-2xl absolute top-0 left-0"
+      className="mySwiper h-80vh z-20 shadow-2xl"
     >
       {images.map((img, index) => (
         <SwiperSlide
@@ -39,7 +39,7 @@ export const ImageSlider: FC<{ images: string[]; onClose: () => void }> = ({
           data-testid={`image-slide${index}`}
         >
           <img
-            className="object-cover block w-full h-full rounded-md"
+            className="swiper-slide object-cover block w-full h-full rounded-md"
             src={img}
             alt={`Slider Image ${index + 1}`}
           />
