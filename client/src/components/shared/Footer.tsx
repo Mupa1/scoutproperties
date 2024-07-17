@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 
 import { navItems } from '@/entities/nav-items';
 
-import { ExternalLink } from './ExternalLink';
 import { SocialIcons } from './SocialIcons';
 
 export const Footer = () => {
@@ -37,12 +36,7 @@ export const Footer = () => {
               </div>
             </div>
             <div>
-              <h5 className="pb-2">Contacts:</h5>
-
-              <ExternalLink href="mailto:mupasmail@gmail.com">
-                mupasmail@gmail.com
-              </ExternalLink>
-
+              <h5 className="pb-2">Let's Connect</h5>
               <SocialIcons className="flex-center" />
             </div>
           </div>

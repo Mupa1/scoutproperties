@@ -1,5 +1,6 @@
 import { FaGithub } from 'react-icons/fa';
-import { FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
+import { FaLinkedinIn, FaSquareXTwitter } from 'react-icons/fa6';
+import { SiGmail } from 'react-icons/si';
 
 export const socialIcons = [
   {
@@ -14,7 +15,12 @@ export const socialIcons = [
   },
   {
     id: 'twitter',
-    icon: <FaXTwitter title="Twitter" />,
+    icon: <FaSquareXTwitter title="Twitter" />,
     href: 'https://twitter.com/mupa_mmbetsa',
+  },
+  {
+    id: 'gmail',
+    icon: <SiGmail title="GMail" />,
+    href: 'mailto:mupasmail@gmail.com',
   },
 ];
