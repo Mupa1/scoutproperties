@@ -27,7 +27,7 @@ export const ListingCard: FC<ListingCardType> = ({ data }) => {
       key={id}
       className="listing-card group relative flex flex-col overflow-hidden rounded-lg border border-gray-100"
     >
-      <Link to={`/listing-details/${id}`}>
+      <Link to={`/listings/${id}`}>
         <div className="aspect-h-1 aspect-w-3 group-hover:opacity-75 h:60 sm:h-40">
           <img
             src={images[0] || imagePlaceholder}
@@ -39,7 +39,7 @@ export const ListingCard: FC<ListingCardType> = ({ data }) => {
       <div className="relative flex flex-1 flex-col p-4">
         <b className="text-lg font-bold text-gray-900">{price} €</b>
         <Link
-          to={`/listing-details/${id}`}
+          to={`/listings/${id}`}
           className="text-sm pb-1 font-medium text-gray-900 hover:underline"
         >
           {title}
@@ -61,7 +61,7 @@ export const ListingCard: FC<ListingCardType> = ({ data }) => {
             {address}
           </p>
         </div>
-        <div className="absolute top-4 right-3">
+        <div className="absolute top-4 right-3 hidden">
           <IoHeartOutline />
         </div>
       </div>

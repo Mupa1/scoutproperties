@@ -3,6 +3,7 @@ import cors, { CorsOptions } from 'cors';
 import express from 'express';
 
 import authRoute from './routes/auth.route';
+import listingRoute from './routes/listing.route';
 import swaggerRoute from './routes/swagger.route';
 import userRoute from './routes/user.route';
 
@@ -36,5 +37,6 @@ app.get('/', (req, res) => {
 app.use('/api-docs', swaggerRoute);
 app.use('/auth', authRoute);
 app.use('/users', userRoute);
+app.use('/listings', listingRoute);
 
 export default app;

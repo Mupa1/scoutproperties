@@ -1,15 +1,14 @@
 import { FC } from 'react';
-import { FaRegEdit } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
 
-import { ListingCard } from '@/components/pages/Listings/ListingCard';
+import { PersonalInfo } from '@/components/pages/Profile/PersonalInfo';
+import { PersonalListings } from '@/components/pages/Profile/PersonalListings';
 import { useUserContext } from '@/context/useUserContext';
 import { listingsData } from '@/lib/dummy-data';
 
 export const Profile: FC = () => {
   const { currentUser } = useUserContext();
 
-  const username = currentUser?.username;
+  const company = currentUser?.company;
   const name = currentUser?.name;
   const email = currentUser?.email;
   const avatar = currentUser?.avatar || '/user-placeholder.svg';
@@ -17,37 +16,14 @@ export const Profile: FC = () => {
   return (
     <section className="min-h-screen mt-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 grid gap-3">
-        <>
-          <div className="flex-between mt-4">
-            <h2 className="font-bold">Personal Information</h2>
-            <Link to="/profile/update" className="flex-center gap-2">
-              <FaRegEdit />
-              Edit Profile
-            </Link>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <img
-              src={avatar}
-              alt="profile"
-              className="h-24 w-24 rounded-full"
-            />
-            <div className="flex gap-4 flex-col">
-              <p className="text-gray-500 leading-4">{username}</p>
-              <p className="leading-4">{name}</p>
-              <p className="text-gray-500 leading-4 mb-3">{email}</p>
-            </div>
-          </div>
-        </>
-        <>
-          <h2 className="font-bold mt-4">My Listings</h2>
-          <div className="h-max grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-            {listingsData.map((item) => (
-              <div key={item.id}>
-                <ListingCard data={item} />
-              </div>
-            ))}
-          </div>
-        </>
+        <PersonalInfo
+          avatar={avatar}
+          name={name}
+          company={company}
+          email={email}
+        />
+        <hr />
+        <PersonalListings listingsData={listingsData} />
       </div>
     </section>
   );

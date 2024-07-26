@@ -126,7 +126,7 @@ export const listingDetailsData = {
   school: '200m away',
   bus: '90m away',
   restaurant: '50m away',
-  parking: 'Parking spot',
+  parking: 'Parking',
   description:
     'Integer finibus felis vel diam bibendum fermentum. Nunc sollicitudin mi est, ac venenatis neque iaculis a. Integer tincidunt rhoncus mi vitae gravida. Duis ut est finibus, semper turpis vitae, elementum ex. Nulla lacinia porttitor auctor. Praesent ut tellus porttitor, finibus tortor iaculis, lacinia metus. Nulla in feugiat felis. Sed porttitor dignissim lorem ut faucibus. Etiam ornare augue ante, eu tincidunt nunc hendrerit at. Etiam sit amet erat dapibus, varius dui a, consequat mi.',
 };

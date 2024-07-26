@@ -1,4 +1,6 @@
-import { NewUser } from '@/types';
+import { QueryFunctionContext } from '@tanstack/react-query';
+
+import { CreateListingData, CreateListingResponse, NewUser, QueryParams } from '@/types';
 
 import { axiosInstance } from './axiosInstance';
 
@@ -38,6 +40,37 @@ export const updateCurrentUser = async (id: string, data: Partial<NewUser>) => {
     return response;
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+};
+
+export const createListing = async (
+  data: CreateListingData,
+): Promise<CreateListingResponse> => {
+  try {
+    const response = await axiosInstance.post('/listings', data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to create listing:', error);
+    throw error;
+  }
+};
+
+export const getListings = async ({
+  queryKey,
+}: QueryFunctionContext<[string, QueryParams]>) => {
+  const [, queryParams] = queryKey;
+  const queryString = new URLSearchParams(queryParams).toString();
+  const response = await axiosInstance.get(`/listings?${queryString}`);
+  return response.data;
+};
+
+export const getListingById = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/listings/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to get listing:', error);
     throw error;
   }
 };

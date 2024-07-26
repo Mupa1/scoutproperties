@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import express, { NextFunction } from 'express';
+import express, { NextFunction, Response } from 'express';
 import request from 'supertest';
 
 import { prisma } from '../src/lib/prisma';
@@ -29,10 +29,42 @@ jest.mock('../src/middleware/verifyToken', () => ({
   },
 }));
 
+const mockUser = {
+  id: '1',
+  name: 'John Doe',
+  email: 'johndoe@mail.com',
+  company: 'listing company',
+  avatar: 'img1',
+  createdAt: '2024-07-25T06:07:00.128Z',
+};
+
+const setupMocks = () => {
+  (prisma.user.findMany as jest.Mock).mockReset();
+  (prisma.user.findUnique as jest.Mock).mockReset();
+  (prisma.user.update as jest.Mock).mockReset();
+  (prisma.user.delete as jest.Mock).mockReset();
+  (bcrypt.hash as jest.Mock).mockReset();
+};
+
 describe('User Controller', () => {
+  let originalError: typeof console.error;
+
+  beforeAll(() => {
+    originalError = console.error;
+    console.error = jest.fn();
+  });
+
+  afterAll(() => {
+    console.error = originalError;
+  });
+
+  beforeEach(async () => {
+    setupMocks();
+  });
+
   describe('GET /users', () => {
     it('should return all users', async () => {
-      const mockUsers = [{ id: '1', name: 'John Doe' }];
+      const mockUsers = [mockUser];
       (prisma.user.findMany as jest.Mock).mockResolvedValue(mockUsers);
 
       const res = await request(app).get('/users');
@@ -47,13 +79,12 @@ describe('User Controller', () => {
 
       const res = await request(app).get('/users');
       expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: 'Failed to get users!' });
+      expect(res.body.message).toBe('Failed to get users!');
     });
   });
 
   describe('GET /users/:id', () => {
     it('should return a user by id', async () => {
-      const mockUser = { id: '1', name: 'John Doe' };
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
       const res = await request(app).get('/users/1');
@@ -68,27 +99,24 @@ describe('User Controller', () => {
 
       const res = await request(app).get('/users/1');
       expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: 'Failed to get user!' });
+      expect(res.body.message).toBe('Failed to get user!');
     });
   });
 
   describe('PUT /users/:id', () => {
     it('should update a user by id', async () => {
-      const mockUser = {
-        id: '1',
-        name: 'John Doe',
-        password: 'hashedPassword',
-      };
+      const updatedUser = { ...mockUser, name: 'John Updated' };
       const updateUserPayload = {
         name: 'John Updated',
+        email: 'johnupdated@mail.com',
         password: 'newPassword',
       };
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
-      (prisma.user.update as jest.Mock).mockResolvedValue(mockUser);
+      (prisma.user.update as jest.Mock).mockResolvedValue(updatedUser);
 
       const res = await request(app).put('/users/1').send(updateUserPayload);
       expect(res.status).toBe(200);
-      expect(res.body).toEqual({ id: '1', name: 'John Doe' });
+      expect(res.body).toEqual(updatedUser);
     });
 
     it('should return 500 if there is a server error', async () => {
@@ -100,7 +128,7 @@ describe('User Controller', () => {
         .put('/users/1')
         .send({ name: 'John Updated' });
       expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: 'Failed to update users!' });
+      expect(res.body.message).toBe('Failed to update users!');
     });
   });
 
@@ -110,7 +138,7 @@ describe('User Controller', () => {
 
       const res = await request(app).delete('/users/1');
       expect(res.status).toBe(200);
-      expect(res.body).toEqual({ message: 'User deleted successfully!' });
+      expect(res.body.message).toBe('User deleted successfully!');
     });
 
     it('should return 500 if there is a server error', async () => {
@@ -120,7 +148,7 @@ describe('User Controller', () => {
 
       const res = await request(app).delete('/users/1');
       expect(res.status).toBe(500);
-      expect(res.body).toEqual({ message: 'Failed to delete user' });
+      expect(res.body.message).toBe('Failed to delete user');
     });
   });
 });

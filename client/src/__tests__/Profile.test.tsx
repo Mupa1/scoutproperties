@@ -14,7 +14,7 @@ describe('Profile', () => {
   beforeEach(() => {
     (useUserContext as Mock).mockReturnValue({
       currentUser: {
-        username: 'johndoe',
+        company: 'johndoe',
         name: 'John Doe',
         email: 'johndoe@example.com',
         avatar: '',

@@ -36,10 +36,7 @@ const MapMarker: FC<ListingProps> = ({ listingsData }) => {
           />
         </div>
         <>
-          <Link
-            className="hover:underline text-xs"
-            to={`/listing-details/${id}`}
-          >
+          <Link className="hover:underline text-xs" to={`/listings/${id}`}>
             {title}
           </Link>
           <p className="flex items-center font-bold text-xs -pt-4 text-gray-500">
@@ -61,7 +58,11 @@ const MapMarker: FC<ListingProps> = ({ listingsData }) => {
 };
 
 export const Map: FC<ListingsProps> = ({ listingsData, className }) => {
-  const position: LatLngExpression = [49.5200765, 8.524684];
+  const position: LatLngExpression =
+    listingsData.length === 1
+      ? [listingsData[0].latitude, listingsData[0].longitude]
+      : [49.5200765, 8.524684];
+
   return (
     <MapContainer
       center={position}

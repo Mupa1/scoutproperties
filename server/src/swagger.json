@@ -14,6 +14,14 @@
     {
       "name": "Auth",
       "description": "Authentication endpoints"
+    },
+    {
+      "name": "Listings",
+      "description": "Listing management endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "User management endpoints"
     }
   ],
   "paths": {
@@ -29,7 +37,7 @@
                 "type": "object",
                 "properties": {
                   "name": { "type": "string" },
-                  "username": { "type": "string" },
+                  "company": { "type": "string" },
                   "email": { "type": "string" },
                   "password": { "type": "string" }
                 }
@@ -74,6 +82,397 @@
         "tags": ["Auth"],
         "responses": {
           "200": { "description": "User logged out successfully!" }
+        }
+      }
+    },
+    "/listings": {
+      "get": {
+        "summary": "Get a list of listings",
+        "tags": ["Listings"],
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["Buy", "Rent"]
+            },
+            "required": false
+          },
+          {
+            "name": "property",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["Apartment", "House", "Condo", "Land"]
+            },
+            "required": false
+          },
+          {
+            "name": "bedroom",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "name": "minPrice",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of listings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Listing" }
+                }
+              }
+            }
+          },
+          "500": { "description": "Failed to get listings" }
+        }
+      },
+      "post": {
+        "summary": "Create a new listing",
+        "tags": ["Listings"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewListing"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Listing created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Listing"
+                }
+              }
+            }
+          },
+          "500": { "description": "Failed to create listing" }
+        }
+      }
+    },
+    "/listings/{id}": {
+      "get": {
+        "summary": "Get a single listing by ID",
+        "tags": ["Listings"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listing retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Listing"
+                }
+              }
+            }
+          },
+          "500": { "description": "Failed to get listing" }
+        }
+      },
+      "put": {
+        "summary": "Update a listing by ID",
+        "tags": ["Listings"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateListing"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Listing updated successfully" },
+          "500": { "description": "Failed to update listing" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a listing by ID",
+        "tags": ["Listings"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Listing deleted successfully" },
+          "500": { "description": "Failed to delete listing" }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Get all users",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "A list of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/User" }
+                }
+              }
+            }
+          },
+          "500": { "description": "Failed to get users" }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Get a single user by ID",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "500": { "description": "Failed to get user" }
+        }
+      },
+      "put": {
+        "summary": "Update a user by ID",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "403": { "description": "Not Authorized!" },
+          "500": { "description": "Failed to update user" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a user by ID",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "User deleted successfully!" },
+          "500": { "description": "Failed to delete user" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Listing": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "images": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "bedroom": { "type": "integer" },
+          "bathroom": { "type": "integer" },
+          "price": { "type": "integer" },
+          "address": { "type": "string" },
+          "city": { "type": "string" },
+          "latitude": { "type": "string" },
+          "longitude": { "type": "string" },
+          "type": { "type": "string", "enum": ["Buy", "Rent"] },
+          "property": {
+            "type": "string",
+            "enum": ["Apartment", "House", "Condo", "Land"]
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "userId": { "type": "string" }
+        }
+      },
+      "NewListing": {
+        "type": "object",
+        "properties": {
+          "listingData": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "images": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "bedroom": { "type": "integer" },
+              "bathroom": { "type": "integer" },
+              "price": { "type": "integer" },
+              "address": { "type": "string" },
+              "city": { "type": "string" },
+              "latitude": { "type": "string" },
+              "longitude": { "type": "string" },
+              "type": { "type": "string", "enum": ["Buy", "Rent"] },
+              "property": {
+                "type": "string",
+                "enum": ["Apartment", "House", "Condo", "Land"]
+              }
+            }
+          },
+          "listingDetails": {
+            "type": "object",
+            "properties": {
+              "description": { "type": "string" },
+              "parking": {
+                "type": "string",
+                "enum": ["available", "unavailable"]
+              },
+              "size": { "type": "integer" },
+              "school": { "type": "integer" },
+              "bus": { "type": "integer" },
+              "restaurant": { "type": "integer" }
+            }
+          }
+        }
+      },
+      "UpdateListing": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "images": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "bedroom": { "type": "integer" },
+          "bathroom": { "type": "integer" },
+          "price": { "type": "integer" },
+          "address": { "type": "string" },
+          "city": { "type": "string" },
+          "latitude": { "type": "string" },
+          "longitude": { "type": "string" },
+          "type": { "type": "string", "enum": ["Buy", "Rent"] },
+          "property": {
+            "type": "string",
+            "enum": ["Apartment", "House", "Condo", "Land"]
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "company": { "type": "string" },
+          "avatar": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "UpdateUser": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "company": { "type": "string" },
+          "avatar": { "type": "string" }
         }
       }
     }

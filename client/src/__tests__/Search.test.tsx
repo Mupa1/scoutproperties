@@ -13,11 +13,11 @@ describe('Search component', () => {
     expect(rentButton).toBeInTheDocument();
   });
 
-  test('renders input fields for location', () => {
+  test('renders input fields for city', () => {
     render(<Search />);
-    const locationInput = screen.getByPlaceholderText('City');
+    const cityInput = screen.getByPlaceholderText('City');
 
-    expect(locationInput).toBeInTheDocument();
+    expect(cityInput).toBeInTheDocument();
   });
 
   test('changes search type when Buy or Rent button is clicked', () => {
@@ -36,17 +36,15 @@ describe('Search component', () => {
 
   test('calls the search function with correct parameters on form submit', () => {
     render(<Search />);
-    const locationInput = screen.getByPlaceholderText(
-      'City',
-    ) as HTMLInputElement;
+    const cityInput = screen.getByPlaceholderText('City') as HTMLInputElement;
     const searchButton = screen.getByTestId('search-submit-button');
 
-    fireEvent.change(locationInput, {
+    fireEvent.change(cityInput, {
       target: { value: 'Mannheim' },
     });
 
     fireEvent.click(searchButton);
 
-    expect(locationInput.value).toBe('Mannheim');
+    expect(cityInput.value).toBe('Mannheim');
   });
 });

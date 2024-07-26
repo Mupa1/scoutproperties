@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { IoSearch } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -8,22 +9,27 @@ const types = ['Buy', 'Rent'] as const;
 type SearchType = (typeof types)[number];
 
 type SearchData = {
-  location: string;
+  city: string;
   type: SearchType;
 };
 
 export const Search = () => {
   const { register, handleSubmit, setValue, watch } = useForm<SearchData>({
     defaultValues: {
-      location: '',
-      type: 'Buy',
+      city: '',
+      type: 'Rent',
     },
   });
 
+  const navigate = useNavigate();
   const selectedType = watch('type');
 
   const onSubmit = (data: SearchData) => {
-    console.log('Form submitted', data);
+    const queryParams = new URLSearchParams({
+      city: data.city,
+      type: data.type,
+    }).toString();
+    navigate(`/listings?${queryParams}`);
   };
 
   const handleSwitchType = (value: SearchType) => {
@@ -50,11 +56,11 @@ export const Search = () => {
       </div>
       <div className="flex">
         <Input
-          data-testid="location"
+          data-testid="city"
           className="w-56 flex-1"
           type="text"
           placeholder="City"
-          {...register('location')}
+          {...register('city')}
         />
         <input type="hidden" {...register('type')} />
         <Button

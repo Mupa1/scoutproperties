@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import RequireAuthLayout from './layouts/RequireAuthLayout';
 import RootLayout from './layouts/RootLayout';
 import { NoMatch } from './pages/NoMatch';
-import { Profile, UpdateProfile } from './pages/protected';
+import { CreateListing, Profile, UpdateProfile } from './pages/protected';
 import {
   AboutPage,
   HomePage,
@@ -24,12 +24,13 @@ const App = () => {
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/sign-in" element={<Signin />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/listing-details/:id" element={<ListingDetailsPage />} />
+          <Route path="/listings/:id" element={<ListingDetailsPage />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
         <Route element={<RequireAuthLayout />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/update" element={<UpdateProfile />} />
+          <Route path="/listings/add" element={<CreateListing />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
         <Route path="/listings" element={<ListingsPage />} />

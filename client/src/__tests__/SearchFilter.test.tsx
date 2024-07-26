@@ -22,20 +22,18 @@ describe('SearchFilter Component', () => {
     expect(screen.getByTestId('search-filter-property')).toBeInTheDocument();
     expect(screen.getByTestId('search-filter-minPrice')).toBeInTheDocument();
     expect(screen.getByTestId('search-filter-maxPrice')).toBeInTheDocument();
-    expect(screen.getByTestId('search-filter-bedrooms')).toBeInTheDocument();
+    expect(screen.getByTestId('search-filter-bedroom')).toBeInTheDocument();
     expect(
       screen.getByTestId('search-filter-submit-button'),
     ).toBeInTheDocument();
   });
 
-  test('updates location state on input change', () => {
+  test('updates city state on input change', () => {
     renderer();
-    const locationInput = screen.getByPlaceholderText(
-      'City',
-    ) as HTMLInputElement;
+    const cityInput = screen.getByPlaceholderText('City') as HTMLInputElement;
 
-    fireEvent.change(locationInput, { target: { value: 'Mannheim' } });
-    expect(locationInput.value).toBe('Mannheim');
+    fireEvent.change(cityInput, { target: { value: 'Mannheim' } });
+    expect(cityInput.value).toBe('Mannheim');
   });
 
   test('updates minPrice state on input change', () => {
@@ -58,14 +56,14 @@ describe('SearchFilter Component', () => {
     expect(maxPriceInput.value).toBe('5000');
   });
 
-  test('updates bedrooms state on input change', () => {
+  test('updates bedroom state on input change', () => {
     renderer();
-    const bedroomsInput = screen.getByTestId(
-      'search-filter-bedrooms',
+    const bedroomInput = screen.getByTestId(
+      'search-filter-bedroom',
     ) as HTMLInputElement;
 
-    fireEvent.change(bedroomsInput, { target: { value: '3' } });
-    expect(bedroomsInput.value).toBe('3');
+    fireEvent.change(bedroomInput, { target: { value: '3' } });
+    expect(bedroomInput.value).toBe('3');
   });
 
   test('toggles filter visibility when clicking filter button', () => {

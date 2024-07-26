@@ -23,7 +23,7 @@ export const UpdateProfile = () => {
   const [updatedUserError, setUpdatedUserError] = useState('');
   const navigate = useNavigate();
   const { currentUser, updateUser } = useUserContext();
-  const [avatar, setAvatar] = useState(currentUser?.avatar);
+  const [avatar, setAvatar] = useState<string[]>([]);
   const { mutateAsync: updateCurrentUser, isPending } = useUpdateUser();
 
   const {
@@ -34,7 +34,7 @@ export const UpdateProfile = () => {
     resolver: zodResolver(ProfileValidation),
     defaultValues: {
       name: currentUser?.name,
-      username: currentUser?.username,
+      company: currentUser?.company,
       email: currentUser?.email,
       password: '',
     },
@@ -46,10 +46,10 @@ export const UpdateProfile = () => {
         id: currentUser?.id || '',
         user: {
           name: value.name,
-          username: value.username,
+          company: value.company,
           email: value.email,
           password: value.password,
-          avatar: avatar || undefined,
+          avatar: avatar[0],
         },
       };
       const response = await updateCurrentUser(updatedUserData);
@@ -84,8 +84,11 @@ export const UpdateProfile = () => {
         >
           <div className="flex gap-3 items-end">
             <div>
+              <p>Photo</p>
               <img
-                src={avatar || '/user-placeholder.svg'}
+                src={
+                  avatar[0] || currentUser?.avatar || '/user-placeholder.svg'
+                }
                 alt="profile"
                 className="h-24 w-24 rounded-full"
               />
@@ -99,7 +102,7 @@ export const UpdateProfile = () => {
                   maxImageFileSize: 2000000,
                   folder: 'avatars',
                 }}
-                setAvatar={setAvatar}
+                setState={setAvatar}
               />
             </div>
           </div>
@@ -111,11 +114,11 @@ export const UpdateProfile = () => {
             {...register('name')}
           />
           <Input
-            label="Username"
-            id="username"
+            label="company"
+            id="company"
             type="text"
-            error={errors?.username?.message}
-            {...register('username')}
+            error={errors?.company?.message}
+            {...register('company')}
           />
           <Input
             label="Email"

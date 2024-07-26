@@ -6,7 +6,7 @@ import { SocialIcons } from './SocialIcons';
 
 export const Footer = () => {
   return (
-    <footer className="text-center m-auto bg-gray-50 text-gray-600 py-4 mt-4">
+    <footer className="text-center m-auto bg-gray-50 text-gray-600 py-4 mt-8">
       <div className="m-auto text-center max-w-4xl px-6 py-2 lg:px-8">
         <div className="grid gap-3">
           <div className="flex-center">

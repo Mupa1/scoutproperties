@@ -19,7 +19,7 @@ describe('Auth API', () => {
   const mockUser = {
     id: '1',
     name: 'John Doe',
-    username: 'johndoe',
+    company: 'listing company',
     email: 'john@example.com',
     password: bcrypt.hashSync('password123', 10),
   };
@@ -40,7 +40,7 @@ describe('Auth API', () => {
 
       const response = await request(app).post('/auth/register').send({
         name: 'John Doe',
-        username: 'johndoe',
+        company: 'listing company',
         email: 'john@example.com',
         password: 'password123',
       });
@@ -59,7 +59,7 @@ describe('Auth API', () => {
 
       const response = await request(app).post('/auth/register').send({
         name: 'Jane Doe',
-        username: 'janedoe',
+        company: 'listing company',
         email: 'john@example.com',
         password: 'password123',
       });

@@ -1,8 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { NewUser } from '@/types';
+import { CreateListingData, CreateListingResponse, NewUser } from '@/types';
 
 import {
+  createListing,
   signinUser,
   signOut,
   signupUser,
@@ -31,5 +32,11 @@ export const useUpdateUser = () => {
   return useMutation({
     mutationFn: (data: { id: string; user: Partial<NewUser> }) =>
       updateCurrentUser(data.id, data.user),
+  });
+};
+
+export const useCreateListing = () => {
+  return useMutation<CreateListingResponse, Error, CreateListingData>({
+    mutationFn: (data: CreateListingData) => createListing(data),
   });
 };

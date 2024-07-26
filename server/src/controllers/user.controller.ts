@@ -9,7 +9,7 @@ export const getUsers = async (req: CustomRequest, res: Response) => {
     const users = await prisma.user.findMany();
     res.status(200).json(users);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ message: 'Failed to get users!' });
   }
 };
@@ -58,7 +58,7 @@ export const updateUser = async (req: CustomRequest, res: Response) => {
     res.status(200).json(rest);
     return userPassword;
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ message: 'Failed to update users!' });
   }
 };

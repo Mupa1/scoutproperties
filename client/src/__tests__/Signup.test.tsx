@@ -48,7 +48,7 @@ describe('Signup Component', () => {
 
   test('renders signup form with inputs and submit button', () => {
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
-    expect(screen.getByLabelText('Username')).toBeInTheDocument();
+    expect(screen.getByLabelText('company')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(
@@ -61,7 +61,7 @@ describe('Signup Component', () => {
 
     await waitFor(() => {
       expect(
-        screen.getAllByText(/username must be at least 2 characters/i)[0],
+        screen.getAllByText(/company must be at least 2 characters/i)[0],
       ).toBeInTheDocument();
       expect(screen.getByText(/invalid email/i)).toBeInTheDocument();
       expect(
@@ -72,12 +72,12 @@ describe('Signup Component', () => {
 
   test('submits form with valid data and makes API call', async () => {
     const nameInput = screen.getByLabelText('Name');
-    const usernameInput = screen.getByLabelText('Username');
+    const companyInput = screen.getByLabelText('company');
     const emailInput = screen.getByLabelText('Email');
     const passwordInput = screen.getByLabelText('Password');
 
     fireEvent.change(nameInput, { target: { value: 'John Doe' } });
-    fireEvent.change(usernameInput, { target: { value: 'johndoe' } });
+    fireEvent.change(companyInput, { target: { value: 'johndoe' } });
     fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
@@ -86,12 +86,12 @@ describe('Signup Component', () => {
     await waitFor(() => {
       expect(signupUserMock).toHaveBeenCalledWith({
         name: 'John Doe',
-        username: 'johndoe',
+        company: 'johndoe',
         email: 'john@example.com',
         password: 'password123',
       });
       expect(
-        screen.queryByText(/username must be at least 2 characters/i),
+        screen.queryByText(/company must be at least 2 characters/i),
       ).not.toBeInTheDocument();
       expect(screen.queryByText(/email is invalid/i)).not.toBeInTheDocument();
       expect(
@@ -108,12 +108,12 @@ describe('Signup Component', () => {
     });
 
     const nameInput = screen.getByLabelText('Name');
-    const usernameInput = screen.getByLabelText('Username');
+    const companyInput = screen.getByLabelText('company');
     const emailInput = screen.getByLabelText('Email');
     const passwordInput = screen.getByLabelText('Password');
 
     fireEvent.change(nameInput, { target: { value: 'John Doe' } });
-    fireEvent.change(usernameInput, { target: { value: 'johndoe' } });
+    fireEvent.change(companyInput, { target: { value: 'johndoe' } });
     fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
@@ -132,12 +132,12 @@ describe('Signup Component', () => {
     });
 
     const nameInput = screen.getByLabelText('Name');
-    const usernameInput = screen.getByLabelText('Username');
+    const companyInput = screen.getByLabelText('company');
     const emailInput = screen.getByLabelText('Email');
     const passwordInput = screen.getByLabelText('Password');
 
     fireEvent.change(nameInput, { target: { value: 'John Doe' } });
-    fireEvent.change(usernameInput, { target: { value: 'johndoe' } });
+    fireEvent.change(companyInput, { target: { value: 'johndoe' } });
     fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
