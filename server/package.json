@@ -47,14 +47,14 @@
     "typescript-eslint": "^7.13.1"
   },
   "dependencies": {
-    "@prisma/client": "^5.16.0",
+    "@prisma/client": "^5.17.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "path": "^0.12.7",
-    "prisma": "^5.16.0",
+    "prisma": "^5.17.0",
     "swagger-ui-express": "^5.0.1",
     "tsconfig-paths": "^4.2.0",
     "yamljs": "^0.3.0"

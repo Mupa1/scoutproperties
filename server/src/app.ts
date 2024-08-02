@@ -3,13 +3,17 @@ import cors, { CorsOptions } from 'cors';
 import express from 'express';
 
 import authRoute from './routes/auth.route';
+import listingRoute from './routes/listing.route';
 import swaggerRoute from './routes/swagger.route';
 import userRoute from './routes/user.route';
 
 const app = express();
 
-const CLIENT_URL = process.env.CLIENT_URL;
-const allowedOrigins = [CLIENT_URL, 'https://www.scout-properties.com'];
+const CLIENT_URL = 'http://localhost:4173';
+const CLIENT_PROD_URL = 'https://www.scout-properties.com';
+const SERVER_URL = 'http://localhost:3000';
+
+const allowedOrigins = [CLIENT_URL, CLIENT_PROD_URL, SERVER_URL];
 
 const corsOptions: CorsOptions = {
   origin: function (
@@ -36,5 +40,6 @@ app.get('/', (req, res) => {
 app.use('/api-docs', swaggerRoute);
 app.use('/auth', authRoute);
 app.use('/users', userRoute);
+app.use('/listings', listingRoute);
 
 export default app;

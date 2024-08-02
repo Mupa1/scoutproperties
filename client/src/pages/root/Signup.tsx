@@ -31,7 +31,7 @@ export const Signup = () => {
     resolver: zodResolver(SignupValidation),
     defaultValues: {
       name: '',
-      username: '',
+      company: '',
       email: '',
       password: '',
     },
@@ -75,11 +75,11 @@ export const Signup = () => {
               {...register('name')}
             />
             <Input
-              label="Username"
-              id="username"
+              label="company"
+              id="company"
               type="text"
-              error={errors?.username?.message}
-              {...register('username')}
+              error={errors?.company?.message}
+              {...register('company')}
             />
             <Input
               label="Email"

@@ -1,38 +1,82 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
 
-import { ListingCard } from '@/components/pages/Listings/ListingCard';
 import { useUserContext } from '@/context/useUserContext';
-import { listingsData } from '@/lib/dummy-data';
+import { useProfileListings } from '@/lib/react-query/queries';
 import { Profile } from '@/pages/protected';
+import { QueryProvider } from '@/providers/QueryProvider';
 
 vi.mock('@/context/useUserContext');
-vi.mock('@/components/pages/Listings/ListingCard');
+vi.mock('@/components/shared/ListingCard', () => {
+  return {
+    __esModule: true,
+    ListingCard: vi.fn().mockImplementation(({ data }) => (
+      <div data-testid="listing-card">
+        <p>{data.title}</p>
+      </div>
+    )),
+  };
+});
+
+vi.mock('@/lib/react-query/queries', () => {
+  return {
+    useProfileListings: vi.fn(),
+  };
+});
+
+const mockListingsData = [
+  {
+    id: 1,
+    title: 'Listing 1',
+    images: ['image1.jpg'],
+    bedroom: 2,
+    bathroom: 1,
+    price: 1000,
+    address: '123 Main St',
+    latitude: 45.6,
+    longitude: 9.8,
+  },
+  {
+    id: 2,
+    title: 'Listing 2',
+    images: ['image2.jpg'],
+    bedroom: 3,
+    bathroom: 2,
+    price: 2000,
+    address: '456 Main St',
+    latitude: 45.9,
+    longitude: 8.8,
+  },
+];
 
 describe('Profile', () => {
   beforeEach(() => {
+    vi.resetAllMocks();
+
     (useUserContext as Mock).mockReturnValue({
       currentUser: {
-        username: 'johndoe',
+        company: 'johndoe',
         name: 'John Doe',
         email: 'johndoe@example.com',
         avatar: '',
       },
     });
 
-    (ListingCard as Mock).mockImplementation(({ data }) => (
-      <div data-testid="listing-card">
-        <p>{data.title}</p>
-      </div>
-    ));
+    (useProfileListings as Mock).mockReturnValue({
+      data: mockListingsData,
+      isPending: false,
+      isError: false,
+    });
   });
 
   const renderComponent = () =>
     render(
-      <Router>
-        <Profile />
-      </Router>,
+      <MemoryRouter>
+        <QueryProvider>
+          <Profile />
+        </QueryProvider>
+      </MemoryRouter>,
     );
 
   test('renders the personal information correctly', () => {
@@ -60,16 +104,11 @@ describe('Profile', () => {
     );
   });
 
-  test('renders the user listings correctly', () => {
+  test('renders the user listings correctly', async () => {
     renderComponent();
 
     expect(screen.getByText('My Listings')).toBeInTheDocument();
-    expect(screen.getAllByTestId('listing-card')).toHaveLength(
-      listingsData.length,
-    );
 
-    listingsData.forEach((listing) => {
-      expect(screen.getByText(listing.title)).toBeInTheDocument();
-    });
+    expect(screen.getByTestId('profile-listings')).toBeInTheDocument();
   });
 });

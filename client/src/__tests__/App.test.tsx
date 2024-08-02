@@ -38,6 +38,6 @@ describe('App', () => {
 
     expect(within(nav).getByText('Home')).toBeInTheDocument();
     expect(within(nav).getByText('About')).toBeInTheDocument();
-    expect(within(nav).getByText('Contact')).toBeInTheDocument();
+    expect(within(nav).getByText('Listings')).toBeInTheDocument();
   });
 });

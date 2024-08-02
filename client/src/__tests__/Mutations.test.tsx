@@ -28,7 +28,7 @@ describe('Mutation hooks', () => {
     await act(async () => {
       await result.current.mutateAsync({
         name: 'John Doe',
-        username: 'johndoe',
+        company: 'johndoe',
         email: 'john@example.com',
         password: 'password123',
       });
@@ -49,7 +49,7 @@ describe('Mutation hooks', () => {
       try {
         await result.current.mutateAsync({
           name: 'John Doe',
-          username: 'johndoe',
+          company: 'johndoe',
           email: 'john@example.com',
           password: 'password123',
         });

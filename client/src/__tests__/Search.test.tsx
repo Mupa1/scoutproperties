@@ -1,11 +1,18 @@
+import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { Search } from '@/components/pages/Home/Hero/Search';
 
+const renderer = (ui: React.ReactElement) => {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+};
+
 describe('Search component', () => {
+  beforeEach(() => {
+    renderer(<Search />);
+  });
   test('renders Buy and Rent buttons', () => {
-    render(<Search />);
     const buyButton = screen.getByText('Buy');
     const rentButton = screen.getByText('Rent');
 
@@ -13,15 +20,13 @@ describe('Search component', () => {
     expect(rentButton).toBeInTheDocument();
   });
 
-  test('renders input fields for location', () => {
-    render(<Search />);
-    const locationInput = screen.getByPlaceholderText('City');
+  test('renders input fields for city', () => {
+    const cityInput = screen.getByPlaceholderText('City');
 
-    expect(locationInput).toBeInTheDocument();
+    expect(cityInput).toBeInTheDocument();
   });
 
   test('changes search type when Buy or Rent button is clicked', () => {
-    render(<Search />);
     const buyButton = screen.getByText('Buy');
     const rentButton = screen.getByText('Rent');
 
@@ -35,18 +40,15 @@ describe('Search component', () => {
   });
 
   test('calls the search function with correct parameters on form submit', () => {
-    render(<Search />);
-    const locationInput = screen.getByPlaceholderText(
-      'City',
-    ) as HTMLInputElement;
+    const cityInput = screen.getByPlaceholderText('City') as HTMLInputElement;
     const searchButton = screen.getByTestId('search-submit-button');
 
-    fireEvent.change(locationInput, {
+    fireEvent.change(cityInput, {
       target: { value: 'Mannheim' },
     });
 
     fireEvent.click(searchButton);
 
-    expect(locationInput.value).toBe('Mannheim');
+    expect(cityInput.value).toBe('Mannheim');
   });
 });

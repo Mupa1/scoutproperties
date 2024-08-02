@@ -1,96 +1,49 @@
-import { forwardRef, useState } from 'react';
-import { FaCheck } from 'react-icons/fa6';
-import { HiMiniChevronUpDown } from 'react-icons/hi2';
-import {
-  Label,
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-  Transition,
-} from '@headlessui/react';
-import clsx from 'clsx';
+import { forwardRef, LegacyRef } from 'react';
+import { clsx } from 'clsx';
 
-type SelectTypes = {
+import { ErrorMessage } from './ErrorMessage';
+
+export interface SelectOption {
+  id: string | number;
+  name: string;
+}
+
+export interface SelectProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
-  className?: string;
-  'data-testid'?: string;
-  options: {
-    id?: number;
-    name?: string;
-  }[];
-};
+  error?: string | undefined;
+  options: SelectOption[];
+}
 
-const Select = forwardRef<HTMLDivElement, SelectTypes>(
-  ({ label, options, className, 'data-testid': dataTestId }, ref) => {
-    const [selected, setSelected] = useState(options[0]);
-
+const Select = forwardRef<HTMLSelectElement, SelectProps>(
+  (
+    { label, options, className, error, ...props },
+    ref: LegacyRef<HTMLSelectElement> | undefined,
+  ) => {
     return (
-      <Listbox value={selected} onChange={setSelected}>
-        {({ open }) => (
-          <div className={className} ref={ref} data-testid={dataTestId}>
-            <Label className="">{label}</Label>
-            <div className="relative">
-              <ListboxButton className="relative flex-1 w-full cursor-default rounded-md bg-white py-2.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-black/10 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:text-sm sm:leading-6">
-                <span className="block truncate">{selected.name}</span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                  <HiMiniChevronUpDown
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </span>
-              </ListboxButton>
-
-              <Transition
-                show={open}
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <ListboxOptions className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                  {options.map((option) => (
-                    <ListboxOption
-                      key={option.id}
-                      className={({ focus }) =>
-                        clsx(
-                          focus ? 'bg-primary-500 text-white' : '',
-                          !focus ? 'text-gray-900' : '',
-                          'relative cursor-default select-none py-2 pl-3 pr-9',
-                        )
-                      }
-                      value={option}
-                    >
-                      {({ selected, focus }) => (
-                        <>
-                          <span
-                            className={clsx(
-                              selected ? 'font-semibold' : 'font-normal',
-                              'block truncate',
-                            )}
-                          >
-                            {option.name}
-                          </span>
-
-                          {selected ? (
-                            <span
-                              className={clsx(
-                                focus ? 'text-white' : 'text-primary-500',
-                                'absolute inset-y-0 right-0 flex items-center pr-4',
-                              )}
-                            >
-                              <FaCheck className="h-5 w-5" aria-hidden="true" />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </Transition>
-            </div>
-          </div>
-        )}
-      </Listbox>
+      <>
+        <div className="flex flex-col">
+          <label htmlFor={props.id}>{label}</label>
+          <select
+            id={props.id}
+            ref={ref}
+            className={clsx(
+              'border-0 bg-white py-[10.5px] md:py-[12.5px] px-3.5 rounded-md shadow-sm ring-1 ring-inset focus:outline-none ring-black/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-500 sm:text-sm sm:leading-6',
+              className,
+            )}
+            {...props}
+          >
+            {options.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-2">
+          {error ? <ErrorMessage error={error} id={props.id} /> : null}
+        </div>
+      </>
     );
   },
 );

@@ -66,7 +66,7 @@ export const Header = () => {
     }
   };
 
-  const username = currentUser?.username;
+  const company = currentUser?.company;
   const name = currentUser?.name;
   const avatar = currentUser?.avatar || '/user-placeholder.svg';
 
@@ -127,7 +127,7 @@ export const Header = () => {
                 />
                 <div className="lg:flex gap-0 flex-col hidden">
                   <p className="leading-4">{name}</p>
-                  <p className="text-sm text-gray-400 leading-4">{username}</p>
+                  <p className="text-sm text-gray-400 leading-4">{company}</p>
                 </div>
               </MenuButton>
             </>
@@ -210,7 +210,7 @@ export const Header = () => {
               {currentUser ? (
                 <div className="divide-b mb-3 rounded-md">
                   <p>{name}</p>
-                  <p className="text-sm text-gray-400">{username}</p>
+                  <p className="text-sm text-gray-400">{company}</p>
                 </div>
               ) : null}
               <div>
@@ -231,6 +231,7 @@ export const Header = () => {
                     <Link
                       to="/profile"
                       className="sm-nav-links gap-2 items-center"
+                      onClick={handleLinkClick}
                     >
                       <span aria-hidden="true">
                         <FaRegUser />

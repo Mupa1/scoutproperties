@@ -3,11 +3,13 @@ import { FiUpload } from 'react-icons/fi';
 
 import { UploadWidgetProps } from '@/types';
 
+import { Button } from '../ui';
+
 const CloudinaryScriptContext = createContext<{ loaded: boolean } | undefined>(
   undefined,
 );
 
-const UploadWidget: React.FC<UploadWidgetProps> = ({ uwConfig, setAvatar }) => {
+const UploadWidget: React.FC<UploadWidgetProps> = ({ uwConfig, setState }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -42,8 +44,7 @@ const UploadWidget: React.FC<UploadWidgetProps> = ({ uwConfig, setAvatar }) => {
           }
 
           if (result && result.event === 'success') {
-            // result.info - image info
-            setAvatar(result.info.secure_url);
+            setState((prev) => [...prev, result.info.secure_url]);
           }
         },
       );
@@ -54,14 +55,15 @@ const UploadWidget: React.FC<UploadWidgetProps> = ({ uwConfig, setAvatar }) => {
 
   return (
     <CloudinaryScriptContext.Provider value={{ loaded }}>
-      <button
+      <Button
+        variant="inverted"
+        className="border-0 ring-1 ring-inset ring-black/10"
         id="upload_widget"
-        className="cloudinary-button"
         onClick={initializeCloudinaryWidget}
       >
         <FiUpload />
-        Change Photo
-      </button>
+        Upload Image
+      </Button>
     </CloudinaryScriptContext.Provider>
   );
 };

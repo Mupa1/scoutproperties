@@ -16,7 +16,6 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-// Global error handler for unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
   console.log('Unhandled Rejection at:', promise, 'reason:', reason);
   throw reason;
@@ -26,7 +25,7 @@ describe('API requests', () => {
   test('should sign up a user successfully', async () => {
     const newUser: NewUser = {
       name: 'testuser',
-      username: 'testuser',
+      company: 'testuser',
       email: 'testuser@example.com',
       password: 'password',
     };
@@ -41,7 +40,7 @@ describe('API requests', () => {
   test('should handle signup user error', async () => {
     const newUser: NewUser = {
       name: 'testuser',
-      username: 'testuser',
+      company: 'testuser',
       email: 'testuser@example.com',
       password: 'password',
     };

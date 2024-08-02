@@ -70,12 +70,12 @@
   }
 
   .listings {
-    height: calc(100vh - 108px);
+    height: calc(100vh - 128px);
   }
 
   @screen sm {
     .listings {
-      height: calc(100vh - 161px);
+      height: calc(100vh - 181px);
     }
   }
 
@@ -84,6 +84,10 @@
   }
 
   .cloudinary-button {
-    @apply bg-secondary-500 rounded-md flex items-center gap-2 !important;
+    @apply bg-white text-gray-700 rounded-md flex items-center gap-2 !important;
+  }
+
+  .link {
+    @apply flex-center gap-2 py-2 px-3 rounded-md bg-primary-500 text-white;
   }
 }

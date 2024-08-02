@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import MockAdapter from 'axios-mock-adapter';
 import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
@@ -28,11 +28,11 @@ const signinUserMock = vi.fn().mockResolvedValue(signinResponse);
 
 const renderer = (ui: React.ReactElement) => {
   return render(
-    <Router>
+    <MemoryRouter>
       <QueryProvider>
         <AuthContextProvider>{ui}</AuthContextProvider>
       </QueryProvider>
-    </Router>,
+    </MemoryRouter>,
   );
 };
 

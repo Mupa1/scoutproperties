@@ -14,11 +14,10 @@ const defaultProps: UploadWidgetProps = {
     maxImageFileSize: 2000000,
     folder: 'avatars',
   },
-  setAvatar: mockSetAvatar,
+  setState: mockSetAvatar,
 };
 
-const renderer = (props = defaultProps) =>
-  render(<UploadWidget {...props} />);
+const renderer = (props = defaultProps) => render(<UploadWidget {...props} />);
 
 describe('UploadWidget', () => {
   beforeEach(() => {
@@ -37,7 +36,7 @@ describe('UploadWidget', () => {
 
     renderer();
 
-    expect(screen.getByText(/Change Photo/i)).toBeInTheDocument();
+    expect(screen.getByText(/Upload Image/i)).toBeInTheDocument();
   });
 
   test('opens the upload widget when the button is clicked', async () => {
@@ -56,12 +55,15 @@ describe('UploadWidget', () => {
 
     renderer();
 
-    fireEvent.click(screen.getByText(/Change Photo/i));
+    fireEvent.click(screen.getByText(/Upload Image/i));
 
     await waitFor(() => {
-      expect(mockSetAvatar).toHaveBeenCalledWith(
-        'http://example.com/image.jpg',
-      );
+      expect(mockSetAvatar).toHaveBeenCalledWith(expect.any(Function));
+
+      const stateUpdateFn = mockSetAvatar.mock.calls[0][0];
+      const prevState: string[] = [];
+      const newState = stateUpdateFn(prevState);
+      expect(newState).toContain('http://example.com/image.jpg');
     });
   });
 
@@ -80,7 +82,7 @@ describe('UploadWidget', () => {
 
     vi.spyOn(window, 'alert').mockImplementation(() => {});
 
-    fireEvent.click(screen.getByText(/Change Photo/i));
+    fireEvent.click(screen.getByText(/Upload Image/i));
 
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith(

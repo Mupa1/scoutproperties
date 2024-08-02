@@ -14,14 +14,14 @@ if (!JWT_SECRET_KEY) {
 }
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, username, password } = req.body;
+  const { name, email, company, password } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
       data: {
         name,
-        username,
+        company,
         email,
         password: hashedPassword,
       },
@@ -32,7 +32,7 @@ export const register = async (req: Request, res: Response) => {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       if (err.code === 'P2002') {
         return res.status(400).json({
-          message: 'User with this email or username already exists!',
+          message: 'User with this email or company already exists!',
         });
       }
     }

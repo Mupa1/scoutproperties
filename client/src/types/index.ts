@@ -1,13 +1,13 @@
 export type NewUser = {
   name: string;
   email: string;
-  username: string;
+  company: string;
   password: string;
 };
 
 export type User = {
   id: string;
-  username: string;
+  company: string;
   name: string;
   email: string;
   avatar: string;
@@ -22,7 +22,7 @@ export type ErrorType = {
   };
 };
 
-type ListingsDataType = {
+export type ListingsDataType = {
   id: number;
   title: string;
   images: string[];
@@ -35,26 +35,40 @@ type ListingsDataType = {
 };
 
 export type ListingsProps = {
-  listingsData: ListingsDataType[];
   className?: string;
-};
-
-export type ListingProps = {
-  listingsData: ListingsDataType;
+  listingsData: ListingsDataType[];
+  isLoading?: boolean;
+  isError?: boolean;
 };
 
 export type SearchFormData = {
   type: string;
   property: string;
-  location: string;
+  city: string;
   minPrice: number;
   maxPrice: number;
-  bedrooms: number;
+  bedroom: number;
 };
 
-export type ListingDetailsProps = {
+interface ListingDetails {
+  school?: number;
+  bus?: number;
+  restaurant?: number;
+  parking?: 'Available' | 'Unavailable';
+  size?: number;
+  description: string;
+}
+
+interface UserDetails {
+  avatar: string;
+  name: string;
+  email: string;
+  company: string;
+}
+export interface ListingDetailsProps {
   id: number;
   title: string;
+  type: 'Buy' | 'Rent';
   images: string[];
   bedroom: number;
   bathroom: number;
@@ -62,13 +76,9 @@ export type ListingDetailsProps = {
   address: string;
   latitude: number;
   longitude: number;
-  school: string;
-  bus: string;
-  restaurant: string;
-  parking: string;
-  size: number;
-  description: string;
-};
+  listingDetails: ListingDetails;
+  user: UserDetails;
+}
 
 interface UploadInfo {
   secure_url: string;
@@ -91,7 +101,7 @@ interface UploadConfigProps {
 
 export interface UploadWidgetProps {
   uwConfig: UploadConfigProps;
-  setAvatar: (url: string) => void;
+  setState: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 declare global {
@@ -106,3 +116,26 @@ declare global {
     };
   }
 }
+
+export interface CreateListingResponse {
+  id: string;
+}
+interface ListingData {
+  title: string;
+  images: string[];
+  bedroom: number;
+  bathroom: number;
+  price: number;
+  address: string;
+  city: string;
+  latitude: string;
+  longitude: string;
+  type: 'Rent' | 'Buy';
+  property: 'Apartment' | 'House' | 'Condo' | 'Land';
+}
+export interface CreateListingData {
+  listingData: ListingData;
+  listingDetails: ListingDetails;
+}
+
+export type QueryParams = Record<string, string>;

@@ -1,13 +1,6 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import {
-  beforeEach,
-  describe,
-  expect,
-  Mock,
-  test,
-  vi,
-} from 'vitest';
+import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
 
 import { failureToast } from '@/components/ui';
 import { useUserContext } from '@/context/useUserContext';
@@ -28,9 +21,9 @@ vi.mock('@/components/ui', async (importOriginal) => {
 });
 vi.mock('@/components/shared/UploadWidget', () => ({
   __esModule: true,
-  default: ({ setAvatar }: UploadWidgetProps) => (
-    <button onClick={() => setAvatar('http://example.com/image.jpg')}>
-      Change Photo
+  default: ({ setState }: UploadWidgetProps) => (
+    <button onClick={() => setState(['http://example.com/image.jpg'])}>
+      Upload Image
     </button>
   ),
 }));
@@ -46,7 +39,7 @@ describe('UpdateProfile', () => {
       currentUser: {
         id: '1',
         name: 'John Doe',
-        username: 'johndoe',
+        company: 'johndoe',
         email: 'johndoe@example.com',
         avatar: '',
       },
@@ -61,11 +54,11 @@ describe('UpdateProfile', () => {
 
   const renderer = () =>
     render(
-      <Router>
+      <MemoryRouter>
         <QueryProvider>
           <UpdateProfile />
         </QueryProvider>
-      </Router>,
+      </MemoryRouter>,
     );
 
   test('renders the UpdateProfile component correctly', () => {
@@ -75,7 +68,7 @@ describe('UpdateProfile', () => {
       screen.getByRole('heading', { name: /update profile/i }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
-    expect(screen.getByLabelText('Username')).toBeInTheDocument();
+    expect(screen.getByLabelText('company')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
   });
@@ -83,7 +76,7 @@ describe('UpdateProfile', () => {
   test('renders the UploadWidget component', () => {
     renderer();
 
-    expect(screen.getByText('Change Photo')).toBeInTheDocument();
+    expect(screen.getByText('Upload Image')).toBeInTheDocument();
   });
 
   test('calls handleUpdate on form submission', async () => {
@@ -92,7 +85,7 @@ describe('UpdateProfile', () => {
     fireEvent.change(screen.getByLabelText('Name'), {
       target: { value: 'John Doe Updated' },
     });
-    fireEvent.change(screen.getByLabelText('Username'), {
+    fireEvent.change(screen.getByLabelText('company'), {
       target: { value: 'johndoeupdated' },
     });
     fireEvent.change(screen.getByLabelText('Email'), {
@@ -102,7 +95,7 @@ describe('UpdateProfile', () => {
       target: { value: 'newpassword' },
     });
 
-    fireEvent.click(screen.getByText('Change Photo'));
+    fireEvent.click(screen.getByText('Upload Image'));
 
     fireEvent.submit(screen.getByRole('button', { name: /update profile/i }));
 
@@ -111,7 +104,7 @@ describe('UpdateProfile', () => {
         id: '1',
         user: {
           name: 'John Doe Updated',
-          username: 'johndoeupdated',
+          company: 'johndoeupdated',
           email: 'johndoeupdated@example.com',
           password: 'newpassword',
           avatar: 'http://example.com/image.jpg',
@@ -151,7 +144,7 @@ describe('UpdateProfile', () => {
     fireEvent.change(screen.getByLabelText('Name'), {
       target: { value: 'John Doe Updated' },
     });
-    fireEvent.change(screen.getByLabelText('Username'), {
+    fireEvent.change(screen.getByLabelText('company'), {
       target: { value: 'johndoeupdated' },
     });
     fireEvent.change(screen.getByLabelText('Email'), {
@@ -161,7 +154,7 @@ describe('UpdateProfile', () => {
       target: { value: 'newpassword' },
     });
 
-    fireEvent.click(screen.getByText('Change Photo'));
+    fireEvent.click(screen.getByText('Upload Image'));
 
     fireEvent.submit(screen.getByRole('button', { name: /update profile/i }));
 

@@ -13,9 +13,13 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 
 import imagePlaceholder from '@/assets/image-placeholder.svg';
-import { ListingProps, ListingsProps } from '@/types';
+import { ListingsDataType, ListingsProps } from '@/types';
 
-const MapMarker: FC<ListingProps> = ({ listingsData }) => {
+interface MapProps {
+  listingsData: ListingsDataType;
+}
+
+const MapMarker: FC<MapProps> = ({ listingsData }) => {
   const DefaultIcon = L.icon({
     iconUrl: icon,
     shadowUrl: iconShadow,
@@ -36,10 +40,7 @@ const MapMarker: FC<ListingProps> = ({ listingsData }) => {
           />
         </div>
         <>
-          <Link
-            className="hover:underline text-xs"
-            to={`/listing-details/${id}`}
-          >
+          <Link className="hover:underline text-xs" to={`/listings/${id}`}>
             {title}
           </Link>
           <p className="flex items-center font-bold text-xs -pt-4 text-gray-500">
@@ -61,7 +62,11 @@ const MapMarker: FC<ListingProps> = ({ listingsData }) => {
 };
 
 export const Map: FC<ListingsProps> = ({ listingsData, className }) => {
-  const position: LatLngExpression = [49.5200765, 8.524684];
+  const position: LatLngExpression =
+    listingsData.length === 1
+      ? [listingsData[0].latitude, listingsData[0].longitude]
+      : [49.5200765, 8.524684];
+
   return (
     <MapContainer
       center={position}
