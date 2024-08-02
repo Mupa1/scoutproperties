@@ -99,7 +99,19 @@ yarn install
 
 **Set Up Environment Variables**
 
-Ensure you are in the server directory
+__*Client*__
+
+```bash
+cd client
+```
+
+Create a new file named .env.local in the root of your client directory and add the following content:
+
+```env
+VITE_API_BASE_URL='http://localhost:3000'
+```
+
+__*Server*__
 
 ```bash
 cd server
@@ -113,20 +125,17 @@ JWT_SECRET_KEY=
 ```
 
 **Running the Project**
+
 Ensure both client and server are running.
 
-```bash
-yarn dev
-```
-
-__Client__
+__*Client*__
 
 ```bash
 cd client
 yarn dev
 ```
 
-__Server__
+__*Server*__
 
 ```bash
 cd server
