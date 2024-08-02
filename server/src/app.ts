@@ -12,8 +12,14 @@ const app = express();
 const CLIENT_URL = 'http://localhost:4173';
 const CLIENT_PROD_URL = 'https://www.scout-properties.com';
 const SERVER_URL = 'http://localhost:3000';
+const SERVER_PROD_URL = 'https://www.api.scout-properties.com';
 
-const allowedOrigins = [CLIENT_URL, CLIENT_PROD_URL, SERVER_URL];
+const allowedOrigins = [
+  CLIENT_URL,
+  CLIENT_PROD_URL,
+  SERVER_URL,
+  SERVER_PROD_URL,
+];
 
 const corsOptions: CorsOptions = {
   origin: function (
