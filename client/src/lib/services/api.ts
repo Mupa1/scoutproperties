@@ -1,6 +1,11 @@
 import { QueryFunctionContext } from '@tanstack/react-query';
 
-import { CreateListingData, CreateListingResponse, NewUser, QueryParams } from '@/types';
+import {
+  CreateListingData,
+  CreateListingResponse,
+  NewUser,
+  QueryParams,
+} from '@/types';
 
 import { axiosInstance } from './axiosInstance';
 
@@ -71,6 +76,16 @@ export const getListingById = async (id: string) => {
     return response.data;
   } catch (error) {
     console.error('Failed to get listing:', error);
+    throw error;
+  }
+};
+
+export const getProfileListings = async () => {
+  try {
+    const response = await axiosInstance.get('/users/profileListings');
+    return response.data;
+  } catch (error) {
+    console.error('Failed to get profile listings:', error);
     throw error;
   }
 };

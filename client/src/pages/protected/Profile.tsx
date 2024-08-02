@@ -1,12 +1,13 @@
 import { FC } from 'react';
 
-import { PersonalInfo } from '@/components/pages/Profile/PersonalInfo';
-import { PersonalListings } from '@/components/pages/Profile/PersonalListings';
+import { ProfileInfo } from '@/components/pages/Profile/ProfileInfo';
+import { ProfileListings } from '@/components/pages/Profile/ProfileListings';
 import { useUserContext } from '@/context/useUserContext';
-import { listingsData } from '@/lib/dummy-data';
+import { useProfileListings } from '@/lib/react-query/queries';
 
 export const Profile: FC = () => {
   const { currentUser } = useUserContext();
+  const { data: listingsData, isPending, isError } = useProfileListings();
 
   const company = currentUser?.company;
   const name = currentUser?.name;
@@ -16,14 +17,18 @@ export const Profile: FC = () => {
   return (
     <section className="min-h-screen mt-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 grid gap-3">
-        <PersonalInfo
+        <ProfileInfo
           avatar={avatar}
           name={name}
           company={company}
           email={email}
         />
         <hr />
-        <PersonalListings listingsData={listingsData} />
+        <ProfileListings
+          listingsData={listingsData}
+          isLoading={isPending}
+          isError={isError}
+        />
       </div>
     </section>
   );

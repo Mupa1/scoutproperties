@@ -58,9 +58,12 @@ describe('UploadWidget', () => {
     fireEvent.click(screen.getByText(/Upload Image/i));
 
     await waitFor(() => {
-      expect(mockSetAvatar).toHaveBeenCalledWith(
-        'http://example.com/image.jpg',
-      );
+      expect(mockSetAvatar).toHaveBeenCalledWith(expect.any(Function));
+
+      const stateUpdateFn = mockSetAvatar.mock.calls[0][0];
+      const prevState: string[] = [];
+      const newState = stateUpdateFn(prevState);
+      expect(newState).toContain('http://example.com/image.jpg');
     });
   });
 

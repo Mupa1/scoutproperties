@@ -1,3 +1,4 @@
+import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
@@ -35,7 +36,11 @@ export const mockListingDetailsData = {
 
 describe('Details Component', () => {
   test('renders correctly', () => {
-    const { container } = render(<Details data={mockListingDetailsData} />);
+    const { container } = render(
+      <MemoryRouter>
+        <Details data={mockListingDetailsData} />
+      </MemoryRouter>,
+    );
     expect(container).toBeInTheDocument();
     expect(screen.getByText('Apartment')).toBeInTheDocument();
     expect(screen.getByText('1200 €')).toBeInTheDocument();
@@ -44,7 +49,7 @@ describe('Details Component', () => {
     expect(screen.getByText('1 Bathroom(s)')).toBeInTheDocument();
     expect(screen.getByText('Available')).toBeInTheDocument();
     expect(screen.getByText('961 sqm')).toBeInTheDocument();
-    expect(screen.getByText('For Rent')).toBeInTheDocument();
+    expect(screen.getByText('Rent')).toBeInTheDocument();
     expect(screen.getByText('School')).toBeInTheDocument();
     expect(screen.getByText('200m away')).toBeInTheDocument();
     expect(screen.getByText('Bus')).toBeInTheDocument();

@@ -1,6 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getListingById, getListings } from '../services/api';
+import {
+  getListingById,
+  getListings,
+  getProfileListings,
+} from '../services/api';
 
 export const useGetListings = (queryParams: Record<string, string>) => {
   return useQuery({
@@ -14,5 +18,12 @@ export const useGetListingById = (listingId: string) => {
     queryKey: ['listing-details', listingId],
     queryFn: () => getListingById(listingId),
     enabled: !!listingId,
+  });
+};
+
+export const useProfileListings = () => {
+  return useQuery({
+    queryKey: ['profileListings'],
+    queryFn: getProfileListings,
   });
 };

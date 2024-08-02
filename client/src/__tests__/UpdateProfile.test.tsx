@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
 
@@ -54,11 +54,11 @@ describe('UpdateProfile', () => {
 
   const renderer = () =>
     render(
-      <Router>
+      <MemoryRouter>
         <QueryProvider>
           <UpdateProfile />
         </QueryProvider>
-      </Router>,
+      </MemoryRouter>,
     );
 
   test('renders the UpdateProfile component correctly', () => {

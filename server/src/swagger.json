@@ -7,7 +7,12 @@
   },
   "servers": [
     {
-      "url": "https://api.scout-properties.com"
+      "url": "http://localhost:3000",
+      "description": "Local server"
+    },
+    {
+      "url": "https://api.scout-properties.com",
+      "description": "Production server"
     }
   ],
   "tags": [
@@ -153,7 +158,7 @@
               }
             }
           },
-          "500": { "description": "Failed to get listings" }
+          "500": { "description": "Failed to get listings!" }
         }
       },
       "post": {
@@ -210,52 +215,6 @@
             }
           },
           "500": { "description": "Failed to get listing" }
-        }
-      },
-      "put": {
-        "summary": "Update a listing by ID",
-        "tags": ["Listings"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateListing"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": { "description": "Listing updated successfully" },
-          "500": { "description": "Failed to update listing" }
-        }
-      },
-      "delete": {
-        "summary": "Delete a listing by ID",
-        "tags": ["Listings"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": { "description": "Listing deleted successfully" },
-          "500": { "description": "Failed to delete listing" }
         }
       }
     },
@@ -430,28 +389,6 @@
               "bus": { "type": "integer" },
               "restaurant": { "type": "integer" }
             }
-          }
-        }
-      },
-      "UpdateListing": {
-        "type": "object",
-        "properties": {
-          "title": { "type": "string" },
-          "images": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "bedroom": { "type": "integer" },
-          "bathroom": { "type": "integer" },
-          "price": { "type": "integer" },
-          "address": { "type": "string" },
-          "city": { "type": "string" },
-          "latitude": { "type": "string" },
-          "longitude": { "type": "string" },
-          "type": { "type": "string", "enum": ["Buy", "Rent"] },
-          "property": {
-            "type": "string",
-            "enum": ["Apartment", "House", "Condo", "Land"]
           }
         }
       },

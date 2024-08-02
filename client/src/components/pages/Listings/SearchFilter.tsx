@@ -10,7 +10,7 @@ import { SearchFormData } from '@/types';
 
 type SearchFilterProps = {
   onSubmit: (data: SearchFormData) => void;
-  initialValues: Partial<SearchFormData>;
+  initialValues?: Partial<SearchFormData>;
 };
 
 const typesOptions = [
@@ -30,7 +30,6 @@ export const SearchFilter: FC<SearchFilterProps> = ({
   initialValues,
 }) => {
   const [showFilters, setShowFilters] = useState(false);
-  console.log('initialvalues', initialValues);
   const { register, handleSubmit, setValue } = useForm<SearchFormData>({
     defaultValues: {
       type: 'Buy',
@@ -44,9 +43,11 @@ export const SearchFilter: FC<SearchFilterProps> = ({
   });
 
   useEffect(() => {
-    Object.entries(initialValues).forEach(([key, value]) => {
-      setValue(key as keyof SearchFormData, value);
-    });
+    if (initialValues) {
+      Object.entries(initialValues).forEach(([key, value]) => {
+        setValue(key as keyof SearchFormData, value);
+      });
+    }
   }, [initialValues, setValue]);
 
   const handleFilterButtonClick = () => {

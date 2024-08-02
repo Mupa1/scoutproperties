@@ -116,22 +116,24 @@ export const CreateListing = () => {
               />
             </div>
             <div className="col-span-full">
-              <label htmlFor="description">Description</label>
-              <Controller
-                name="description"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    theme="snow"
-                    onChange={field.onChange}
-                    value={field.value}
-                    ref={(el) => {
-                      field.ref(el);
-                      quillRef.current = el;
-                    }}
-                  />
-                )}
-              />
+              <label>
+                Description
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field }) => (
+                    <ReactQuill
+                      theme="snow"
+                      onChange={field.onChange}
+                      value={field.value}
+                      ref={(el) => {
+                        field.ref(el);
+                        quillRef.current = el;
+                      }}
+                    />
+                  )}
+                />
+              </label>
             </div>
             <div>
               <Input
@@ -175,6 +177,7 @@ export const CreateListing = () => {
                 control={control}
                 render={({ field }) => (
                   <Select
+                    id="Type"
                     label="Type"
                     options={[
                       { id: 'Rent', name: 'Rent' },
@@ -193,6 +196,7 @@ export const CreateListing = () => {
                 control={control}
                 render={({ field }) => (
                   <Select
+                    id="Property"
                     label="Property"
                     options={[
                       { id: 'Apartment', name: 'Apartment' },
@@ -213,6 +217,7 @@ export const CreateListing = () => {
                 control={control}
                 render={({ field }) => (
                   <Select
+                    id="Parking"
                     label="Parking"
                     options={[
                       { id: 'Available', name: 'Available' },
@@ -282,7 +287,7 @@ export const CreateListing = () => {
                 setState={setImages}
               />
             </div>
-            <div className="flex gap-4 items-center ">
+            <div className="flex gap-4 items-center col-span-full">
               <Button
                 type="button"
                 variant="inverted"
@@ -291,7 +296,12 @@ export const CreateListing = () => {
               >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" disabled={isPending}>
+              <Button
+                data-testid="create-listing-btn"
+                type="submit"
+                variant="primary"
+                disabled={isPending}
+              >
                 {isPending ? <Loader /> : 'Create Listing'}
               </Button>
             </div>

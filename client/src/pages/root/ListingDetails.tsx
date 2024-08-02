@@ -23,7 +23,7 @@ export const ListingDetailsPage: FC = () => {
       <div className="min-h-screen flex-center">Listing details not found!</div>
     );
   }
-  
+
   return (
     <section className="min-h-screen mt-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -33,4 +33,3 @@ export const ListingDetailsPage: FC = () => {
     </section>
   );
 };
-

@@ -2,14 +2,14 @@ import { FC } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-type PersonalInfoProps = {
+type ProfileInfoProps = {
   avatar?: string;
   name?: string;
   company?: string;
   email?: string;
 };
 
-export const PersonalInfo: FC<PersonalInfoProps> = ({
+export const ProfileInfo: FC<ProfileInfoProps> = ({
   avatar,
   name,
   company,

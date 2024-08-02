@@ -9,8 +9,11 @@ import userRoute from './routes/user.route';
 
 const app = express();
 
-const CLIENT_URL = process.env.CLIENT_URL;
-const allowedOrigins = [CLIENT_URL, 'https://www.scout-properties.com'];
+const allowedOrigins = [
+  'http://localhost:4173',
+  'http://localhost:3000',
+  'https://www.scout-properties.com',
+];
 
 const corsOptions: CorsOptions = {
   origin: function (

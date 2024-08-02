@@ -29,7 +29,6 @@ export const createListing = async (
   res: Response,
 ): Promise<void> => {
   const body = req.body;
-  console.log('body', body);
   const tokenUserId = req.userId;
 
   try {
@@ -45,7 +44,7 @@ export const createListing = async (
     res.status(200).json(newlisting);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to create listing' });
+    res.status(500).json({ message: 'Failed to create listing!' });
   }
 };
 
@@ -79,7 +78,7 @@ export const getListings = async (
     res.status(200).json(listings);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to get listings' });
+    res.status(500).json({ message: 'Failed to get listings!' });
   }
 };
 
@@ -107,19 +106,7 @@ export const getListing = async (
     res.status(200).json(listing);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to get listing' });
-  }
-};
-
-export const updateListing = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    res.status(200).json();
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to update listings' });
+    res.status(500).json({ message: 'Failed to get listing!' });
   }
 };
 
@@ -144,9 +131,9 @@ export const deleteListing = async (
       where: { id },
     });
 
-    res.status(200).json({ message: 'Listing deleted' });
+    res.status(200).json({ message: 'Listing deleted!' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to delete listing' });
+    res.status(500).json({ message: 'Failed to delete listing!' });
   }
 };

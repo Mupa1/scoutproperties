@@ -34,11 +34,13 @@ export const ListingsPage: FC = () => {
       ...queryParams,
       ...data,
     };
+
     const queryString = new URLSearchParams(
-      Object.entries(newQueryParams).filter(
-        ([_, value]) => value !== undefined,
-      ),
+      Object.entries(newQueryParams)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => [key, String(value)] as [string, string]),
     ).toString();
+
     navigate(`/listings?${queryString}`);
   };
 
@@ -64,7 +66,7 @@ export const ListingsPage: FC = () => {
               <ErrorMessage error="Error loading listings!" />
             ) : (
               <>
-                <div className="flex-2 h-full  w-full hidden md:block overflow-y-hidden sm:pr-2">
+                <div className="flex-2 h-full w-full hidden md:block overflow-y-hidden sm:pr-2">
                   <div className="w-full h-full">
                     <Map listingsData={listingsData} className="listings" />
                   </div>

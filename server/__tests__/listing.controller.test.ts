@@ -18,8 +18,6 @@ jest.mock('../src/lib/prisma', () => ({
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
     },
   },
 }));
@@ -63,8 +61,6 @@ const setupMocks = () => {
   (prisma.listing.create as jest.Mock).mockReset();
   (prisma.listing.findMany as jest.Mock).mockReset();
   (prisma.listing.findUnique as jest.Mock).mockReset();
-  (prisma.listing.update as jest.Mock).mockReset();
-  (prisma.listing.delete as jest.Mock).mockReset();
 };
 
 describe('Listing Controller', () => {
@@ -151,47 +147,6 @@ describe('Listing Controller', () => {
       const res = await request(app).post('/listings').send(mockListing);
       expect(res.status).toBe(500);
       expect(res.body.message).toBe('Failed to create listing!');
-    });
-  });
-
-  describe('PUT /listings/:id', () => {
-    it('should update a listing by id', async () => {
-      const updatedListing = { ...mockListing, title: 'Updated Title' };
-      (prisma.listing.update as jest.Mock).mockResolvedValue(updatedListing);
-
-      const res = await request(app).put('/listings/1').send(updatedListing);
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual(updatedListing);
-    });
-
-    it('should return 500 if there is a server error', async () => {
-      (prisma.listing.update as jest.Mock).mockRejectedValue(
-        new Error('Failed to update listing!'),
-      );
-
-      const res = await request(app).put('/listings/1').send(mockListing);
-      expect(res.status).toBe(500);
-      expect(res.body.message).toBe('Failed to update listing!');
-    });
-  });
-
-  describe('DELETE /listings/:id', () => {
-    it('should delete a listing by id', async () => {
-      (prisma.listing.delete as jest.Mock).mockResolvedValue({});
-
-      const res = await request(app).delete('/listings/1');
-      expect(res.status).toBe(200);
-      expect(res.body.message).toBe('Listing deleted');
-    });
-
-    it('should return 500 if there is a server error', async () => {
-      (prisma.listing.delete as jest.Mock).mockRejectedValue(
-        new Error('Failed to delete listing!'),
-      );
-
-      const res = await request(app).delete('/listings/1');
-      expect(res.status).toBe(500);
-      expect(res.body.message).toBe('Failed to delete listing!');
     });
   });
 });

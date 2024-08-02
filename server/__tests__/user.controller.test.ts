@@ -83,26 +83,6 @@ describe('User Controller', () => {
     });
   });
 
-  describe('GET /users/:id', () => {
-    it('should return a user by id', async () => {
-      (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
-
-      const res = await request(app).get('/users/1');
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual(mockUser);
-    });
-
-    it('should return 500 if there is a server error', async () => {
-      (prisma.user.findUnique as jest.Mock).mockRejectedValue(
-        new Error('Failed to get user!'),
-      );
-
-      const res = await request(app).get('/users/1');
-      expect(res.status).toBe(500);
-      expect(res.body.message).toBe('Failed to get user!');
-    });
-  });
-
   describe('PUT /users/:id', () => {
     it('should update a user by id', async () => {
       const updatedUser = { ...mockUser, name: 'John Updated' };

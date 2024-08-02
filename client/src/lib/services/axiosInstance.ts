@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-const apiKey =
-  import.meta.env.VITE_API_BASE_URL || 'https://api.scout-properties.com';
+const BASE_API_URL = 'https://api.scout-properties.com';
 
 export const axiosInstance = axios.create({
-  baseURL: apiKey,
+  baseURL: BASE_API_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

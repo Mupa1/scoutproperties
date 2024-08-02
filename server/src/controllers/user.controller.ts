@@ -75,3 +75,17 @@ export const deleteUser = async (req: CustomRequest, res: Response) => {
     res.status(500).json({ message: 'Failed to delete user' });
   }
 };
+
+export const profileListings = async (req: CustomRequest, res: Response) => {
+  const tokenUserId = req.userId;
+  try {
+    const userListings = await prisma.listing.findMany({
+      where: { userId: tokenUserId },
+    });
+
+    res.status(200).json(userListings);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'Failed to get profile posts!' });
+  }
+};

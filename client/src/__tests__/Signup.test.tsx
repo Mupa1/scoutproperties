@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
@@ -32,11 +32,11 @@ const signupUserMock = vi.fn().mockResolvedValue(signupResponse);
 
 const renderer = (ui: React.ReactElement) => {
   return render(
-    <Router>
+    <MemoryRouter>
       <QueryProvider>
         <AuthContextProvider>{ui}</AuthContextProvider>
       </QueryProvider>
-    </Router>,
+    </MemoryRouter>,
   );
 };
 

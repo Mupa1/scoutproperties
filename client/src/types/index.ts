@@ -22,7 +22,7 @@ export type ErrorType = {
   };
 };
 
-type ListingsDataType = {
+export type ListingsDataType = {
   id: number;
   title: string;
   images: string[];
@@ -35,12 +35,10 @@ type ListingsDataType = {
 };
 
 export type ListingsProps = {
-  listingsData: ListingsDataType[];
   className?: string;
-};
-
-export type ListingProps = {
-  listingsData: ListingsDataType;
+  listingsData: ListingsDataType[];
+  isLoading?: boolean;
+  isError?: boolean;
 };
 
 export type SearchFormData = {

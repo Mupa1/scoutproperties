@@ -13,9 +13,13 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 
 import imagePlaceholder from '@/assets/image-placeholder.svg';
-import { ListingProps, ListingsProps } from '@/types';
+import { ListingsDataType, ListingsProps } from '@/types';
 
-const MapMarker: FC<ListingProps> = ({ listingsData }) => {
+interface MapProps {
+  listingsData: ListingsDataType;
+}
+
+const MapMarker: FC<MapProps> = ({ listingsData }) => {
   const DefaultIcon = L.icon({
     iconUrl: icon,
     shadowUrl: iconShadow,

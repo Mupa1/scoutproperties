@@ -5,7 +5,7 @@ export const propertiesCategories = [
       'Integer nibh nisl, lobortis sit amet leo at, auctor euismod quam. Quisque urna turpis, condimentum sit amet lorem sit amet, tristique volutpat mauris.',
     imageUrl:
       'https://res.cloudinary.com/cloudinary-images-platform/image/upload/v1717963716/scout-properties-images/undraw_for_sale_re_egkk_2_oadxya.svg',
-    link: '/listings',
+    link: '/listings?type=Buy',
   },
 
   {
@@ -14,11 +14,11 @@ export const propertiesCategories = [
       'Praesent tempus enim sed metus imperdiet, ac faucibus magna fringilla. Etiam efficitur mauris sed tristique euismod. In pretium eleifend tempor.',
     imageUrl:
       'https://res.cloudinary.com/cloudinary-images-platform/image/upload/v1717963716/scout-properties-images/undraw_small_town_re_7mcn_p5eln9.svg',
-    link: '/listings',
+    link: '/listings?type=Rent',
   },
 
   {
-    title: 'Featured',
+    title: 'All listings',
     description:
       'Morbi id orci faucibus, rhoncus ex a, ultrices tellus, rhoncus ex a, ultrices tellus. Sed pharetra diam vel diam dignissim dignissim.',
     imageUrl:
