@@ -32,6 +32,7 @@ export const mockListingDetailsData = {
     email: 'more200@mail.com',
     avatar: 'img',
   },
+  userId: '1'
 };
 
 describe('Details Component', () => {
