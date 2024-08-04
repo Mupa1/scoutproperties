@@ -6,7 +6,7 @@ export const Hero = () => {
     <div>
       <div className="h-screen relative w-100">
         <div className="absolute top-0 left-0 z-30 h-screen w-full bg-black bg-opacity-50 flex flex-col items-center justify-center">
-          <div className="w-100 text-center m-auto z-40 max-w-7xl px-12 lg:px-8">
+          <div className="w-100 text-center m-auto z-40 max-w-7xl px-6 sm:px-12 lg:px-8">
             <h1 className="text-4xl font-normal tracking-tight text-white sm:text-6xl">
               Find your next dream home or apartment.
             </h1>

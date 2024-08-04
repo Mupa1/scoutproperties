@@ -78,6 +78,7 @@ export interface ListingDetailsProps {
   longitude: number;
   listingDetails: ListingDetails;
   user: UserDetails;
+  userId: string;
 }
 
 interface UploadInfo {

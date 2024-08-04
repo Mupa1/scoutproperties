@@ -48,6 +48,38 @@ export const createListing = async (
   }
 };
 
+export const updateListing = async (req: CustomRequest, res: Response) => {
+  const { id } = req.params;
+  const { listingData, listingDetails } = req.body;
+  const tokenUserId = req.userId;
+
+  try {
+    const listing = await prisma.listing.findUnique({ where: { id } });
+    if (!listing) {
+      return res.status(404).json({ message: 'Listing not found' });
+    }
+
+    if (listing.userId !== tokenUserId) {
+      return res.status(403).json({ message: 'Not Authorized!' });
+    }
+
+    const updatedListing = await prisma.listing.update({
+      where: { id },
+      data: {
+        ...listingData,
+        listingDetails: {
+          update: listingDetails,
+        },
+      },
+    });
+
+    res.status(200).json(updatedListing);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to update listing!' });
+  }
+};
+
 export const getListings = async (
   req: Request,
   res: Response,

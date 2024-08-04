@@ -4,6 +4,7 @@ import RequireAuthLayout from './layouts/RequireAuthLayout';
 import RootLayout from './layouts/RootLayout';
 import { NoMatch } from './pages/NoMatch';
 import { CreateListing, Profile, UpdateProfile } from './pages/protected';
+import { UpdateListing } from './pages/protected/UpdateListing';
 import {
   AboutPage,
   HomePage,
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/update" element={<UpdateProfile />} />
           <Route path="/listings/add" element={<CreateListing />} />
+          <Route path="/listings/edit/:id" element={<UpdateListing />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
         <Route path="/listings" element={<ListingsPage />} />

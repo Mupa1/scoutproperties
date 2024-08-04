@@ -216,6 +216,44 @@
           },
           "500": { "description": "Failed to get listing" }
         }
+      },
+      "put": {
+        "summary": "Update a listing by ID",
+        "tags": ["Listings"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewListing"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Listing updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Listing"
+                }
+              }
+            }
+          },
+          "403": { "description": "Not Authorized!" },
+          "500": { "description": "Failed to update listing!" }
+        }
       }
     },
     "/users": {

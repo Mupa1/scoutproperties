@@ -8,6 +8,7 @@ import {
   signOut,
   signupUser,
   updateCurrentUser,
+  updateListing,
 } from '../services/api';
 
 export const useSignup = () => {
@@ -38,5 +39,15 @@ export const useUpdateUser = () => {
 export const useCreateListing = () => {
   return useMutation<CreateListingResponse, Error, CreateListingData>({
     mutationFn: (data: CreateListingData) => createListing(data),
+  });
+};
+
+export const useUpdateListing = () => {
+  return useMutation<
+    CreateListingResponse,
+    Error,
+    { id: string; data: CreateListingData }
+  >({
+    mutationFn: ({ id, data }) => updateListing(id, data),
   });
 };
