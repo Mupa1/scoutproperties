@@ -18,6 +18,7 @@ jest.mock('../src/lib/prisma', () => ({
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),
+      update: jest.fn(),
     },
   },
 }));
@@ -61,6 +62,7 @@ const setupMocks = () => {
   (prisma.listing.create as jest.Mock).mockReset();
   (prisma.listing.findMany as jest.Mock).mockReset();
   (prisma.listing.findUnique as jest.Mock).mockReset();
+  (prisma.listing.update as jest.Mock).mockReset();
 };
 
 describe('Listing Controller', () => {
@@ -147,6 +149,122 @@ describe('Listing Controller', () => {
       const res = await request(app).post('/listings').send(mockListing);
       expect(res.status).toBe(500);
       expect(res.body.message).toBe('Failed to create listing!');
+    });
+  });
+
+  describe('PUT /listings/:id', () => {
+    it('should update an existing listing', async () => {
+      const updatedListing = {
+        ...mockListing,
+        title: 'Updated Beautiful House',
+        listingDetails: {
+          ...mockListingDetails,
+          description: 'Updated description',
+        },
+      };
+      (prisma.listing.update as jest.Mock).mockResolvedValue(updatedListing);
+      (prisma.listing.findUnique as jest.Mock).mockResolvedValue(mockListing);
+
+      const res = await request(app)
+        .put('/listings/1')
+        .send({
+          listingData: {
+            title: 'Updated Beautiful House',
+            images: ['img1', 'img2'],
+            bedroom: 3,
+            bathroom: 2,
+            price: 100000,
+            address: '123 Main St',
+            city: 'Sample City',
+            latitude: '45.0',
+            longitude: '90.0',
+            type: 'Buy',
+            property: 'House',
+          },
+          listingDetails: {
+            description: 'Updated description',
+            parking: 'available',
+            size: 1200,
+            school: 500,
+            bus: 300,
+            restaurant: 100,
+          },
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(updatedListing);
+    });
+
+    it('should return 403 if the user is not authorized to update the listing', async () => {
+      const anotherUserListing = { ...mockListing, userId: '2' };
+      (prisma.listing.findUnique as jest.Mock).mockResolvedValue(
+        anotherUserListing,
+      );
+
+      const res = await request(app)
+        .put('/listings/1')
+        .send({
+          listingData: {
+            title: 'Updated Beautiful House',
+            images: ['img1', 'img2'],
+            bedroom: 3,
+            bathroom: 2,
+            price: 100000,
+            address: '123 Main St',
+            city: 'Sample City',
+            latitude: '45.0',
+            longitude: '90.0',
+            type: 'Buy',
+            property: 'House',
+          },
+          listingDetails: {
+            description: 'Updated description',
+            parking: 'available',
+            size: 1200,
+            school: 500,
+            bus: 300,
+            restaurant: 100,
+          },
+        });
+
+      expect(res.status).toBe(403);
+      expect(res.body.message).toBe('Not Authorized!');
+    });
+
+    it('should return 500 if there is a server error', async () => {
+      (prisma.listing.update as jest.Mock).mockRejectedValue(
+        new Error('Failed to update listing!'),
+      );
+      (prisma.listing.findUnique as jest.Mock).mockResolvedValue(mockListing);
+
+      const res = await request(app)
+        .put('/listings/1')
+        .send({
+          listingData: {
+            title: 'Updated Beautiful House',
+            images: ['img1', 'img2'],
+            bedroom: 3,
+            bathroom: 2,
+            price: 100000,
+            address: '123 Main St',
+            city: 'Sample City',
+            latitude: '45.0',
+            longitude: '90.0',
+            type: 'Buy',
+            property: 'House',
+          },
+          listingDetails: {
+            description: 'Updated description',
+            parking: 'available',
+            size: 1200,
+            school: 500,
+            bus: 300,
+            restaurant: 100,
+          },
+        });
+
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe('Failed to update listing!');
     });
   });
 });

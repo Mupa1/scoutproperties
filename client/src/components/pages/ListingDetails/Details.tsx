@@ -4,6 +4,7 @@ import {
   FaBus,
   FaParking,
   FaPencilRuler,
+  FaRegEdit,
   FaSchool,
 } from 'react-icons/fa';
 import { IoIosBed } from 'react-icons/io';
@@ -12,6 +13,7 @@ import { RiMapPinLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 
+import { useUserContext } from '@/context/useUserContext';
 import { ListingDetailsProps } from '@/types';
 
 import { Map } from '../../shared/Map';
@@ -41,6 +43,7 @@ const GeneralInfo: FC<{ icon: JSX.Element; title: string; info: number }> = ({
 );
 
 export const Details: FC<DetailsProps> = ({ data }) => {
+  const { currentUser } = useUserContext();
   const { price, title, type, address, bedroom, bathroom, user } = data;
 
   const { parking, description, size, school, restaurant, bus } =
@@ -99,18 +102,29 @@ export const Details: FC<DetailsProps> = ({ data }) => {
         </div>
       </div>
       <div className="col-span-3 lg:col-span-2 flex flex-col items-center">
-        <div className="flex-center flex-col">
-          <img
-            src={user.avatar ? user.avatar : '/user-placeholder.svg'}
-            alt="profile"
-            className="h-24 w-24 rounded-full"
-          />
-          <p>{user.name}</p>
-        </div>
-        {user.company ?? <p>{user.company}</p>}
-        <Link className="link mt-3 w-full" to={`mailto:${user.email}`}>
-          Send Message
-        </Link>
+        {currentUser?.id === data.userId ? (
+          <div className="self-end">
+            <Link to={`/listings/edit/${data.id}`} className="link">
+              <FaRegEdit size={18} />
+              Edit Listing
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div className="flex-center flex-col">
+              <img
+                src={user.avatar ? user.avatar : '/user-placeholder.svg'}
+                alt="profile"
+                className="h-24 w-24 rounded-full"
+              />
+              <p>{user.name}</p>
+            </div>
+            {user.company ?? <p>{user.company}</p>}
+            <Link className="link mt-3 w-full" to={`mailto:${user.email}`}>
+              Send Message
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

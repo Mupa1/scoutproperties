@@ -61,6 +61,19 @@ export const createListing = async (
   }
 };
 
+export const updateListing = async (
+  id: string,
+  data: CreateListingData,
+): Promise<CreateListingResponse> => {
+  try {
+    const response = await axiosInstance.put(`/listings/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update listing:', error);
+    throw error;
+  }
+};
+
 export const getListings = async ({
   queryKey,
 }: QueryFunctionContext<[string, QueryParams]>) => {
