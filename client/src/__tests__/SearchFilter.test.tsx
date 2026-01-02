@@ -17,7 +17,7 @@ describe('SearchFilter Component', () => {
   test('renders all input fields and button', () => {
     renderer();
 
-    expect(screen.getByPlaceholderText('City')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Any city')).toBeInTheDocument();
     expect(screen.getByTestId('search-filter-type')).toBeInTheDocument();
     expect(screen.getByTestId('search-filter-property')).toBeInTheDocument();
     expect(screen.getByTestId('search-filter-minPrice')).toBeInTheDocument();
@@ -30,7 +30,7 @@ describe('SearchFilter Component', () => {
 
   test('updates city state on input change', () => {
     renderer();
-    const cityInput = screen.getByPlaceholderText('City') as HTMLInputElement;
+    const cityInput = screen.getByPlaceholderText('Any city') as HTMLInputElement;
 
     fireEvent.change(cityInput, { target: { value: 'Mannheim' } });
     expect(cityInput.value).toBe('Mannheim');

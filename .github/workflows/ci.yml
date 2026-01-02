@@ -1,132 +1,85 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+      - master
+  push:
+    branches:
+      - main
+      - master
 
 jobs:
-  lint-client:
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./client
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Install dependencies
-        run: yarn install
-      - name: Run ESLint
-        run: yarn lint
 
-  lint-server:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./server
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Install dependencies
-        run: yarn install
-      - name: Run ESLint
-        run: yarn lint
+        uses: actions/checkout@v4
 
-  test-client:
-    runs-on: ubuntu-latest
-    needs: [lint-client]
-    defaults:
-      run:
-        working-directory: ./client
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '20.9.0'
-      - name: Install dependencies
-        run: yarn install
-      - name: Run tests
-        run: yarn test
+          node-version: "20"
 
-  test-server:
-    runs-on: ubuntu-latest
-    needs: [lint-server]
-    defaults:
-      run:
-        working-directory: ./server
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Set environment variables
+      - name: Start MongoDB with replica set
         run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: yarn install
-      - name: Run tests
-        run: yarn test
+          docker run -d \
+            --name mongodb \
+            -p 27017:27017 \
+            mongo:7 mongod --replSet rs0
+          sleep 10
 
-  build-client:
-    runs-on: ubuntu-latest
-    needs: [test-client]
-    defaults:
-      run:
-        working-directory: ./client
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Install dependencies
-        run: yarn install
-      - name: Build project
-        run: yarn run build
-      - name: Create artifacts directory
-        run: mkdir -p ~/artifacts
-      - name: Copy artifacts
-        run: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
-
-  build-server:
-    runs-on: ubuntu-latest
-    needs: [test-server]
-    defaults:
-      run:
-        working-directory: ./server
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Set environment variables
+      - name: Initialize MongoDB replica set
         run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: yarn install
-      - name: Build project
-        run: yarn run build
-      - name: Create artifacts directory
-        run: mkdir -p ~/artifacts
-      - name: Copy artifacts
-        run: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
+          until docker exec mongodb mongosh --eval "db.runCommand({ ping: 1 })" > /dev/null 2>&1; do
+            echo "Waiting for MongoDB to be ready..."
+            sleep 2
+          done
+          docker exec mongodb mongosh --eval "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'localhost:27017'}]}) }"
+          sleep 5
+
+      - name: Install server dependencies
+        run: |
+          cd server
+          yarn install --frozen-lockfile
+
+      - name: Install client dependencies
+        run: |
+          cd client
+          yarn install --frozen-lockfile
+
+      - name: Run server tests
+        run: |
+          cd server
+          yarn test
+        env:
+          DATABASE_URL: mongodb://localhost:27017/scoutproperties?replicaSet=rs0
+          JWT_SECRET_KEY: test-secret-key
+
+      - name: Run client tests
+        run: |
+          cd client
+          yarn test --run
+
+      - name: Lint server
+        run: |
+          cd server
+          yarn lint
+
+      - name: Lint client
+        run: |
+          cd client
+          yarn lint
+
+      - name: Build server
+        run: |
+          cd server
+          yarn build
+
+      - name: Build client
+        run: |
+          cd client
+          yarn build

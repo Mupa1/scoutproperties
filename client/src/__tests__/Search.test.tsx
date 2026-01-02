@@ -21,7 +21,7 @@ describe('Search component', () => {
   });
 
   test('renders input fields for city', () => {
-    const cityInput = screen.getByPlaceholderText('City');
+    const cityInput = screen.getByPlaceholderText('Enter city name...');
 
     expect(cityInput).toBeInTheDocument();
   });
@@ -31,16 +31,16 @@ describe('Search component', () => {
     const rentButton = screen.getByText('Rent');
 
     fireEvent.click(rentButton);
-    expect(rentButton).toHaveClass('bg-primary-950');
-    expect(buyButton).not.toHaveClass('bg-primary-950');
+    expect(rentButton).toHaveClass('bg-primary-600');
+    expect(buyButton).not.toHaveClass('bg-primary-600');
 
     fireEvent.click(buyButton);
-    expect(buyButton).toHaveClass('bg-primary-950');
-    expect(rentButton).not.toHaveClass('bg-primary-950');
+    expect(buyButton).toHaveClass('bg-primary-600');
+    expect(rentButton).not.toHaveClass('bg-primary-600');
   });
 
   test('calls the search function with correct parameters on form submit', () => {
-    const cityInput = screen.getByPlaceholderText('City') as HTMLInputElement;
+    const cityInput = screen.getByPlaceholderText('Enter city name...') as HTMLInputElement;
     const searchButton = screen.getByTestId('search-submit-button');
 
     fireEvent.change(cityInput, {

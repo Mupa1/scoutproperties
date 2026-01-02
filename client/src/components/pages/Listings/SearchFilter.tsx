@@ -14,11 +14,13 @@ type SearchFilterProps = {
 };
 
 const typesOptions = [
+  { id: '', name: 'All Types' },
   { id: 'Rent', name: 'Rent' },
   { id: 'Buy', name: 'Buy' },
 ];
 
 const propertyOptions = [
+  { id: '', name: 'All Properties' },
   { id: 'Apartment', name: 'Apartment' },
   { id: 'House', name: 'House' },
   { id: 'Condo', name: 'Condo' },
@@ -30,43 +32,55 @@ export const SearchFilter: FC<SearchFilterProps> = ({
   initialValues,
 }) => {
   const [showFilters, setShowFilters] = useState(false);
-  const { register, handleSubmit, setValue } = useForm<SearchFormData>({
+  const { register, handleSubmit, setValue, reset } = useForm<SearchFormData>({
     defaultValues: {
-      type: 'Buy',
-      property: 'Apartment',
+      type: '',
+      property: '',
       city: '',
       minPrice: 0,
       maxPrice: 10000000,
-      bedroom: 1,
+      bedroom: 0,
       ...initialValues,
     },
   });
 
   useEffect(() => {
-    if (initialValues) {
+    if (initialValues && Object.keys(initialValues).length > 0) {
       Object.entries(initialValues).forEach(([key, value]) => {
         setValue(key as keyof SearchFormData, value);
       });
+    } else {
+      reset({
+        type: '',
+        property: '',
+        city: '',
+        minPrice: 0,
+        maxPrice: 10000000,
+        bedroom: 0,
+      });
     }
-  }, [initialValues, setValue]);
+  }, [initialValues, setValue, reset]);
 
   const handleFilterButtonClick = () => {
     setShowFilters((prev) => !prev);
   };
 
   return (
-    <div className="absolute">
+    <div className="w-full">
       <Button
         variant="neutral"
         onClick={handleFilterButtonClick}
-        className="md:hidden flex-1 border-0 -mt-6 px-0"
+        className="md:hidden w-full mb-3 flex items-center justify-center gap-2 border border-gray-300 bg-white hover:bg-gray-50"
       >
         {showFilters ? (
-          <IoCloseSharp size={20} title="Hide Filters" />
+          <>
+            <IoCloseSharp size={18} />
+            Hide Filters
+          </>
         ) : (
           <>
-            <IoFilter size={18} title="Show Filters" />
-            Filters
+            <IoFilter size={18} />
+            Show Filters
           </>
         )}
       </Button>
@@ -74,80 +88,84 @@ export const SearchFilter: FC<SearchFilterProps> = ({
       <form
         role="form"
         data-testid="search-filter-form"
-        className={`text-sm ${showFilters ? 'block p-2 border rounded-md' : 'hidden'} relative md:sticky w-full grid md:flex items-start md:items-end gap-3 z-50 bg-white`}
+        className={`text-sm ${showFilters ? 'block' : 'hidden'} md:block w-full`}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="grid gap-2 grid-cols-2 md:flex">
-          <div>
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex-1 min-w-[120px] max-w-[200px]">
             <Input
               data-testid="search-filter-city"
-              className=""
               type="text"
               label="City"
-              placeholder="City"
+              placeholder="Any city"
               {...register('city')}
             />
           </div>
-          <div>
+          <div className="flex-1 min-w-[120px] max-w-[150px]">
             <Select
               data-testid="search-filter-type"
-              className="md:w-30"
               options={typesOptions}
-              label="Types"
+              label="Type"
               {...register('type')}
             />
           </div>
-          <div>
+          <div className="flex-1 min-w-[140px] max-w-[180px]">
             <Select
               data-testid="search-filter-property"
-              className="md:w-30"
               options={propertyOptions}
               label="Property"
               {...register('property')}
             />
           </div>
-          <div>
+          <div className="flex-1 min-w-[120px] max-w-[150px]">
             <Input
               data-testid="search-filter-minPrice"
-              className="md:w-30"
               type="number"
               min={0}
               max={10000000}
               label="Min Price"
+              placeholder="0"
               {...register('minPrice', { valueAsNumber: true })}
             />
           </div>
-          <div>
+          <div className="flex-1 min-w-[120px] max-w-[150px]">
             <Input
               data-testid="search-filter-maxPrice"
-              className="md:w-30"
               type="number"
               min={0}
               max={10000000}
               label="Max Price"
+              placeholder="Max"
               {...register('maxPrice', { valueAsNumber: true })}
             />
           </div>
-          <div>
+          <div className="flex-1 min-w-[100px] max-w-[130px]">
             <Input
               data-testid="search-filter-bedroom"
-              className="md:w-30"
               type="number"
               min={0}
               max={5}
-              label="Bedroom(s)"
+              label="Bedrooms"
+              placeholder="Any"
               {...register('bedroom', { valueAsNumber: true })}
             />
           </div>
+          <div className="flex-shrink-0 flex flex-col">
+            <label className="opacity-0 pointer-events-none select-none">
+              Search
+            </label>
+            <Button
+              className="px-4 h-[2.75rem]"
+              data-testid="search-filter-submit-button"
+              variant="primary"
+              type="submit"
+            >
+              <IoSearch className="mr-1.5" size={18} />
+              Search
+            </Button>
+            <div className="mb-2"></div>
+          </div>
         </div>
-        <Button
-          className="w-full sm:w-auto h-[2.75rem] mb-2"
-          data-testid="search-filter-submit-button"
-          variant="primary"
-          type="submit"
-        >
-          <IoSearch />
-        </Button>
       </form>
     </div>
   );

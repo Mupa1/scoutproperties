@@ -18,7 +18,7 @@ export const HeroImages = () => {
         clickable: true,
       }}
       modules={[Autoplay, Pagination, Navigation]}
-      className="mySwiper h-screen z-20"
+      className="mySwiper h-screen z-20 bg-white"
     >
       <SwiperSlide>
         <img

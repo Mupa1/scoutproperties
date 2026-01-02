@@ -25,9 +25,11 @@ export const ListingDetailsPage: FC = () => {
   }
 
   return (
-    <section className="min-h-screen mt-20">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <ListingImages images={listing.images} />
+    <section className="min-h-screen mt-20 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-8">
+          <ListingImages images={listing.images} />
+        </div>
         <Details data={listing} />
       </div>
     </section>

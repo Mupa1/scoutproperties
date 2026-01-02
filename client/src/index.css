@@ -61,6 +61,10 @@
     @apply flex items-center gap-2 px-1 -ml-1;
   }
 
+  .swiper-slide {
+    @apply bg-white;
+  }
+
   .swiper-slide img {
     @apply block w-full h-screen object-cover;
   }
@@ -79,6 +83,21 @@
     }
   }
 
+  /* Ensure Leaflet map container has proper dimensions */
+  .leaflet-container {
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 400px !important;
+    z-index: 0;
+  }
+
+  /* Ensure map container wrapper has dimensions */
+  .map-container-wrapper {
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
+
   .hover-transition {
     @apply transition ease-in-out duration-[400ms] hover:scale-105;
   }
@@ -89,5 +108,14 @@
 
   .link {
     @apply flex-center gap-2 py-2 px-3 rounded-md bg-primary-500 text-white;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }

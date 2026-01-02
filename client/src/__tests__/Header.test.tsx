@@ -89,13 +89,43 @@ describe('Header component', () => {
   test('header hides on scroll down and shows on scroll up', async () => {
     renderer();
     const header = screen.getByRole('banner');
-    fireEvent.scroll(window, { target: { scrollY: 100 } });
-    await waitFor(() => {
-      expect(header).toHaveStyle('transform: translateY(-100px) translateZ(0)');
+    
+    // Simulate scrolling down
+    Object.defineProperty(window, 'scrollY', {
+      writable: true,
+      configurable: true,
+      value: 100,
     });
-    fireEvent.scroll(window, { target: { scrollY: 0 } });
-    await waitFor(() => {
-      expect(header).toHaveStyle('transform: none');
+    fireEvent.scroll(window);
+    
+    // Wait for framer-motion animation to apply
+    await waitFor(
+      () => {
+        const style = window.getComputedStyle(header);
+        const transform = style.transform;
+        // framer-motion applies transform as translateY(-100px) when hidden
+        expect(transform).toMatch(/translateY\(-100px\)/);
+      },
+      { timeout: 1000 },
+    );
+    
+    // Simulate scrolling back up
+    Object.defineProperty(window, 'scrollY', {
+      writable: true,
+      configurable: true,
+      value: 0,
     });
+    fireEvent.scroll(window);
+    
+    // Wait for header to show again
+    await waitFor(
+      () => {
+        const style = window.getComputedStyle(header);
+        const transform = style.transform;
+        // When shown, transform should be none or translateY(0px)
+        expect(transform).toMatch(/(none|translateY\(0px\))/);
+      },
+      { timeout: 1000 },
+    );
   });
 });

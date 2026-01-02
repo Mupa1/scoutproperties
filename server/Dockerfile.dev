@@ -1,0 +1,32 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+# Install system dependencies for Prisma and bcrypt build tools
+RUN apt-get update && apt-get install -y \
+    openssl \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install dependencies (skip prepare script which tries to build before source is copied)
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --ignore-scripts
+
+# Generate Prisma Client
+COPY prisma ./prisma
+RUN npx prisma generate
+
+# Rebuild native modules (bcrypt) for Alpine Linux
+RUN npm rebuild bcrypt --build-from-source
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Start in development mode
+CMD ["yarn", "dev"]
+

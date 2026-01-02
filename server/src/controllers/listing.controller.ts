@@ -86,25 +86,57 @@ export const getListings = async (
 ): Promise<void> => {
   const { city, type, property, bedroom, minPrice, maxPrice } = req.query;
   try {
-    const listings = await prisma.listing.findMany({
-      where: {
-        city: typeof city === 'string' ? city : undefined,
-        type:
-          typeof type === 'string' && Object.values(Type).includes(type as Type)
-            ? (type as Type)
-            : undefined,
-        property:
-          typeof property === 'string' &&
-          Object.values(Property).includes(property as Property)
-            ? (property as Property)
-            : undefined,
+    // Parse price values
+    const parsedMinPrice = minPrice ? parseInt(minPrice as string) : undefined;
+    const parsedMaxPrice = maxPrice ? parseInt(maxPrice as string) : undefined;
 
-        bedroom: parseInt(bedroom as string) || undefined,
-        price: {
-          gte: parseInt(minPrice as string) || undefined,
-          lte: parseInt(maxPrice as string) || undefined,
-        },
-      },
+    // Build price filter only if at least one price value is provided
+    const priceFilter: { gte?: number; lte?: number } = {};
+    if (parsedMinPrice && !isNaN(parsedMinPrice)) {
+      priceFilter.gte = parsedMinPrice;
+    }
+    if (parsedMaxPrice && !isNaN(parsedMaxPrice)) {
+      priceFilter.lte = parsedMaxPrice;
+    }
+
+    // Parse bedroom value
+    const parsedBedroom = bedroom ? parseInt(bedroom as string) : undefined;
+
+    const whereClause: Record<string, unknown> = {};
+
+    // Add city filter if provided
+    if (typeof city === 'string' && city.trim() !== '') {
+      whereClause.city = city;
+    }
+
+    // Add type filter if provided
+    if (
+      typeof type === 'string' &&
+      Object.values(Type).includes(type as Type)
+    ) {
+      whereClause.type = type as Type;
+    }
+
+    // Add property filter if provided
+    if (
+      typeof property === 'string' &&
+      Object.values(Property).includes(property as Property)
+    ) {
+      whereClause.property = property as Property;
+    }
+
+    // Only add bedroom filter if it's a valid number
+    if (parsedBedroom && !isNaN(parsedBedroom)) {
+      whereClause.bedroom = parsedBedroom;
+    }
+
+    // Only add price filter if at least one price value is provided
+    if (Object.keys(priceFilter).length > 0) {
+      whereClause.price = priceFilter;
+    }
+
+    const listings = await prisma.listing.findMany({
+      where: whereClause,
     });
 
     res.status(200).json(listings);

@@ -32,6 +32,8 @@ export type ListingsDataType = {
   address: string;
   latitude: number;
   longitude: number;
+  type?: 'Buy' | 'Rent';
+  property?: 'Apartment' | 'House' | 'Condo' | 'Land';
 };
 
 export type ListingsProps = {
@@ -39,6 +41,7 @@ export type ListingsProps = {
   listingsData: ListingsDataType[];
   isLoading?: boolean;
   isError?: boolean;
+  queryParams?: QueryParams;
 };
 
 export type SearchFormData = {
@@ -69,6 +72,7 @@ export interface ListingDetailsProps {
   id: number;
   title: string;
   type: 'Buy' | 'Rent';
+  property?: 'Apartment' | 'House' | 'Condo' | 'Land';
   images: string[];
   bedroom: number;
   bathroom: number;

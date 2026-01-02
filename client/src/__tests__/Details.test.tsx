@@ -43,17 +43,20 @@ describe('Details Component', () => {
       </MemoryRouter>,
     );
     expect(container).toBeInTheDocument();
-    expect(screen.getByText('Apartment')).toBeInTheDocument();
-    expect(screen.getByText('1200 €')).toBeInTheDocument();
+    // Title appears in h1, property badge also shows "Apartment"
+    expect(screen.getAllByText('Apartment').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText('1,200 €')).toBeInTheDocument();
     expect(screen.getByText('Thomas 47, Mannheim')).toBeInTheDocument();
-    expect(screen.getByText('2 Bedroom(s)')).toBeInTheDocument();
-    expect(screen.getByText('1 Bathroom(s)')).toBeInTheDocument();
+    expect(screen.getByText('Bedrooms')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument(); // Bedroom count
+    expect(screen.getByText('Bathrooms')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument(); // Bathroom count
     expect(screen.getByText('Available')).toBeInTheDocument();
-    expect(screen.getByText('961 sqm')).toBeInTheDocument();
+    expect(screen.getByText('961 sqft')).toBeInTheDocument();
     expect(screen.getByText('Rent')).toBeInTheDocument();
     expect(screen.getByText('School')).toBeInTheDocument();
     expect(screen.getByText('200m away')).toBeInTheDocument();
-    expect(screen.getByText('Bus')).toBeInTheDocument();
+    expect(screen.getByText('Bus Stop')).toBeInTheDocument();
     expect(screen.getByText('90m away')).toBeInTheDocument();
     expect(screen.getByText('Restaurant')).toBeInTheDocument();
     expect(screen.getByText('50m away')).toBeInTheDocument();

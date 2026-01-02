@@ -39,36 +39,46 @@ export const Search = () => {
   return (
     <form
       role="form"
-      className="max-w-80 m-auto flex flex-col items-center"
+      className="max-w-2xl w-full m-auto flex flex-col items-center mt-8"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="flex-center mb-4">
+      <div className="flex mb-5 bg-white/95 backdrop-blur-md rounded-xl p-1 border border-white/30 shadow-xl gap-1">
         {types.map((type) => (
-          <Button
-            className="w-20 border-2 border-primary-950 text-primary-50 first:border-r-0 last:border-l-0"
+          <button
             key={type}
-            variant={type === selectedType ? 'secondary' : 'neutral'}
+            type="button"
             onClick={() => handleSwitchType(type)}
+            className={`
+              flex-1 px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200
+              ${
+                type === selectedType
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800 bg-transparent'
+              }
+            `}
           >
             {type}
-          </Button>
+          </button>
         ))}
       </div>
-      <div className="flex">
+      <div className="flex w-full max-w-lg gap-2 bg-white/95 backdrop-blur-md rounded-xl p-2 border border-white/30 shadow-xl items-center">
+        <div className="flex-1 min-w-0 [&>div:first-child]:mb-0 [&>div:last-child]:hidden">
         <Input
           data-testid="city"
-          className="w-56 flex-1"
+            className="w-full border-0 bg-transparent focus:ring-0 text-gray-900 placeholder:text-gray-500"
           type="text"
-          placeholder="City"
+            placeholder="Enter city name..."
           {...register('city')}
         />
+        </div>
         <input type="hidden" {...register('type')} />
         <Button
           data-testid="search-submit-button"
           variant="primary"
           type="submit"
+          className="flex-shrink-0 px-6 h-[2.75rem]"
         >
-          <IoSearch />
+          <IoSearch size={20} />
         </Button>
       </div>
     </form>

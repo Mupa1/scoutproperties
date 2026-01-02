@@ -1,0 +1,87 @@
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: scoutproperties-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: scoutproperties
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - scoutproperties-network
+    command: mongod --replSet rs0
+    healthcheck:
+      test: |
+        mongosh --quiet --eval "
+        try {
+          rs.status().ok
+        } catch (err) {
+          rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}).ok
+        }
+        "
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # Backend API Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: scoutproperties-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: mongodb://mongodb:27017/scoutproperties?replicaSet=rs0
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-this-secret-key-in-production}
+      NODE_ENV: production
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - scoutproperties-network
+    volumes:
+      # Mount source code for development (optional - comment out for production)
+      # - ./server/src:/app/src:ro
+      - ./server/prisma:/app/prisma:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Client
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:3000
+    container_name: scoutproperties-client
+    restart: unless-stopped
+    ports:
+      - "4173:80"
+    depends_on:
+      - server
+    networks:
+      - scoutproperties-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  scoutproperties-network:
+    driver: bridge

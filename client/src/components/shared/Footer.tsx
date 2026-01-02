@@ -6,11 +6,12 @@ import { SocialIcons } from './SocialIcons';
 
 export const Footer = () => {
   return (
-    <footer className="text-center m-auto bg-gray-50 text-gray-600 py-4 mt-8">
-      <div className="m-auto text-center max-w-4xl px-6 py-2 lg:px-8">
-        <div className="grid gap-3">
-          <div className="flex-center">
-            <Link to="/">
+    <footer className="bg-gray-50 text-gray-600 border-t border-gray-200">
+      <div className="max-w-7xl mx-auto px-6 py-8 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          {/* Brand Section */}
+          <div className="lg:col-span-2">
+            <Link to="/" className="inline-block mb-4">
               <span className="sr-only">Scout properties logo</span>
               <img
                 className="h-10 w-auto"
@@ -18,34 +19,65 @@ export const Footer = () => {
                 alt="scout properties logo"
               />
             </Link>
+            <p className="text-sm leading-6 text-gray-600 max-w-md">
+              Cras consequat dignissim bibendum. Donec nec tempor sem. Duis
+              vestibulum congue pharetra. Maecenas pellentesque elementum urna, eu
+              rutrum leo luctus a. Cras vel turpis sed velit ornare tristique.
+            </p>
           </div>
-          <p>
-            Cras consequat dignissim bibendum. Donec nec tempor sem. Duis
-            vestibulum congue pharetra. Maecenas pellentesque elementum urna, eu
-            rutrum leo luctus a. Cras vel turpis sed velit ornare tristique.
-          </p>
+
+          {/* Navigation Links */}
           <div>
-            <div>
-              <h5>Useful Links:</h5>
-              <div className="grid grid-cols-3 gap-3 pt-2 pb-3 max-w-72 m-auto">
-                {navItems.map((item) => (
-                  <Link key={item.name} to={item.href} className="block">
+            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+              Navigation
+            </h3>
+            <ul className="space-y-3">
+              {navItems.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.href}
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                  >
                     {item.name}
                   </Link>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h5 className="pb-2">Let's Connect</h5>
-              <SocialIcons className="flex-center" />
-            </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Social Media */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+              Connect
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Follow us on social media for the latest updates and property listings.
+            </p>
+            <SocialIcons className="flex items-center gap-4" />
           </div>
         </div>
-        <div className="border-t border-gray-100 pt-4 mt-2">
-          <i>
-            Scoutproperties Copyright {new Date().getFullYear()}. All Rights
-            Reserved.
-          </i>
+
+        {/* Copyright */}
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-500">
+              © {new Date().getFullYear()} Scoutproperties. All rights reserved.
+            </p>
+            <div className="flex items-center gap-6 text-sm text-gray-500">
+              <Link
+                to="/about"
+                className="hover:text-gray-900 transition-colors duration-200"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                to="/about"
+                className="hover:text-gray-900 transition-colors duration-200"
+              >
+                Terms of Service
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
