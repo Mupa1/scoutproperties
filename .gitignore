@@ -38,3 +38,5 @@ backups/
 logs/
 *.log
 
+# Husky
+.husky/_

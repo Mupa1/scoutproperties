@@ -1,0 +1,26 @@
+{
+  "name": "scoutproperties",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scout Properties - Property listing application",
+  "scripts": {
+    "prepare": "husky",
+    "pre-commit": "node scripts/pre-commit.js",
+    "test:all": "yarn test:server && yarn test:client",
+    "test:server": "cd server && yarn test",
+    "test:client": "cd client && yarn test --run",
+    "lint:all": "yarn lint:server && yarn lint:client",
+    "lint:server": "cd server && yarn lint",
+    "lint:client": "cd client && yarn lint",
+    "build:all": "yarn build:server && yarn build:client",
+    "build:server": "cd server && yarn build",
+    "build:client": "cd client && yarn build"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "yarn": ">=1.22.0"
+  }
+}
