@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { HiOutlineHome } from 'react-icons/hi2';
 import { MdOutlineAddBox } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
@@ -7,10 +8,12 @@ import { ErrorMessage, Loader } from '@/components/ui';
 import { ListingsProps } from '@/types';
 
 export const ProfileListings: FC<ListingsProps> = ({
-  listingsData,
+  listingsData = [],
   isLoading,
   isError,
 }) => {
+  const hasListings = listingsData && listingsData.length > 0;
+
   return (
     <>
       <div className="flex-between mt-4">
@@ -28,12 +31,34 @@ export const ProfileListings: FC<ListingsProps> = ({
           <Loader />
         ) : isError ? (
           <ErrorMessage error="Error loading listings!" />
-        ) : (
+        ) : hasListings ? (
           listingsData.map((item) => (
             <div key={item.id}>
               <ListingCard data={item} />
             </div>
           ))
+        ) : (
+          <div className="col-span-full flex items-center justify-center py-16 px-6">
+            <div className="text-center max-w-md">
+              <div className="flex justify-center mb-6">
+                <div className="rounded-full bg-gray-100 p-6">
+                  <HiOutlineHome className="h-12 w-12 text-gray-400" />
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                No listings yet
+              </h3>
+              <p className="text-gray-600 mb-6">
+                You haven't created any property listings yet. Start by adding
+                your first listing to showcase your properties.
+              </p>
+              <Link to="/listings/add">
+                <button className="px-6 py-2.5 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors font-medium">
+                  Create Your First Listing
+                </button>
+              </Link>
+            </div>
+          </div>
         )}
       </div>
     </>

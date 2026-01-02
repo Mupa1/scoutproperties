@@ -7,7 +7,11 @@ import { useProfileListings } from '@/lib/react-query/queries';
 
 export const Profile: FC = () => {
   const { currentUser } = useUserContext();
-  const { data: listingsData, isPending, isError } = useProfileListings();
+  const {
+    data: listingsData,
+    isPending,
+    isError,
+  } = useProfileListings(!!currentUser);
 
   const company = currentUser?.company;
   const name = currentUser?.name;

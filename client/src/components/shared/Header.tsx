@@ -75,7 +75,7 @@ export const Header = () => {
       initial={{ y: 0 }}
       animate={{ y: showHeader ? 0 : -100 }}
       transition={{ duration: 0.3 }}
-      className={`header fixed inset-x-0 top-0 z-50 py-2 ${isHomePage && !isScrolled ? 'text-white' : 'bg-gray-50'} ${isScrolled && isHomePage && 'bg-gray-50 text-gray-700'}`}
+      className={`header fixed inset-x-0 top-0 z-[60] py-2 ${isHomePage && !isScrolled ? 'text-white' : 'bg-gray-50'} ${isScrolled && isHomePage && 'bg-gray-50 text-gray-700'}`}
     >
       <nav
         className={`flex-between mx-auto ${isListings ? '' : 'max-w-7xl'} px-6 py-2 lg:px-8`}
@@ -141,7 +141,7 @@ export const Header = () => {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <MenuItems className="absolute right-0 z-10 mt-[8rem] w-32 rounded-md border border-white/5 text-gray-700 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <MenuItems className="absolute right-0 z-[60] mt-[8rem] w-32 rounded-md border border-white/5 text-gray-700 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="py-1">
                   <MenuItem>
                     <Link

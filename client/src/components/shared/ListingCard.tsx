@@ -1,8 +1,6 @@
 import { FC } from 'react';
 import { FaBath } from 'react-icons/fa';
 import { IoIosBed } from 'react-icons/io';
-import { IoHeartOutline } from 'react-icons/io5';
-import { LuDot } from 'react-icons/lu';
 import { RiMapPinLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
@@ -17,54 +15,91 @@ type ListingCardType = {
     bathroom: number;
     price: number;
     address: string;
+    type?: 'Buy' | 'Rent';
+    property?: 'Apartment' | 'House' | 'Condo' | 'Land';
   };
 };
 
 export const ListingCard: FC<ListingCardType> = ({ data }) => {
-  const { id, title, images, bedroom, bathroom, price, address } = data;
+  const {
+    id,
+    title,
+    images,
+    bedroom,
+    bathroom,
+    price,
+    address,
+    type,
+    property,
+  } = data;
+  const formattedPrice = new Intl.NumberFormat('en-US').format(price);
+
   return (
-    <div
-      key={id}
-      className="listing-card group relative flex flex-col overflow-hidden rounded-lg border border-gray-100"
+    <Link
+      to={`/listings/${id}`}
+      className="group flex flex-col bg-white rounded-xl border border-gray-200 hover:border-primary-300 hover:shadow-lg transition-all duration-300 overflow-hidden"
     >
-      <Link to={`/listings/${id}`}>
-        <div className="aspect-h-1 aspect-w-3 group-hover:opacity-75 h:60 sm:h-40">
-          <img
-            src={images[0] || imagePlaceholder}
-            alt={title}
-            className="h-full w-full object-cover object-center"
-          />
+      {/* Image with badge overlay */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+        <img
+          src={images[0] || imagePlaceholder}
+          alt={title}
+          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        {type && (
+          <div className="absolute top-3 left-3">
+            <span
+              className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ${
+                type === 'Rent'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-green-100 text-green-700'
+              }`}
+            >
+              {type}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col p-5">
+        {/* Price and Property Type */}
+        <div className="flex items-start justify-between mb-2">
+          <div>
+            <div className="text-2xl font-bold text-gray-900 mb-0.5">
+              {formattedPrice} €
+            </div>
+            {property && (
+              <span className="text-xs text-gray-500 font-medium">
+                {property}
+              </span>
+            )}
+          </div>
         </div>
-      </Link>
-      <div className="relative flex flex-1 flex-col p-4">
-        <b className="text-lg font-bold text-gray-900">{price} €</b>
-        <Link
-          to={`/listings/${id}`}
-          className="text-sm pb-1 font-medium text-gray-900 hover:underline"
-        >
+
+        {/* Title */}
+        <h3 className="text-base font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors min-h-[3rem]">
           {title}
-        </Link>
-        <p className="flex items-center font-bold text-sm gap-1 text-gray-500">
-          <span className="listing-amenities">
-            {bedroom}
-            <IoIosBed size={16} />
+        </h3>
+
+        {/* Features */}
+        <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
+          <span className="flex items-center gap-1.5">
+            <IoIosBed className="text-gray-400" size={18} />
+            <span className="font-medium">{bedroom}</span>
           </span>
-          <LuDot />
-          <span className="listing-amenities">
-            {bathroom}
-            <FaBath />
+          <span className="flex items-center gap-1.5">
+            <FaBath className="text-gray-400" size={16} />
+            <span className="font-medium">{bathroom}</span>
           </span>
-        </p>
-        <div className="flex items-center pt-2 gap-1">
-          <RiMapPinLine />
-          <p className="text-sm text-gray-500 truncate hover:text-clip">
-            {address}
-          </p>
         </div>
-        <div className="absolute top-4 right-3 hidden">
-          <IoHeartOutline />
+
+        {/* Location */}
+        <div className="flex items-center gap-1.5 pt-3 border-t border-gray-100">
+          <RiMapPinLine className="text-gray-400 flex-shrink-0" size={14} />
+          <span className="text-sm text-gray-600 truncate">{address}</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };

@@ -72,7 +72,8 @@ export const Map: FC<ListingsProps> = ({ listingsData, className }) => {
       center={position}
       zoom={7}
       scrollWheelZoom={false}
-      className={clsx(className, 'z-10 w-full map rounded-md overflow-hidden')}
+      className={clsx(className, 'z-10 w-full h-full map')}
+      style={{ height: '100%', width: '100%' }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

@@ -61,6 +61,10 @@
     @apply flex items-center gap-2 px-1 -ml-1;
   }
 
+  .swiper-slide {
+    @apply bg-white;
+  }
+
   .swiper-slide img {
     @apply block w-full h-screen object-cover;
   }
@@ -89,5 +93,14 @@
 
   .link {
     @apply flex-center gap-2 py-2 px-3 rounded-md bg-primary-500 text-white;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }

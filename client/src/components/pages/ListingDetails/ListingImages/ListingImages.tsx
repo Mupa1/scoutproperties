@@ -16,7 +16,7 @@ export const ListingImages: FC<{ images: string[] }> = ({ images }) => {
   };
 
   return (
-    <div className="listing-image-wrapper h-60vh py-6">
+    <div className="listing-image-wrapper h-[400px] sm:h-[500px] md:h-[600px] relative">
       <ImageGrid images={images} onClick={handleImageClick} />
 
       <Dialog

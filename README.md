@@ -1,7 +1,7 @@
 <div align="center">
-  <h1 align="center">Scout Properties</h1> 
+  <h1 align="center">Scout Properties</h1>
 
-  ![Screenshot 2024-08-02 at 09 16 26](https://github.com/user-attachments/assets/041644ef-8b68-4ff1-b5ba-31d0f2c804e2)
+![Screenshot](client/public/Screenshot.png)
 
   <div>
     <img src="https://img.shields.io/badge/-React-black?style=for-the-badge&logoColor=white&logo=react&color=5399b7"alt="react" />
@@ -16,19 +16,17 @@
 
 <h3 align="center">A real estate application</h3>
 
-
 ## 📋 <a name="table">Table of Contents</a>
 
 1. 🤖 [Introduction](#introduction)
 2. 🛠️ [Tech Stack](#tech-stack)
 3. 🚀 [Features](#features)
 4. 🤸 [Quick Start](#quick-start)
-6. 👏 [Credits](#credits)
-
+5. 👏 [Credits](#credits)
 
 ## <a name="introduction">🤖 Introduction</a>
 
-Scoutproperties is a real estate application where property agents or owners can register and post properties for rent or sale. Users can search for houses, apartments, condos or land and contact the agent or owner to buy or rent the property. 
+Scoutproperties is a real estate application where property agents or owners can register and post properties for rent or sale. Users can search for houses, apartments, condos or land and contact the agent or owner to buy or rent the property.
 
 ## <a name="tech-stack">🛠️ Tech Stack</a>
 
@@ -84,13 +82,14 @@ cd scoutproperties
 
 Install the project dependencies using yarn:
 
-__Client__
+**Client**
 
 ```bash
 cd client
 yarn install
 ```
-__Server__
+
+**Server**
 
 ```bash
 cd server
@@ -99,7 +98,7 @@ yarn install
 
 **Set Up Environment Variables**
 
-__*Client*__
+**_Client_**
 
 ```bash
 cd client
@@ -111,7 +110,7 @@ Create a new file named .env.local in the root of your client directory and add 
 VITE_API_BASE_URL='http://localhost:3000'
 ```
 
-__*Server*__
+**_Server_**
 
 ```bash
 cd server
@@ -128,14 +127,14 @@ JWT_SECRET_KEY=
 
 Ensure both client and server are running.
 
-__*Client*__
+**_Client_**
 
 ```bash
 cd client
 yarn dev
 ```
 
-__*Server*__
+**_Server_**
 
 ```bash
 cd server
@@ -148,12 +147,12 @@ Open [http://localhost:4173](http://localhost:4173) in your browser to view the 
 
 - Through OpenAPI Documentation:
 
-  Open [http://localhost:3000/api-docs](http://localhost:3000/api-docs) in your browser to view the API documentation and test the API endpoints. 
+  Open [http://localhost:3000/api-docs](http://localhost:3000/api-docs) in your browser to view the API documentation and test the API endpoints.
 
 - Through Postman:
 
   Open [http://localhost:3000](http://localhost:3000) in Postman to test the various API endpoints.
 
 ## <a name="credits">👏 Credits</a>
+
 The listings images are from <a href="https://unsplash.com">Unsplash.</a>
-  

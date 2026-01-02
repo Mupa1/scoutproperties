@@ -21,9 +21,10 @@ export const useGetListingById = (listingId: string) => {
   });
 };
 
-export const useProfileListings = () => {
+export const useProfileListings = (enabled: boolean = true) => {
   return useQuery({
     queryKey: ['profileListings'],
     queryFn: getProfileListings,
+    enabled,
   });
 };

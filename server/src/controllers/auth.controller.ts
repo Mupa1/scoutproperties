@@ -29,6 +29,7 @@ export const register = async (req: Request, res: Response) => {
     res.status(201).json({ message: 'User registered successfully!' });
     return newUser;
   } catch (err) {
+    console.error('Registration error:', err);
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       if (err.code === 'P2002') {
         return res.status(400).json({
@@ -69,7 +70,8 @@ export const login = async (req: Request, res: Response) => {
     res
       .cookie('token', token, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
         maxAge: age,
       })
       .status(200)

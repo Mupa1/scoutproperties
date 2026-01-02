@@ -10,3 +10,20 @@ export const axiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// Add response interceptor to handle authentication errors
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Handle 401 (Unauthorized) or 403 (Forbidden) errors
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      // Clear user data from localStorage
+      localStorage.removeItem('scoutPropertyUser');
+      // Redirect to sign-in page
+      if (window.location.pathname !== '/sign-in') {
+        window.location.href = '/sign-in';
+      }
+    }
+    return Promise.reject(error);
+  },
+);
