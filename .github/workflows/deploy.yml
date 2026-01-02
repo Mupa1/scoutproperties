@@ -59,7 +59,16 @@ jobs:
             # Pull latest changes
             echo "📥 Pulling latest changes from $BRANCH..."
             git fetch origin
+
+            # Stash any local changes to avoid conflicts
+            git stash || true
+
+            # Remove untracked files that might conflict
+            git clean -fd || true
+
+            # Checkout and pull
             git checkout "$BRANCH"
+            git reset --hard origin/"$BRANCH"
             git pull origin "$BRANCH"
 
             # Install and build server
