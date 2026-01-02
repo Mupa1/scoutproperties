@@ -99,20 +99,44 @@ jobs:
 
             # Restart services
             echo "🔄 Restarting services..."
+            SERVICE_RESTARTED=false
+
             if command -v pm2 &> /dev/null; then
-              pm2 restart all || pm2 start ecosystem.config.js
-              echo "✅ Services restarted via PM2"
+              echo "📦 Found PM2, attempting to restart services..."
+              if pm2 restart all 2>/dev/null || pm2 start ecosystem.config.js 2>/dev/null; then
+                echo "✅ Services restarted via PM2"
+                SERVICE_RESTARTED=true
+              else
+                echo "⚠️  PM2 restart failed, but continuing..."
+              fi
             elif command -v docker-compose &> /dev/null || command -v docker &> /dev/null; then
               if [ -f "docker-compose.yml" ]; then
-                docker-compose down
-                docker-compose up -d --build
-                echo "✅ Services restarted via Docker Compose"
+                echo "🐳 Found Docker Compose, attempting to restart services..."
+                if docker-compose down && docker-compose up -d --build; then
+                  echo "✅ Services restarted via Docker Compose"
+                  SERVICE_RESTARTED=true
+                else
+                  echo "⚠️  Docker Compose restart failed, but continuing..."
+                fi
+              else
+                echo "⚠️  Docker found but docker-compose.yml not found"
               fi
-            elif systemctl list-units --type=service | grep -q scoutproperties; then
-              sudo systemctl restart scoutproperties
-              echo "✅ Services restarted via systemd"
+            elif systemctl list-units --type=service 2>/dev/null | grep -q scoutproperties; then
+              echo "⚙️  Found systemd service, attempting to restart..."
+              if sudo systemctl restart scoutproperties 2>/dev/null; then
+                echo "✅ Services restarted via systemd"
+                SERVICE_RESTARTED=true
+              else
+                echo "⚠️  Systemd restart failed, but continuing..."
+              fi
             else
-              echo "⚠️  No service manager found. Please restart services manually."
+              echo "⚠️  No service manager found (PM2, Docker, or systemd)"
+              echo "⚠️  Please restart services manually after deployment"
+            fi
+
+            if [ "$SERVICE_RESTARTED" = false ]; then
+              echo "⚠️  Services were not automatically restarted"
+              echo "⚠️  Please manually restart your services to apply changes"
             fi
 
             echo "✅ Deployment completed successfully!"
