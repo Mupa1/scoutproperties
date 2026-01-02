@@ -1,132 +1,80 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+      - master
+  push:
+    branches:
+      - main
+      - master
 
 jobs:
-  lint-client:
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./client
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Install dependencies
-        run: yarn install
-      - name: Run ESLint
-        run: yarn lint
 
-  lint-server:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./server
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Install dependencies
-        run: yarn install
-      - name: Run ESLint
-        run: yarn lint
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-  test-client:
-    runs-on: ubuntu-latest
-    needs: [lint-client]
-    defaults:
-      run:
-        working-directory: ./client
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Install dependencies
-        run: yarn install
-      - name: Run tests
-        run: yarn test
+        uses: actions/checkout@v4
 
-  test-server:
-    runs-on: ubuntu-latest
-    needs: [lint-server]
-    defaults:
-      run:
-        working-directory: ./server
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '20.9.0'
-      - name: Set environment variables
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install server dependencies
         run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: yarn install
-      - name: Run tests
-        run: yarn test
+          cd server
+          yarn install --frozen-lockfile
 
-  build-client:
-    runs-on: ubuntu-latest
-    needs: [test-client]
-    defaults:
-      run:
-        working-directory: ./client
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Install dependencies
-        run: yarn install
-      - name: Build project
-        run: yarn run build
-      - name: Create artifacts directory
-        run: mkdir -p ~/artifacts
-      - name: Copy artifacts
-        run: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
-
-  build-server:
-    runs-on: ubuntu-latest
-    needs: [test-server]
-    defaults:
-      run:
-        working-directory: ./server
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.9.0'
-      - name: Set environment variables
+      - name: Install client dependencies
         run: |
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: yarn install
-      - name: Build project
-        run: yarn run build
-      - name: Create artifacts directory
-        run: mkdir -p ~/artifacts
-      - name: Copy artifacts
-        run: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
+          cd client
+          yarn install --frozen-lockfile
+
+      - name: Run server tests
+        run: |
+          cd server
+          yarn test
+        env:
+          DATABASE_URL: mongodb://localhost:27017/scoutproperties?replicaSet=rs0
+          JWT_SECRET_KEY: test-secret-key
+
+      - name: Run client tests
+        run: |
+          cd client
+          yarn test --run
+
+      - name: Lint server
+        run: |
+          cd server
+          yarn lint
+
+      - name: Lint client
+        run: |
+          cd client
+          yarn lint
+
+      - name: Build server
+        run: |
+          cd server
+          yarn build
+
+      - name: Build client
+        run: |
+          cd client
+          yarn build

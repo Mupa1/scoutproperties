@@ -22,7 +22,8 @@
 2. 🛠️ [Tech Stack](#tech-stack)
 3. 🚀 [Features](#features)
 4. 🤸 [Quick Start](#quick-start)
-5. 👏 [Credits](#credits)
+5. 🚢 [Deployment](#deployment)
+6. 👏 [Credits](#credits)
 
 ## <a name="introduction">🤖 Introduction</a>
 
@@ -152,6 +153,38 @@ Open [http://localhost:4173](http://localhost:4173) in your browser to view the 
 - Through Postman:
 
   Open [http://localhost:3000](http://localhost:3000) in Postman to test the various API endpoints.
+
+## <a name="deployment">🚢 Deployment</a>
+
+This project includes automated deployment setup using GitHub Actions for Hostinger VPS.
+
+### Quick Setup
+
+1. **Generate SSH Key** (on your local machine):
+
+   ```bash
+   ssh-keygen -t rsa -b 4096 -C "github-actions" -f ~/.ssh/github_actions_deploy
+   ```
+
+2. **Add Public Key to VPS**:
+
+   ```bash
+   ssh-copy-id -i ~/.ssh/github_actions_deploy.pub user@your-vps-ip
+   ```
+
+3. **Add GitHub Secrets**:
+
+   - Go to: **Repository → Settings → Secrets and variables → Actions**
+   - Add: `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_PORT`, `VPS_APP_PATH`
+
+4. **Deploy**:
+   - Push to `main` or `master` branch
+   - GitHub Actions will automatically deploy to your VPS
+
+### Documentation
+
+- **Quick Setup**: See [`.github/QUICK_SETUP.md`](.github/QUICK_SETUP.md) for a 5-minute setup guide
+- **Detailed Guide**: See [`.github/SETUP_GITHUB_ACTIONS.md`](.github/SETUP_GITHUB_ACTIONS.md) for comprehensive instructions
 
 ## <a name="credits">👏 Credits</a>
 
