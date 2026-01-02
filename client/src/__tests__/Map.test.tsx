@@ -34,6 +34,10 @@ const listingsData: ListingsProps['listingsData'] = [
 ];
 
 vi.mock('react-leaflet', () => {
+  const mockMap = {
+    invalidateSize: vi.fn(),
+  };
+
   return {
     MapContainer: ({ children }: PropsWithChildren) => (
       <div data-testid="map-container">{children}</div>
@@ -45,6 +49,7 @@ vi.mock('react-leaflet', () => {
       <div data-testid="popup">{children}</div>
     ),
     TileLayer: () => <div data-testid="tile-layer" />,
+    useMap: () => mockMap,
   };
 });
 
