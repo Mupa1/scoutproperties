@@ -83,6 +83,21 @@
     }
   }
 
+  /* Ensure Leaflet map container has proper dimensions */
+  .leaflet-container {
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 400px !important;
+    z-index: 0;
+  }
+
+  /* Ensure map container wrapper has dimensions */
+  .map-container-wrapper {
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
+
   .hover-transition {
     @apply transition ease-in-out duration-[400ms] hover:scale-105;
   }

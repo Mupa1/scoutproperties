@@ -63,13 +63,13 @@ export const Search = () => {
       </div>
       <div className="flex w-full max-w-lg gap-2 bg-white/95 backdrop-blur-md rounded-xl p-2 border border-white/30 shadow-xl items-center">
         <div className="flex-1 min-w-0 [&>div:first-child]:mb-0 [&>div:last-child]:hidden">
-          <Input
-            data-testid="city"
+        <Input
+          data-testid="city"
             className="w-full border-0 bg-transparent focus:ring-0 text-gray-900 placeholder:text-gray-500"
-            type="text"
+          type="text"
             placeholder="Enter city name..."
-            {...register('city')}
-          />
+          {...register('city')}
+        />
         </div>
         <input type="hidden" {...register('type')} />
         <Button

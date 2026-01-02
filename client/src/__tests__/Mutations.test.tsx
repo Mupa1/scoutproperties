@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { AxiosError } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { afterEach, describe, expect, test } from 'vitest';
@@ -23,7 +23,7 @@ describe('Mutation hooks', () => {
     const mockResponse = { message: 'User registered successfully' };
     mock.onPost('/auth/register').reply(200, mockResponse);
 
-    const { result, waitFor } = renderHook(() => useSignup(), { wrapper });
+    const { result } = renderHook(() => useSignup(), { wrapper });
 
     await act(async () => {
       await result.current.mutateAsync({
@@ -43,7 +43,7 @@ describe('Mutation hooks', () => {
     const mockError = { message: 'User registration failed' };
     mock.onPost('/auth/register').reply(400, mockError);
 
-    const { result, waitFor } = renderHook(() => useSignup(), { wrapper });
+    const { result } = renderHook(() => useSignup(), { wrapper });
 
     await act(async () => {
       try {
@@ -66,7 +66,7 @@ describe('Mutation hooks', () => {
     const mockResponse = { message: 'User signed in successfully' };
     mock.onPost('/auth/login').reply(200, mockResponse);
 
-    const { result, waitFor } = renderHook(() => useSignin(), { wrapper });
+    const { result } = renderHook(() => useSignin(), { wrapper });
 
     await act(async () => {
       await result.current.mutateAsync({
@@ -84,7 +84,7 @@ describe('Mutation hooks', () => {
     const mockError = { message: 'User sign in failed' };
     mock.onPost('/auth/login').reply(401, mockError);
 
-    const { result, waitFor } = renderHook(() => useSignin(), { wrapper });
+    const { result } = renderHook(() => useSignin(), { wrapper });
 
     await act(async () => {
       try {
@@ -105,7 +105,7 @@ describe('Mutation hooks', () => {
     const mockResponse = { message: 'User signed out successfully' };
     mock.onPost('/auth/logout').reply(200, mockResponse);
 
-    const { result, waitFor } = renderHook(() => useSignout(), { wrapper });
+    const { result } = renderHook(() => useSignout(), { wrapper });
 
     await act(async () => {
       await result.current.mutateAsync();
@@ -120,7 +120,7 @@ describe('Mutation hooks', () => {
     const mockError = { message: 'User sign out failed' };
     mock.onPost('/auth/logout').reply(400, mockError);
 
-    const { result, waitFor } = renderHook(() => useSignout(), { wrapper });
+    const { result } = renderHook(() => useSignout(), { wrapper });
 
     await act(async () => {
       try {

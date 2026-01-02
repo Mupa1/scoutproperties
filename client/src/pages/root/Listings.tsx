@@ -117,7 +117,7 @@ export const ListingsPage: FC = () => {
             </div>
           ) : (
             <>
-              {/* Map Section - Fixed on the left, never scrolls, fills remaining height */}
+              {/* Map Section - Fixed on the left, always visible, fills remaining height */}
               <div
                 className="hidden lg:block lg:w-2/5 xl:w-1/2 flex-shrink-0 fixed left-0 border-r border-gray-200 bg-white z-10"
                 style={{
