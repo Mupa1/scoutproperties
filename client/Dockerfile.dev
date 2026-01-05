@@ -2,16 +2,12 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies
+# Enable Yarn via Corepack
+RUN corepack enable && corepack prepare yarn@1.22.22 --activate
+
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
-# Copy source code
-COPY . .
-
-# Expose port
 EXPOSE 4173
 
-# Start in development mode
 CMD ["yarn", "dev", "--host"]
-

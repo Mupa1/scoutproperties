@@ -1,40 +1,42 @@
-version: "3.9"
-
 services:
   mongodb:
     image: mongo:7
     container_name: scoutproperties-mongodb
     restart: unless-stopped
-    command: mongod --replSet rs0
     volumes:
       - mongodb_data:/data/db
     networks:
-      - scoutproperties
+      - scoutproperties-network
+    command: mongod --replSet rs0
     healthcheck:
-      test: >
+      test: |
         mongosh --quiet --eval "
         try { rs.status().ok }
-        catch { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}).ok }
-        "
+        catch (e) {
+          rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}).ok
+        }"
       interval: 10s
       timeout: 10s
       retries: 5
 
   server:
-    image: ghcr.io/Mupa1/scoutproperties-server:latest
+    image: ghcr.io/mupa1/scoutproperties-server:latest
     container_name: scoutproperties-server
     restart: unless-stopped
-    env_file: .env
     ports:
       - "3000:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      NODE_ENV: production
     depends_on:
       mongodb:
         condition: service_healthy
     networks:
-      - scoutproperties
+      - scoutproperties-network
 
   client:
-    image: ghcr.io/Mupa1/scoutproperties-client:latest
+    image: ghcr.io/mupa1/scoutproperties-client:latest
     container_name: scoutproperties-client
     restart: unless-stopped
     ports:
@@ -42,10 +44,10 @@ services:
     depends_on:
       - server
     networks:
-      - scoutproperties
+      - scoutproperties-network
 
 volumes:
   mongodb_data:
 
 networks:
-  scoutproperties:
+  scoutproperties-network:
