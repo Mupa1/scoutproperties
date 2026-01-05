@@ -1,55 +1,58 @@
+networks:
+  scoutproperties-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+  server-logs:
+  client-logs:
+
 services:
+  # MongoDB
   mongodb:
     image: mongo:7
-    container_name: scoutproperties-mongodb
-    restart: unless-stopped
-    volumes:
-      - mongodb_data:/data/db
+    container_name: scoutproperties-mongo
+    restart: always
     networks:
       - scoutproperties-network
-    command: mongod --replSet rs0
-    healthcheck:
-      test: |
-        mongosh --quiet --eval "
-        try { rs.status().ok }
-        catch (e) {
-          rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}).ok
-        }"
-      interval: 10s
-      timeout: 10s
-      retries: 5
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongo-data:/data/db
 
+  # Backend
   server:
     image: ghcr.io/mupa1/scoutproperties-server:latest
     container_name: scoutproperties-server
-    restart: unless-stopped
-    env_file:
-      - .env
+    restart: always
+    networks:
+      - scoutproperties-network
+    depends_on:
+      - mongodb
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: ${DATABASE_URL}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       NODE_ENV: production
-    depends_on:
-      mongodb:
-        condition: service_healthy
-    networks:
-      - scoutproperties-network
+      DATABASE_URL: ${DATABASE_URL}  # point to your MongoDB URI or other DB
+      # Add other env vars your server needs
+    volumes:
+      - server-logs:/app/logs
 
+  # Frontend
   client:
     image: ghcr.io/mupa1/scoutproperties-client:latest
     container_name: scoutproperties-client
-    restart: unless-stopped
-    ports:
-      - "4173:80"
-    depends_on:
-      - server
+    restart: always
     networks:
       - scoutproperties-network
-
-volumes:
-  mongodb_data:
-
-networks:
-  scoutproperties-network:
+    depends_on:
+      - server
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    volumes:
+      - client-logs:/app/logs
