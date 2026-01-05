@@ -30,7 +30,10 @@ jobs:
           OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           IMAGE=ghcr.io/$OWNER/scoutproperties-server:latest
 
+          echo "📦 Building server image..."
           docker build -t $IMAGE -f server/Dockerfile server
+          
+          echo "🚀 Pushing server image..."
           docker push $IMAGE
 
       - name: Build & push client image
@@ -38,8 +41,11 @@ jobs:
           OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           IMAGE=ghcr.io/$OWNER/scoutproperties-client:latest
 
+          echo "📦 Building client image..."
           docker build --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
                        -t $IMAGE -f client/Dockerfile client
+          
+          echo "🚀 Pushing client image..."
           docker push $IMAGE
 
   deploy:
@@ -60,10 +66,13 @@ jobs:
             cd ${{ secrets.VPS_APP_PATH }}
 
             echo "📥 Pulling latest images..."
-            docker compose pull
+            docker-compose -f docker-compose.yml pull
 
             echo "🔄 Restarting containers..."
-            docker compose up -d
+            docker-compose -f docker-compose.yml up -d
+
+            echo "⏳ Waiting for containers to be ready..."
+            sleep 5
 
             echo "🗄 Running migrations..."
             docker exec scoutproperties-server npx prisma migrate deploy || echo "No migrations"
