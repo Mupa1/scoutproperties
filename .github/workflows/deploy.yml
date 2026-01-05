@@ -94,6 +94,14 @@ jobs:
             if [ -d "server/prisma" ]; then
               cd server
               yarn prisma generate
+              # Run migrations if using Docker Compose
+              if command -v docker-compose &> /dev/null && [ -f "../docker-compose.yml" ]; then
+                echo "🔄 Running Prisma migrations via Docker..."
+                docker exec scoutproperties-server npx prisma migrate deploy || echo "⚠️  Migration failed or not needed"
+              else
+                # Run migrations directly if not using Docker
+                yarn prisma migrate deploy || echo "⚠️  Migration failed or not needed"
+              fi
               cd ..
             fi
 
@@ -112,9 +120,17 @@ jobs:
             elif command -v docker-compose &> /dev/null || command -v docker &> /dev/null; then
               if [ -f "docker-compose.yml" ]; then
                 echo "🐳 Found Docker Compose, attempting to restart services..."
+                # Load environment variables if .env file exists
+                if [ -f ".env" ]; then
+                  export $(cat .env | grep -v '^#' | xargs)
+                  echo "✅ Loaded environment variables from .env"
+                fi
                 if docker-compose down && docker-compose up -d --build; then
                   echo "✅ Services restarted via Docker Compose"
                   SERVICE_RESTARTED=true
+                  # Wait for services to be healthy before running migrations
+                  echo "⏳ Waiting for services to be healthy..."
+                  sleep 10
                 else
                   echo "⚠️  Docker Compose restart failed, but continuing..."
                 fi
