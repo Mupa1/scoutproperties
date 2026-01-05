@@ -1,0 +1,67 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: scoutproperties-mongodb-dev
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: scoutproperties
+    volumes:
+      - mongodb_data_dev:/data/db
+    command: mongod --replSet rs0
+    healthcheck:
+      test: >
+        mongosh --quiet --eval "
+        try { rs.status().ok }
+        catch {
+          rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}).ok
+        }"
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  server:
+    env_file:
+    - .env.local
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    container_name: scoutproperties-server-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: mongodb://mongodb:27017/scoutproperties?replicaSet=rs0
+      JWT_SECRET_KEY: dev-secret-key-change-in-production
+      NODE_ENV: development
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    command: yarn dev
+
+  client:
+    env_file:
+    - .env.local
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    container_name: scoutproperties-client-dev
+    restart: unless-stopped
+    ports:
+      - "4173:4173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:3000
+    depends_on:
+      - server
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    command: yarn dev --host
+
+volumes:
+  mongodb_data_dev:
