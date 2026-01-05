@@ -1,4 +1,4 @@
-name: CI
+name: CI & Deploy
 
 on:
   push:
@@ -44,6 +44,7 @@ jobs:
           docker push $IMAGE
   
   deploy:
+    needs: build 
     runs-on: ubuntu-latest
 
     steps:
