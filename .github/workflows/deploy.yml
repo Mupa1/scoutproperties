@@ -1,158 +1,33 @@
-name: Deploy to Hostinger VPS
+name: Deploy
 
 on:
-  # Deploy only on pushes to main/master (not on pull requests)
-  # This ensures only merged code gets deployed to production
   push:
-    branches:
-      - main
-      - master
-  # Allow manual deployment via GitHub UI
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:
   deploy:
-    name: Deploy to VPS
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to VPS via SSH
+      - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
-          script_stop: true
+          command_timeout: 5m
           script: |
             set -e
-            export APP_DIR="${{ secrets.VPS_APP_PATH }}"
-            export BRANCH="${{ github.ref_name }}"
+            cd ${{ secrets.VPS_APP_PATH }}
 
-            echo "🚀 Starting deployment..."
-            echo "📍 Application directory: $APP_DIR"
-            echo "🌿 Branch: $BRANCH"
+            echo "📥 Pulling images..."
+            docker compose pull
 
-            # Navigate to application directory
-            cd "$APP_DIR" || {
-              echo "❌ Error: Application directory not found: $APP_DIR"
-              exit 1
-            }
+            echo "🔄 Restarting containers..."
+            docker compose up -d
 
-            # Create backup
-            echo "💾 Creating backup..."
-            BACKUP_DIR="$APP_DIR/backups"
-            mkdir -p "$BACKUP_DIR"
-            BACKUP_NAME="backup-$(date +%Y%m%d-%H%M%S)"
-            tar -czf "$BACKUP_DIR/$BACKUP_NAME.tar.gz" . \
-              --exclude='node_modules' \
-              --exclude='dist' \
-              --exclude='.git' \
-              --exclude='backups' \
-              --exclude='logs' 2>/dev/null || true
-            echo "✅ Backup created: $BACKUP_NAME.tar.gz"
+            echo "🗄 Running migrations..."
+            docker exec scoutproperties-server npx prisma migrate deploy
 
-            # Pull latest changes
-            echo "📥 Pulling latest changes from $BRANCH..."
-            git fetch origin
-
-            # Stash any local changes to avoid conflicts
-            git stash || true
-
-            # Remove untracked files that might conflict
-            git clean -fd || true
-
-            # Checkout and pull
-            git checkout "$BRANCH"
-            git reset --hard origin/"$BRANCH"
-            git pull origin "$BRANCH"
-
-            # Install and build server
-            echo "🔨 Building server..."
-            if [ -d "server" ]; then
-              cd server
-              yarn install --frozen-lockfile --production=false
-              yarn build
-              cd ..
-            fi
-
-            # Install and build client
-            echo "🔨 Building client..."
-            if [ -d "client" ]; then
-              cd client
-              yarn install --frozen-lockfile --production=false
-              yarn build
-              cd ..
-            fi
-
-            # Run database migrations
-            echo "🗄️  Running database migrations..."
-            if [ -d "server/prisma" ]; then
-              cd server
-              yarn prisma generate
-              # Run migrations if using Docker Compose
-              if command -v docker-compose &> /dev/null && [ -f "../docker-compose.yml" ]; then
-                echo "🔄 Running Prisma migrations via Docker..."
-                docker exec scoutproperties-server npx prisma migrate deploy || echo "⚠️  Migration failed or not needed"
-              else
-                # Run migrations directly if not using Docker
-                yarn prisma migrate deploy || echo "⚠️  Migration failed or not needed"
-              fi
-              cd ..
-            fi
-
-            # Restart services
-            echo "🔄 Restarting services..."
-            SERVICE_RESTARTED=false
-
-            if command -v pm2 &> /dev/null; then
-              echo "📦 Found PM2, attempting to restart services..."
-              if pm2 restart all 2>/dev/null || pm2 start ecosystem.config.js 2>/dev/null; then
-                echo "✅ Services restarted via PM2"
-                SERVICE_RESTARTED=true
-              else
-                echo "⚠️  PM2 restart failed, but continuing..."
-              fi
-            elif command -v docker-compose &> /dev/null || command -v docker &> /dev/null; then
-              if [ -f "docker-compose.yml" ]; then
-                echo "🐳 Found Docker Compose, attempting to restart services..."
-                # Load environment variables if .env file exists
-                if [ -f ".env" ]; then
-                  export $(cat .env | grep -v '^#' | xargs)
-                  echo "✅ Loaded environment variables from .env"
-                fi
-                if docker-compose down && docker-compose up -d --build; then
-                  echo "✅ Services restarted via Docker Compose"
-                  SERVICE_RESTARTED=true
-                  # Wait for services to be healthy before running migrations
-                  echo "⏳ Waiting for services to be healthy..."
-                  sleep 10
-                else
-                  echo "⚠️  Docker Compose restart failed, but continuing..."
-                fi
-              else
-                echo "⚠️  Docker found but docker-compose.yml not found"
-              fi
-            elif systemctl list-units --type=service 2>/dev/null | grep -q scoutproperties; then
-              echo "⚙️  Found systemd service, attempting to restart..."
-              if sudo systemctl restart scoutproperties 2>/dev/null; then
-                echo "✅ Services restarted via systemd"
-                SERVICE_RESTARTED=true
-              else
-                echo "⚠️  Systemd restart failed, but continuing..."
-              fi
-            else
-              echo "⚠️  No service manager found (PM2, Docker, or systemd)"
-              echo "⚠️  Please restart services manually after deployment"
-            fi
-
-            if [ "$SERVICE_RESTARTED" = false ]; then
-              echo "⚠️  Services were not automatically restarted"
-              echo "⚠️  Please manually restart your services to apply changes"
-            fi
-
-            echo "✅ Deployment completed successfully!"
+            echo "✅ Deployment finished"

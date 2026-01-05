@@ -19,15 +19,26 @@
 ## 📋 <a name="table">Table of Contents</a>
 
 1. 🤖 [Introduction](#introduction)
-2. 🛠️ [Tech Stack](#tech-stack)
-3. 🚀 [Features](#features)
-4. 🤸 [Quick Start](#quick-start)
-5. 🚢 [Deployment](#deployment)
-6. 👏 [Credits](#credits)
+2. 🏗 [Architecture](#architecture)
+3. 🛠️ [Tech Stack](#tech-stack)
+4. 🚀 [Features](#features)
+5. 🤸 [Quick Start](#quick-start)
+6. 🚢 [Deployment](#deployment)
+7. 👏 [Credits](#credits)
 
 ## <a name="introduction">🤖 Introduction</a>
 
 Scoutproperties is a real estate application where property agents or owners can register and post properties for rent or sale. Users can search for houses, apartments, condos or land and contact the agent or owner to buy or rent the property.
+
+## <a name="architecture">🏗 Architecture
+
+Scout Properties uses a modern container-based architecture:
+
+- **Client**: React app built with Vite and served via Nginx
+- **Server**: Node.js + Express API running in Docker
+- **Database**: MongoDB with replica set (Docker)
+- **CI/CD**: GitHub Actions builds Docker images and deploys to a VPS
+
 
 ## <a name="tech-stack">🛠️ Tech Stack</a>
 
@@ -37,8 +48,11 @@ Scoutproperties is a real estate application where property agents or owners can
 - Cloudinary
 - Node.js
 - Express
-- MongoDB
+- MongoDB (Replica Set)
+- Docker & Docker Compose
+- GitHub Actions (CI/CD)
 - OpenAPI
+
 
 ## <a name="features">🚀 Features</a>
 
@@ -156,35 +170,44 @@ Open [http://localhost:4173](http://localhost:4173) in your browser to view the 
 
 ## <a name="deployment">🚢 Deployment</a>
 
-This project includes automated deployment setup using GitHub Actions for Hostinger VPS.
+This project uses **Docker-based CI/CD** with **GitHub Actions** and **GitHub Container Registry (GHCR)**.
 
-### Quick Setup
+### Deployment Flow
 
-1. **Generate SSH Key** (on your local machine):
+1. Push to `main` or `master`
+2. GitHub Actions:
+   - runs tests
+   - builds Docker images
+   - pushes images to GHCR
+3. VPS:
+   - pulls latest images
+   - restarts containers
+   - runs database migrations
 
-   ```bash
-   ssh-keygen -t rsa -b 4096 -C "github-actions" -f ~/.ssh/github_actions_deploy
-   ```
+No builds or dependency installation happen on the VPS.
 
-2. **Add Public Key to VPS**:
+---
 
-   ```bash
-   ssh-copy-id -i ~/.ssh/github_actions_deploy.pub user@your-vps-ip
-   ```
+### VPS Requirements
 
-3. **Add GitHub Secrets**:
+- Docker
+- Docker Compose
+- Access to GitHub Container Registry
 
-   - Go to: **Repository → Settings → Secrets and variables → Actions**
-   - Add: `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_PORT`, `VPS_APP_PATH`
+---
 
-4. **Deploy**:
-   - Push to `main` or `master` branch
-   - GitHub Actions will automatically deploy to your VPS
+### Required GitHub Secrets
 
-### Documentation
+Add the following under  
+**Repository → Settings → Secrets and variables → Actions**:
 
-- **Quick Setup**: See [`.github/QUICK_SETUP.md`](.github/QUICK_SETUP.md) for a 5-minute setup guide
-- **Detailed Guide**: See [`.github/SETUP_GITHUB_ACTIONS.md`](.github/SETUP_GITHUB_ACTIONS.md) for comprehensive instructions
+```txt
+VPS_HOST
+VPS_USER
+VPS_SSH_KEY
+VPS_APP_PATH
+VITE_API_BASE_URL
+```
 
 ## <a name="credits">👏 Credits</a>
 
