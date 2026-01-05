@@ -8,9 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -25,15 +22,50 @@ jobs:
 
       - name: Build & push server
         run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/scoutproperties-server:latest
-          docker build -t $IMAGE -f server/Dockerfile server
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE=ghcr.io/$OWNER/scoutproperties-server:latest
+
+          docker build \
+            -t $IMAGE \
+            -f server/Dockerfile server
+
           docker push $IMAGE
 
       - name: Build & push client
         run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/scoutproperties-client:latest
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE=ghcr.io/$OWNER/scoutproperties-client:latest
+
           docker build \
             --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
             -t $IMAGE \
             -f client/Dockerfile client
+
           docker push $IMAGE
+  
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          command_timeout: 10m
+          script: |
+            set -e
+            cd ${{ secrets.VPS_APP_PATH }}
+
+            echo "📥 Pulling images..."
+            docker compose pull
+
+            echo "🔄 Restarting containers..."
+            docker compose up -d
+
+            echo "🗄 Running migrations..."
+            docker exec scoutproperties-server npx prisma migrate deploy || echo "No migrations"
+
+            echo "✅ Deployment finished"
+

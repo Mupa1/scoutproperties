@@ -23,6 +23,8 @@ services:
     image: ghcr.io/mupa1/scoutproperties-server:latest
     container_name: scoutproperties-server
     restart: unless-stopped
+    env_file:
+      - .env
     ports:
       - "3000:3000"
     environment:
