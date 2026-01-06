@@ -1,121 +1,54 @@
-services:
-  # MongoDB Database
-  mongodb:
-    image: mongo:7
-    container_name: scoutproperties-mongodb
-    restart: unless-stopped
-    # MongoDB should not be exposed to host in production - only accessible within Docker network
-    # ports:
-    #   - "27017:27017"
-    environment:
-      MONGO_INITDB_DATABASE: scoutproperties
-      # MongoDB authentication (set MONGO_ROOT_USERNAME and MONGO_ROOT_PASSWORD in .env file)
-      # If these are not set in .env, MongoDB will run without authentication
-      # Note: Only set these if you want authentication enabled
-      # MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
-      # MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - scoutproperties-network
-    command: mongod --replSet rs0
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 2G
-        reservations:
-          cpus: "0.5"
-          memory: 1G
-    healthcheck:
-      test: |
-        mongosh --quiet --eval "
-        try {
-          rs.status().ok
-        } catch (err) {
-          rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}).ok
-        }
-        "
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
-
-  # Backend API Server
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    container_name: scoutproperties-server
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      # DATABASE_URL: Set this in .env file
-      # Without auth: mongodb://mongodb:27017/scoutproperties?replicaSet=rs0
-      # With auth: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/scoutproperties?replicaSet=rs0&authSource=admin
-      # If MONGO_ROOT_USERNAME is set, use the auth version above, otherwise use the simple version
-      DATABASE_URL: ${DATABASE_URL:-mongodb://mongodb:27017/scoutproperties?replicaSet=rs0}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-      NODE_ENV: production
-    depends_on:
-      mongodb:
-        condition: service_healthy
-    networks:
-      - scoutproperties-network
-    volumes:
-      # Mount source code for development (optional - comment out for production)
-      # - ./server/src:/app/src:ro
-      - ./server/prisma:/app/prisma:ro
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "require('http').get('http://localhost:3000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 1G
-        reservations:
-          cpus: "0.5"
-          memory: 512M
-
-  # Frontend Client
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-      args:
-        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3000}
-    container_name: scoutproperties-client
-    restart: unless-stopped
-    ports:
-      - "4173:80"
-    depends_on:
-      - server
-    networks:
-      - scoutproperties-network
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 256M
-        reservations:
-          cpus: "0.25"
-          memory: 128M
-
-volumes:
-  mongodb_data:
-    driver: local
-
 networks:
   scoutproperties-network:
     driver: bridge
+
+volumes:
+  mongo-data:
+  server-logs:
+  client-logs:
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: scoutproperties-mongo
+    restart: always
+    networks:
+      - scoutproperties-network
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+
+  server:
+    image: ghcr.io/mupa1/scoutproperties-server:latest
+    container_name: scoutproperties-server
+    restart: always
+    networks:
+      - scoutproperties-network
+    depends_on:
+      - mongodb
+    ports:
+      - "3001:3000"   # 👈 IMPORTANT (avoid portfolio-v3 conflict)
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+    volumes:
+      - server-logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      retries: 5
+
+  client:
+    image: ghcr.io/mupa1/scoutproperties-client:latest
+    container_name: scoutproperties-client
+    restart: always
+    networks:
+      - scoutproperties-network
+    depends_on:
+      - server
+    ports:
+      - "5173:80"
