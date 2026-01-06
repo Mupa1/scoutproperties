@@ -60,13 +60,13 @@ jobs:
             cd ${{ secrets.VPS_APP_PATH }}
 
             echo "📦 Removing old containers (if any)..."
-            docker-compose -f docker-compose.yml rm -sf server client || true
+            docker compose -f docker-compose.yml rm -sf server client || true
 
             echo "📥 Pulling latest server & client images..."
-            docker-compose -f docker-compose.yml pull server client
+            docker compose -f docker-compose.yml pull server client
 
             echo "🔄 Restarting server & client containers..."
-            docker-compose -f docker-compose.yml up -d server client
+            docker compose -f docker-compose.yml up -d server client
 
             echo "🗄 Running migrations (server only)..."
             docker exec scoutproperties-server npx prisma migrate deploy || echo "No migrations"
