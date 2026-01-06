@@ -1,3 +1,5 @@
+version: "3.9"
+
 networks:
   scoutproperties-network:
     driver: bridge
@@ -8,22 +10,18 @@ volumes:
   client-logs:
 
 services:
-  # MongoDB
   mongodb:
     image: mongo:7
     container_name: scoutproperties-mongo
     restart: always
     networks:
       - scoutproperties-network
-    ports:
-      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    volumes:
-      - mongo-data:/data/db
 
-  # Backend
   server:
     image: ghcr.io/mupa1/scoutproperties-server:latest
     container_name: scoutproperties-server
@@ -33,15 +31,13 @@ services:
     depends_on:
       - mongodb
     ports:
-      - "3000:3000"
+      - "3001:3000"   # 👈 IMPORTANT (avoid portfolio-v3 conflict)
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL}  # point to your MongoDB URI or other DB
-      # Add other env vars your server needs
+      DATABASE_URL: ${DATABASE_URL}
     volumes:
       - server-logs:/app/logs
 
-  # Frontend
   client:
     image: ghcr.io/mupa1/scoutproperties-client:latest
     container_name: scoutproperties-client
@@ -51,8 +47,4 @@ services:
     depends_on:
       - server
     ports:
-      - "5173:5173"
-    environment:
-      VITE_API_BASE_URL: ${VITE_API_BASE_URL}
-    volumes:
-      - client-logs:/app/logs
+      - "5173:80"
