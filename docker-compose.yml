@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
   scoutproperties-network:
     driver: bridge
@@ -32,6 +30,8 @@ services:
       - mongodb
     ports:
       - "3001:3000"   # 👈 IMPORTANT (avoid portfolio-v3 conflict)
+    env_file:
+      - .env
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}
