@@ -37,6 +37,10 @@ services:
       DATABASE_URL: ${DATABASE_URL}
     volumes:
       - server-logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      retries: 5
 
   client:
     image: ghcr.io/mupa1/scoutproperties-client:latest
