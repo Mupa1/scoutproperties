@@ -1,12 +1,26 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import { Request, Response } from 'express';
 
 import { CustomRequest } from '@/types';
 
 import { prisma } from '../lib/prisma';
-dotenv.config();
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+
+const handlePrismaError = (err: unknown, res: Response) => {
+  console.error('❌ Prisma error:', err);
+
+  if (err instanceof Error && err.message.includes('Authentication failed')) {
+    res.status(500).json({
+      message: 'Database authentication failed',
+    });
+    return;
+  }
+
+  res.status(500).json({ message: 'Internal server error' });
+};
 
 if (!JWT_SECRET_KEY) {
   throw new Error('JWT_SECRET_KEY is not defined in the environment variables');
@@ -43,8 +57,7 @@ export const createListing = async (
     });
     res.status(200).json(newlisting);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to create listing!' });
+    handlePrismaError(err, res);
   }
 };
 
@@ -75,8 +88,7 @@ export const updateListing = async (req: CustomRequest, res: Response) => {
 
     res.status(200).json(updatedListing);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to update listing!' });
+    handlePrismaError(err, res);
   }
 };
 
@@ -141,8 +153,7 @@ export const getListings = async (
 
     res.status(200).json(listings);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to get listings!' });
+    handlePrismaError(err, res);
   }
 };
 
@@ -169,8 +180,7 @@ export const getListing = async (
 
     res.status(200).json(listing);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to get listing!' });
+    handlePrismaError(err, res);
   }
 };
 
@@ -197,7 +207,6 @@ export const deleteListing = async (
 
     res.status(200).json({ message: 'Listing deleted!' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to delete listing!' });
+    handlePrismaError(err, res);
   }
 };
