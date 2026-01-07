@@ -19,6 +19,9 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    command: ["--replSet", "rs0", "--bind_ip", "127.0.0.1"] # Bind to localhost only
+    ports:
+      - "127.0.0.1:27017:27017" # Only accessible locally
 
   server:
     image: ghcr.io/mupa1/scoutproperties-server:latest
