@@ -17,6 +17,7 @@ const listingsData: ListingsProps['listingsData'] = [
     bathroom: 1,
     price: 100000,
     address: 'Address 1',
+    city: 'Test City 1',
     latitude: 49.52,
     longitude: 8.5246,
   },
@@ -28,6 +29,7 @@ const listingsData: ListingsProps['listingsData'] = [
     bathroom: 2,
     price: 150000,
     address: 'Address 2',
+    city: 'Test City 2',
     latitude: 49.53,
     longitude: 8.5346,
   },
@@ -36,6 +38,8 @@ const listingsData: ListingsProps['listingsData'] = [
 vi.mock('react-leaflet', () => {
   const mockMap = {
     invalidateSize: vi.fn(),
+    fitBounds: vi.fn(),
+    setView: vi.fn(),
   };
 
   return {
