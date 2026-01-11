@@ -16,12 +16,22 @@ services:
       - scoutproperties-network
     volumes:
       - mongo-data:/data/db
+      - ./mongo-keyfile:/etc/mongo-keyfile:ro
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+<<<<<<< Updated upstream
     command: ["--replSet", "rs0", "--bind_ip", "127.0.0.1"] # Bind to localhost only
     ports:
       - "127.0.0.1:27017:27017" # Only accessible locally
+=======
+    command: >
+      mongod
+      --replSet rs0
+      --auth
+      --keyFile /etc/mongo-keyfile
+      --bind_ip_all
+>>>>>>> Stashed changes
 
   server:
     image: ghcr.io/mupa1/scoutproperties-server:latest
@@ -32,7 +42,7 @@ services:
     depends_on:
       - mongodb
     ports:
-      - "3001:3000"   # 👈 IMPORTANT (avoid portfolio-v3 conflict)
+      - "3001:3000" # 👈 IMPORTANT (avoid portfolio-v3 conflict)
     env_file:
       - .env
     environment:
