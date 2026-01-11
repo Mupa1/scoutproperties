@@ -1,50 +1,53 @@
 import { FC } from 'react';
 import { IoCloseSharp } from 'react-icons/io5';
-import { HashNavigation, Navigation, Pagination } from 'swiper/modules';
+import { Keyboard, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import 'swiper/css';
-import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
-import { Button } from '@/components/ui/Button';
+import { getValidImages } from '@/lib/images';
+const prefersReducedMotion =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export const ImageSlider: FC<{ images: string[]; onClose: () => void }> = ({
-  images,
-  onClose,
-}) => (
-  <div className="h-80vh">
-    <Button
-      variant="neutral"
-      onClick={onClose}
-      className="flex-1 border-0 px-0 ml-auto"
-    >
-      <IoCloseSharp size={20} title="Close image view" />
-    </Button>
+export const ImageSlider: FC<{
+  images: string[];
+  listingTitle: string;
+  onClose: () => void;
+}> = ({ images, listingTitle, onClose }) => {
+  const validImages = getValidImages(images);
+  return (
+    <div className="relative">
+      <button
+        onClick={onClose}
+        aria-label="Close image view"
+        className="absolute right-4 top-4 z-10 bg-white rounded-full p-2 shadow focus:outline-none focus:ring-2 focus:ring-primary-500"
+      >
+        <IoCloseSharp size={20} />
+        <span className="sr-only">Close image view</span>
+      </button>
 
-    <Swiper
-      spaceBetween={30}
-      hashNavigation={{ watchState: true }}
-      centeredSlides
-      autoplay={{ delay: 2500, disableOnInteraction: false }}
-      pagination={{ clickable: true }}
-      navigation
-      modules={[Pagination, Navigation, HashNavigation]}
-      className="mySwiper h-80vh z-20 shadow-2xl"
-    >
-      {images.map((img, index) => (
-        <SwiperSlide
-          key={index}
-          data-hash={`slide${index + 1}`}
-          data-testid={`image-slide${index}`}
-        >
-          <img
-            className="swiper-slide object-cover block w-full h-full rounded-md"
-            src={img}
-            alt={`Slider Image ${index + 1}`}
-          />
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  </div>
-);
+      <Swiper
+        modules={[Navigation, Pagination, Keyboard]}
+        navigation
+        pagination={{ clickable: true }}
+        keyboard={{ enabled: true }}
+        spaceBetween={24}
+        autoplay={prefersReducedMotion ? false : { delay: 3000 }}
+        className="h-[80vh]"
+      >
+        {validImages.map((img, i) => (
+          <SwiperSlide key={i}>
+            <img
+              src={img}
+              alt={`${listingTitle} – image ${i + 1} of ${validImages.length}`}
+              className="w-full h-full object-contain bg-black"
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+};

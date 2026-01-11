@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
 import { ListingImages } from '@/components/pages/ListingDetails/ListingImages/ListingImages';
@@ -13,22 +13,29 @@ const images = [
 
 describe('ListingImages', () => {
   test('renders ImageGrid correctly', () => {
-    render(<ListingImages images={images} />);
+    render(<ListingImages images={images} listingTitle="Test Listing" />);
 
     // Mobile and desktop layouts both render, so we get double the images
     const imageElements = screen.getAllByTestId(/image-\d+/);
     expect(imageElements.length).toBeGreaterThanOrEqual(images.length);
   });
 
-  test('opens and closes ImageSlider on image click', () => {
-    render(<ListingImages images={images} />);
+  test('opens and closes ImageSlider on image click', async () => {
+    render(<ListingImages images={images} listingTitle="Test Listing" />);
 
     // Use getAllByTestId since both mobile and desktop layouts render
     const imageElements = screen.getAllByTestId('image-0');
     fireEvent.click(imageElements[0]);
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    
+    await waitFor(() => {
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+    });
 
-    fireEvent.click(screen.getByRole('button', { name: /Close image view/i }));
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    const closeButton = screen.getByRole('button', { name: /Close image view/i });
+    fireEvent.click(closeButton);
+    
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
   });
 });
