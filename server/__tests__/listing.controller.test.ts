@@ -93,7 +93,7 @@ describe('Listing Controller', () => {
 
     it('should return 500 if there is a server error', async () => {
       (prisma.listing.findMany as jest.Mock).mockRejectedValue(
-        new Error('Failed to get listings!'),
+        new Error('Internal server error'),
       );
 
       const res = await request(app).get('/listings');
@@ -114,6 +114,7 @@ describe('Listing Controller', () => {
       expect(res.body).toEqual({
         ...mockListing,
         listingDetails: mockListingDetails,
+        user: null,
       });
     });
 
@@ -233,7 +234,7 @@ describe('Listing Controller', () => {
 
     it('should return 500 if there is a server error', async () => {
       (prisma.listing.update as jest.Mock).mockRejectedValue(
-        new Error('Failed to update listing!'),
+        new Error('Internal server error'),
       );
       (prisma.listing.findUnique as jest.Mock).mockResolvedValue(mockListing);
 
