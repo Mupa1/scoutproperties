@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import { Property, Type } from '@prisma/client';
 import { Request, Response } from 'express';
 
 import { CustomRequest } from '@/types';
@@ -9,33 +10,8 @@ import { prisma } from '../lib/prisma';
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
-const handlePrismaError = (err: unknown, res: Response) => {
-  console.error('❌ Prisma error:', err);
-
-  if (err instanceof Error && err.message.includes('Authentication failed')) {
-    res.status(500).json({
-      message: 'Database authentication failed',
-    });
-    return;
-  }
-
-  res.status(500).json({ message: 'Internal server error' });
-};
-
 if (!JWT_SECRET_KEY) {
   throw new Error('JWT_SECRET_KEY is not defined in the environment variables');
-}
-
-enum Type {
-  Buy = 'Buy',
-  Rent = 'Rent',
-}
-
-enum Property {
-  Apartment = 'Apartment',
-  House = 'House',
-  Condo = 'Condo',
-  Land = 'Land',
 }
 
 export const createListing = async (
@@ -57,7 +33,8 @@ export const createListing = async (
     });
     res.status(200).json(newlisting);
   } catch (err) {
-    handlePrismaError(err, res);
+    console.error('Error creating listing:', err);
+    res.status(500).json({ message: 'Failed to create listing!' });
   }
 };
 
@@ -69,11 +46,13 @@ export const updateListing = async (req: CustomRequest, res: Response) => {
   try {
     const listing = await prisma.listing.findUnique({ where: { id } });
     if (!listing) {
-      return res.status(404).json({ message: 'Listing not found' });
+      res.status(404).json({ message: 'Listing not found' });
+      return;
     }
 
     if (listing.userId !== tokenUserId) {
-      return res.status(403).json({ message: 'Not Authorized!' });
+      res.status(403).json({ message: 'Not Authorized!' });
+      return;
     }
 
     const updatedListing = await prisma.listing.update({
@@ -88,7 +67,8 @@ export const updateListing = async (req: CustomRequest, res: Response) => {
 
     res.status(200).json(updatedListing);
   } catch (err) {
-    handlePrismaError(err, res);
+    console.error('Error updating listing:', err);
+    res.status(500).json({ message: 'Failed to update listing!' });
   }
 };
 
@@ -116,23 +96,26 @@ export const getListings = async (
 
     const whereClause: Record<string, unknown> = {};
 
-    // Add city filter if provided
+    // Add city filter if provided (case-insensitive)
     if (typeof city === 'string' && city.trim() !== '') {
-      whereClause.city = city;
+      whereClause.city = {
+        $regex: city.trim(),
+        $options: 'i', // Case-insensitive
+      };
     }
 
     // Add type filter if provided
-    if (
-      typeof type === 'string' &&
-      Object.values(Type).includes(type as Type)
-    ) {
+    if (typeof type === 'string' && (type === Type.Buy || type === Type.Rent)) {
       whereClause.type = type as Type;
     }
 
     // Add property filter if provided
     if (
       typeof property === 'string' &&
-      Object.values(Property).includes(property as Property)
+      (property === Property.Apartment ||
+        property === Property.House ||
+        property === Property.Condo ||
+        property === Property.Land)
     ) {
       whereClause.property = property as Property;
     }
@@ -148,12 +131,13 @@ export const getListings = async (
     }
 
     const listings = await prisma.listing.findMany({
-      where: whereClause,
+      where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
     });
 
     res.status(200).json(listings);
   } catch (err) {
-    handlePrismaError(err, res);
+    console.error('Error getting listings:', err);
+    res.status(500).json({ message: 'Failed to get listings!' });
   }
 };
 
@@ -163,24 +147,44 @@ export const getListing = async (
 ): Promise<void> => {
   const id = req.params.id;
   try {
+    // First, get the listing with listingDetails
     const listing = await prisma.listing.findUnique({
       where: { id },
       include: {
         listingDetails: true,
-        user: {
-          select: {
-            name: true,
-            company: true,
-            email: true,
-            avatar: true,
-          },
-        },
       },
     });
 
-    res.status(200).json(listing);
+    if (!listing) {
+      res.status(404).json({ message: 'Listing not found' });
+      return;
+    }
+
+    // Then, try to get the user separately to handle cases where user might not exist
+    let user = null;
+    try {
+      user = await prisma.user.findUnique({
+        where: { id: listing.userId },
+        select: {
+          name: true,
+          company: true,
+          email: true,
+          avatar: true,
+        },
+      });
+    } catch (userErr) {
+      // If user doesn't exist, user remains null
+      console.warn('User not found for listing:', listing.userId);
+    }
+
+    // Return listing with user (or null if user doesn't exist)
+    res.status(200).json({
+      ...listing,
+      user,
+    });
   } catch (err) {
-    handlePrismaError(err, res);
+    console.error('Error getting listing:', err);
+    res.status(500).json({ message: 'Failed to get listing!' });
   }
 };
 
@@ -207,6 +211,7 @@ export const deleteListing = async (
 
     res.status(200).json({ message: 'Listing deleted!' });
   } catch (err) {
-    handlePrismaError(err, res);
+    console.error('Error deleting listing:', err);
+    res.status(500).json({ message: 'Failed to delete listing!' });
   }
 };
