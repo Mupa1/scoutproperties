@@ -19,6 +19,10 @@ jest.mock('../src/lib/prisma', () => ({
       findMany: jest.fn(),
       findUnique: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
+    },
+    user: {
+      findUnique: jest.fn(),
     },
   },
 }));
@@ -104,9 +108,16 @@ describe('Listing Controller', () => {
 
   describe('GET /listings/:id', () => {
     it('should return a listing by id', async () => {
+      const mockUser = {
+        name: 'Test User',
+        company: 'Test Company',
+        email: 'test@example.com',
+        avatar: 'avatar.jpg',
+      };
       (prisma.listing.findUnique as jest.Mock).mockResolvedValue({
         ...mockListing,
         listingDetails: mockListingDetails,
+        user: mockUser,
       });
 
       const res = await request(app).get('/listings/1');
@@ -114,7 +125,7 @@ describe('Listing Controller', () => {
       expect(res.body).toEqual({
         ...mockListing,
         listingDetails: mockListingDetails,
-        user: null,
+        user: mockUser,
       });
     });
 
@@ -135,6 +146,12 @@ describe('Listing Controller', () => {
         ...mockListing,
         listingDetails: mockListingDetails,
       };
+      const mockUser = {
+        id: '1',
+        name: 'Test User',
+        email: 'test@example.com',
+      };
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
       (prisma.listing.create as jest.Mock).mockResolvedValue(newListing);
 
       const res = await request(app).post('/listings').send(newListing);

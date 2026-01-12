@@ -1,27 +1,37 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import { Property, Type } from '@prisma/client';
 import { Request, Response } from 'express';
 
 import { CustomRequest } from '@/types';
 
+import { handleError, notFound, unauthorized } from '../lib/errors';
 import { prisma } from '../lib/prisma';
-
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-
-if (!JWT_SECRET_KEY) {
-  throw new Error('JWT_SECRET_KEY is not defined in the environment variables');
-}
 
 export const createListing = async (
   req: CustomRequest,
   res: Response,
-): Promise<void> => {
+): Promise<Response | void> => {
   const body = req.body;
   const tokenUserId = req.userId;
 
+  if (!tokenUserId) {
+    return unauthorized(res, 'User must be authenticated to create listings');
+  }
+
   try {
+    // Verify user exists before creating listing
+    const user = await prisma.user.findUnique({
+      where: { id: tokenUserId },
+    });
+
+    if (!user) {
+      return handleError(
+        res,
+        new Error('User not found'),
+        'User not found. Cannot create listing.',
+        404,
+      );
+    }
+
     const newlisting = await prisma.listing.create({
       data: {
         ...body.listingData,
@@ -33,30 +43,33 @@ export const createListing = async (
     });
     res.status(200).json(newlisting);
   } catch (err) {
-    console.error('Error creating listing:', err);
-    res.status(500).json({ message: 'Failed to create listing!' });
+    return handleError(res, err, 'Failed to create listing!');
   }
 };
 
-export const updateListing = async (req: CustomRequest, res: Response) => {
+export const updateListing = async (
+  req: CustomRequest,
+  res: Response,
+): Promise<Response | void> => {
   const { id } = req.params;
+  const idString = typeof id === 'string' ? id : id[0];
   const { listingData, listingDetails } = req.body;
   const tokenUserId = req.userId;
 
   try {
-    const listing = await prisma.listing.findUnique({ where: { id } });
+    const listing = await prisma.listing.findUnique({
+      where: { id: idString },
+    });
     if (!listing) {
-      res.status(404).json({ message: 'Listing not found' });
-      return;
+      return notFound(res, 'Listing');
     }
 
     if (listing.userId !== tokenUserId) {
-      res.status(403).json({ message: 'Not Authorized!' });
-      return;
+      return unauthorized(res);
     }
 
     const updatedListing = await prisma.listing.update({
-      where: { id },
+      where: { id: idString },
       data: {
         ...listingData,
         listingDetails: {
@@ -67,15 +80,14 @@ export const updateListing = async (req: CustomRequest, res: Response) => {
 
     res.status(200).json(updatedListing);
   } catch (err) {
-    console.error('Error updating listing:', err);
-    res.status(500).json({ message: 'Failed to update listing!' });
+    return handleError(res, err, 'Failed to update listing!');
   }
 };
 
 export const getListings = async (
   req: Request,
   res: Response,
-): Promise<void> => {
+): Promise<Response | void> => {
   const { city, type, property, bedroom, minPrice, maxPrice } = req.query;
   try {
     // Parse price values
@@ -96,11 +108,10 @@ export const getListings = async (
 
     const whereClause: Record<string, unknown> = {};
 
-    // Add city filter if provided (case-insensitive)
+    // Add city filter if provided
     if (typeof city === 'string' && city.trim() !== '') {
       whereClause.city = {
-        $regex: city.trim(),
-        $options: 'i', // Case-insensitive
+        contains: city.trim(),
       };
     }
 
@@ -136,82 +147,87 @@ export const getListings = async (
 
     res.status(200).json(listings);
   } catch (err) {
-    console.error('Error getting listings:', err);
-    res.status(500).json({ message: 'Failed to get listings!' });
+    return handleError(res, err, 'Failed to get listings!');
   }
 };
 
 export const getListing = async (
   req: Request,
   res: Response,
-): Promise<void> => {
-  const id = req.params.id;
+): Promise<Response | void> => {
+  const { id } = req.params;
+  const idString = typeof id === 'string' ? id : id[0];
   try {
-    // First, get the listing with listingDetails
+    // Get listing with listingDetails and user
+    // Since listings are always created by users, user should always exist
     const listing = await prisma.listing.findUnique({
-      where: { id },
+      where: { id: idString },
       include: {
         listingDetails: true,
+        user: {
+          select: {
+            name: true,
+            company: true,
+            email: true,
+            avatar: true,
+          },
+        },
       },
     });
 
     if (!listing) {
-      res.status(404).json({ message: 'Listing not found' });
-      return;
+      return notFound(res, 'Listing');
     }
 
-    // Then, try to get the user separately to handle cases where user might not exist
-    let user = null;
-    try {
-      user = await prisma.user.findUnique({
-        where: { id: listing.userId },
-        select: {
-          name: true,
-          company: true,
-          email: true,
-          avatar: true,
-        },
-      });
-    } catch (userErr) {
-      // If user doesn't exist, user remains null
-      console.warn('User not found for listing:', listing.userId);
+    // If user doesn't exist (shouldn't happen due to foreign key, but handle gracefully)
+    if (!listing.user) {
+      console.error('User not found for listing:', listing.userId);
+      return handleError(
+        res,
+        new Error('User associated with listing not found'),
+        'Failed to get listing!',
+        500,
+      );
     }
 
-    // Return listing with user (or null if user doesn't exist)
+    // Extract user and return listing with user
+    const { user, ...listingData } = listing;
     res.status(200).json({
-      ...listing,
+      ...listingData,
       user,
     });
   } catch (err) {
-    console.error('Error getting listing:', err);
-    res.status(500).json({ message: 'Failed to get listing!' });
+    return handleError(res, err, 'Failed to get listing!');
   }
 };
 
 export const deleteListing = async (
   req: CustomRequest,
   res: Response,
-): Promise<void> => {
-  const id = req.params.id;
+): Promise<Response | void> => {
+  const { id } = req.params;
+  const idString = typeof id === 'string' ? id : id[0];
   const tokenUserId = req.userId;
 
   try {
     const listing = await prisma.listing.findUnique({
-      where: { id },
+      where: { id: idString },
     });
 
-    if (listing?.userId !== tokenUserId) {
-      res.status(403).json({ message: 'Not Authorized!' });
-      return;
+    if (!listing) {
+      return notFound(res, 'Listing');
+    }
+
+    if (listing.userId !== tokenUserId) {
+      return unauthorized(res);
     }
 
     await prisma.listing.delete({
-      where: { id },
+      where: { id: idString },
     });
 
     res.status(200).json({ message: 'Listing deleted!' });
   } catch (err) {
-    console.error('Error deleting listing:', err);
-    res.status(500).json({ message: 'Failed to delete listing!' });
+    return handleError(res, err, 'Failed to delete listing!');
   }
 };
