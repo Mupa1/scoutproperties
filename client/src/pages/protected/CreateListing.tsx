@@ -1,12 +1,10 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import ReactQuill from 'react-quill';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
-import 'react-quill/dist/quill.snow.css';
-
+import { RichTextEditor } from '@/components/shared/RichTextEditor';
 import UploadWidget from '@/components/shared/UploadWidget';
 import { Button, ErrorMessage, Input, Loader, Select } from '@/components/ui';
 import { useCreateListing } from '@/lib/react-query/mutations';
@@ -32,7 +30,6 @@ export const CreateListing = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { mutateAsync: createListing, isPending } = useCreateListing();
-  const quillRef = useRef<ReactQuill | null>(null);
 
   const handleCreateListing = async (
     data: z.infer<typeof ListingValidation>,
@@ -122,14 +119,9 @@ export const CreateListing = () => {
                   name="description"
                   control={control}
                   render={({ field }) => (
-                    <ReactQuill
-                      theme="snow"
-                      onChange={field.onChange}
+                    <RichTextEditor
                       value={field.value}
-                      ref={(el) => {
-                        field.ref(el);
-                        quillRef.current = el;
-                      }}
+                      onChange={field.onChange}
                     />
                   )}
                 />

@@ -14,7 +14,7 @@
   </div>
 </div>
 
-<h3 align="center">A real estate application</h3>
+<h3 align="center">A modern full-stack real estate platform</h3>
 
 ## 📋 <a name="table">Table of Contents</a>
 
@@ -30,7 +30,7 @@
 
 Scoutproperties is a real estate application where property agents or owners can register and post properties for rent or sale. Users can search for houses, apartments, condos or land and contact the agent or owner to buy or rent the property.
 
-## <a name="architecture">🏗 Architecture
+## <a name="architecture">🏗 Architecture</a>
 
 Scout Properties uses a modern container-based architecture:
 
@@ -185,6 +185,30 @@ This project uses **Docker-based CI/CD** with **GitHub Actions** and **GitHub Co
    - runs database migrations
 
 No builds or dependency installation happen on the VPS.
+
+### ⚠ Data Persistence Warning
+
+Running the following command will permanently delete all database data:
+
+```bash
+docker compose down -v
+```
+
+## 🧠 Deployment Mental Model
+
+Keep this in mind when working on Scout Properties:
+
+| Concern | Where it happens |
+|------|------------------|
+| Build images | GitHub Actions |
+| Store images | GitHub Container Registry (GHCR) |
+| Run containers | VPS |
+| Database | Docker volume (persistent) |
+| Migrations | VPS (inside server container) |
+| Safety | Code + database constraints |
+
+> Docker images are disposable.  
+> The database is not.
 
 ---
 

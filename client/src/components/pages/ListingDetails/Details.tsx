@@ -23,7 +23,7 @@ interface DetailsProps {
 
 export const Details: FC<DetailsProps> = ({ data }) => {
   const { currentUser } = useUserContext();
-  const { price, title, type, property, address, bedroom, bathroom, user } =
+  const { price, title, type, property, address, city, bedroom, bathroom, user } =
     data;
 
   const { parking, description, size, school, restaurant, bus } =
@@ -42,7 +42,10 @@ export const Details: FC<DetailsProps> = ({ data }) => {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
               <div className="flex items-center gap-2 text-gray-600 mb-2">
                 <RiMapPinLine className="text-primary-600" size={20} />
-                <p className="text-base">{address}</p>
+                <p className="text-base">
+                  {city && <span className="font-medium">{city}, </span>}
+                  {address}
+                </p>
               </div>
               {property && (
                 <div className="flex items-center gap-2">

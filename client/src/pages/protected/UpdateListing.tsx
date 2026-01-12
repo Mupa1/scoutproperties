@@ -1,14 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { MdDeleteForever } from 'react-icons/md';
 import { TiEdit } from 'react-icons/ti';
-import ReactQuill from 'react-quill';
 import { useNavigate, useParams } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
-import 'react-quill/dist/quill.snow.css';
-
+import { RichTextEditor } from '@/components/shared/RichTextEditor';
 import UploadWidget from '@/components/shared/UploadWidget';
 import { Button, ErrorMessage, Input, Loader, Select } from '@/components/ui';
 import { useUpdateListing } from '@/lib/react-query/mutations';
@@ -54,7 +52,6 @@ export const UpdateListing = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { mutateAsync: updateListing, isPending } = useUpdateListing();
-  const quillRef = useRef<ReactQuill | null>(null);
 
   const handleUpdateListing = async (
     data: z.infer<typeof ListingValidation>,
@@ -155,14 +152,9 @@ export const UpdateListing = () => {
                   name="description"
                   control={control}
                   render={({ field }) => (
-                    <ReactQuill
-                      theme="snow"
-                      onChange={field.onChange}
+                    <RichTextEditor
                       value={field.value}
-                      ref={(el) => {
-                        field.ref(el);
-                        quillRef.current = el;
-                      }}
+                      onChange={field.onChange}
                     />
                   )}
                 />

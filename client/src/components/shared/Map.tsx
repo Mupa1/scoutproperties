@@ -12,8 +12,11 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 import 'leaflet/dist/leaflet.css';
 
-import imagePlaceholder from '@/assets/image-placeholder.svg';
+import { getValidImages } from '@/lib/images';
 import { ListingsDataType, ListingsProps } from '@/types';
+
+const PLACEHOLDER_IMAGE =
+  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23e5e7eb" width="400" height="300"/%3E%3Ctext fill="%239ca3af" font-family="sans-serif" font-size="18" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EImage available soon%3C/text%3E%3C/svg%3E';
 
 // Component to handle map resize when container dimensions change
 const MapResizeHandler: FC = () => {
@@ -26,6 +29,64 @@ const MapResizeHandler: FC = () => {
     }, 100);
     return () => clearTimeout(timer);
   }, [map]);
+
+  return null;
+};
+
+// Component to automatically fit bounds to show all markers
+interface FitBoundsHandlerProps {
+  listingsData: ListingsDataType[];
+}
+
+const FitBoundsHandler: FC<FitBoundsHandlerProps> = ({ listingsData }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!listingsData || listingsData.length === 0) {
+      return;
+    }
+
+    // Convert latitude/longitude to numbers (they might come as strings from API)
+    const validListings = listingsData.filter(
+      (listing) =>
+        listing.latitude != null &&
+        listing.longitude != null &&
+        !isNaN(Number(listing.latitude)) &&
+        !isNaN(Number(listing.longitude)),
+    );
+
+    if (validListings.length === 0) {
+      return;
+    }
+
+    // If there's only one listing, center on it with appropriate zoom
+    if (validListings.length === 1) {
+      const listing = validListings[0];
+      const lat = Number(listing.latitude);
+      const lng = Number(listing.longitude);
+      map.setView([lat, lng], 13, {
+        animate: true,
+        duration: 0.5,
+      });
+      return;
+    }
+
+    // If there are multiple listings, fit bounds to show all markers
+    if (validListings.length > 1) {
+      const bounds = validListings.map((listing) => [
+        Number(listing.latitude),
+        Number(listing.longitude),
+      ] as [number, number]);
+
+      // Add padding to the bounds for better visibility
+      map.fitBounds(bounds, {
+        padding: [50, 50],
+        animate: true,
+        duration: 0.5,
+        maxZoom: 15, // Don't zoom in too much
+      });
+    }
+  }, [map, listingsData]);
 
   return null;
 };
@@ -44,13 +105,23 @@ const MapMarker: FC<MapProps> = ({ listingsData }) => {
 
   const { id, bedroom, bathroom, latitude, longitude, images, title, price } =
     listingsData;
+  const lat = Number(latitude);
+  const lng = Number(longitude);
+  const validImages = getValidImages(images);
+  const imageSrc = validImages[0] || PLACEHOLDER_IMAGE;
+
+  const handleError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.src = PLACEHOLDER_IMAGE;
+  };
+
   return (
-    <Marker position={[latitude, longitude]}>
+    <Marker position={[lat, lng]}>
       <Popup>
         <div className="flex-3 bg-primary-50 group-hover:opacity-75">
           <img
-            src={images[0] || imagePlaceholder}
+            src={imageSrc}
             alt={title}
+            onError={handleError}
             className="h-full w-full object-cover object-center sm:h-full sm:w-full"
           />
         </div>
@@ -83,10 +154,19 @@ export const Map: FC<ListingsProps> = ({ listingsData, className }) => {
   const mapKeyRef = useRef<string>(`map-${Date.now()}-${Math.random()}`);
 
   const position: LatLngExpression = useMemo(
-    () =>
-      listingsData && listingsData.length === 1
-        ? [listingsData[0].latitude, listingsData[0].longitude]
-        : [49.5200765, 8.524684], // Default center (Mannheim area)
+    () => {
+      // If we have listings, use the first one as initial center
+      // The FitBoundsHandler will adjust the view appropriately
+      if (listingsData && listingsData.length > 0) {
+        const lat = Number(listingsData[0].latitude);
+        const lng = Number(listingsData[0].longitude);
+        if (!isNaN(lat) && !isNaN(lng)) {
+          return [lat, lng];
+        }
+      }
+      // Default center (Mannheim area) when no listings
+      return [49.5200765, 8.524684];
+    },
     [listingsData],
   );
 
@@ -116,12 +196,13 @@ export const Map: FC<ListingsProps> = ({ listingsData, className }) => {
       <MapContainer
         key={mapKeyRef.current}
         center={position}
-        zoom={7}
+        zoom={listingsData && listingsData.length > 0 ? 13 : 7}
         scrollWheelZoom={false}
         className={clsx(className, 'z-10')}
         style={{ height: '100%', width: '100%', position: 'relative' }}
       >
         <MapResizeHandler />
+        <FitBoundsHandler listingsData={listingsData || []} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
