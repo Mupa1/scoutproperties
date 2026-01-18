@@ -23,7 +23,7 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Prisma runtime deps
-RUN apk add --no-cache openssl libc6-compat
+RUN apk add --no-cache openssl libc6-compat curl
 
 ENV NODE_ENV=production
 

@@ -11,34 +11,28 @@ services:
   mongodb:
     image: mongo:7
     container_name: scoutproperties-mongo
-    restart: always
+    restart: unless-stopped
     networks:
       - scoutproperties-network
     volumes:
       - mongo-data:/data/db
-      - ./mongo-keyfile:/etc/mongo-keyfile:ro
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    command: >
-      mongod
-      --replSet rs0
-      --auth
-      --keyFile /etc/mongo-keyfile
-      --bind_ip_all
     ports:
       - "27017:27017"
 
   server:
     image: ghcr.io/mupa1/scoutproperties-server:latest
     container_name: scoutproperties-server
-    restart: always
+    restart: unless-stopped
     networks:
       - scoutproperties-network
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_started
     ports:
-      - "3001:3000" # 👈 IMPORTANT (avoid portfolio-v3 conflict)
+      - "3001:3000"
     env_file:
       - .env
     environment:
@@ -49,15 +43,17 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 10s
+      timeout: 3s
       retries: 5
 
   client:
     image: ghcr.io/mupa1/scoutproperties-client:latest
     container_name: scoutproperties-client
-    restart: always
+    restart: unless-stopped
     networks:
       - scoutproperties-network
     depends_on:
-      - server
+      server:
+        condition: service_healthy
     ports:
       - "5173:80"
