@@ -24,8 +24,9 @@ services:
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "-u", "${MONGO_INITDB_ROOT_USERNAME}", "-p", "${MONGO_INITDB_ROOT_PASSWORD}", "--authenticationDatabase", "admin", "--eval", "db.runCommand({ ping: 1 }).ok"]
       interval: 10s
-      timeout: 5s
+      timeout: 15s
       retries: 10
+      start_period: 60s
 
   server:
     image: ghcr.io/mupa1/scoutproperties-server:latest
