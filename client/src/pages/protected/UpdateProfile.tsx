@@ -114,7 +114,7 @@ export const UpdateProfile = () => {
             {...register('name')}
           />
           <Input
-            label="company"
+            label="Company"
             id="company"
             type="text"
             error={errors?.company?.message}

@@ -48,7 +48,7 @@ describe('Signup Component', () => {
 
   test('renders signup form with inputs and submit button', () => {
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
-    expect(screen.getByLabelText('company')).toBeInTheDocument();
+    expect(screen.getByLabelText('Company')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(
@@ -72,7 +72,7 @@ describe('Signup Component', () => {
 
   test('submits form with valid data and makes API call', async () => {
     const nameInput = screen.getByLabelText('Name');
-    const companyInput = screen.getByLabelText('company');
+    const companyInput = screen.getByLabelText('Company');
     const emailInput = screen.getByLabelText('Email');
     const passwordInput = screen.getByLabelText('Password');
 
@@ -108,7 +108,7 @@ describe('Signup Component', () => {
     });
 
     const nameInput = screen.getByLabelText('Name');
-    const companyInput = screen.getByLabelText('company');
+    const companyInput = screen.getByLabelText('Company');
     const emailInput = screen.getByLabelText('Email');
     const passwordInput = screen.getByLabelText('Password');
 
@@ -132,7 +132,7 @@ describe('Signup Component', () => {
     });
 
     const nameInput = screen.getByLabelText('Name');
-    const companyInput = screen.getByLabelText('company');
+    const companyInput = screen.getByLabelText('Company');
     const emailInput = screen.getByLabelText('Email');
     const passwordInput = screen.getByLabelText('Password');
 

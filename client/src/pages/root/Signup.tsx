@@ -75,7 +75,7 @@ export const Signup = () => {
               {...register('name')}
             />
             <Input
-              label="company"
+              label="Company"
               id="company"
               type="text"
               error={errors?.company?.message}
