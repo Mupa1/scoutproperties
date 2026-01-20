@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, test } from 'vitest';
 
 import { Search } from '@/components/pages/Home/Hero/Search';
@@ -43,11 +43,15 @@ describe('Search component', () => {
     const cityInput = screen.getByPlaceholderText('Enter city name...') as HTMLInputElement;
     const searchButton = screen.getByTestId('search-submit-button');
 
-    fireEvent.change(cityInput, {
-      target: { value: 'Mannheim' },
+    act(() => {
+      fireEvent.change(cityInput, {
+        target: { value: 'Mannheim' },
+      });
     });
 
-    fireEvent.click(searchButton);
+    act(() => {
+      fireEvent.click(searchButton);
+    });
 
     expect(cityInput.value).toBe('Mannheim');
   });
