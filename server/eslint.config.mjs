@@ -46,4 +46,21 @@ export default [
       'simple-import-sort/exports': 'error',
     },
   },
+  // Configuration for test files
+  {
+    files: [
+      '**/__tests__/**/*.{js,ts}',
+      '**/*.test.{js,ts}',
+      '**/*.spec.{js,ts}',
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-var-requires': 'off',
+      'no-undef': 'off',
+    },
+  },
 ];

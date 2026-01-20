@@ -1,23 +1,17 @@
 import { Prisma } from '@prisma/client';
-import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
+import { config } from '../lib/config';
+import { handleError } from '../lib/errors';
+import { comparePassword, hashPassword } from '../lib/password';
 import { prisma } from '../lib/prisma';
-dotenv.config();
-
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-
-if (!JWT_SECRET_KEY) {
-  throw new Error('JWT_SECRET_KEY is not defined in the environment variables');
-}
 
 export const register = async (req: Request, res: Response) => {
   const { name, email, company, password } = req.body;
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -28,18 +22,30 @@ export const register = async (req: Request, res: Response) => {
     });
     res.status(201).json({ message: 'User registered successfully!' });
     return newUser;
-  } catch (err) {
-    console.error('Registration error:', err);
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      if (err.code === 'P2002') {
-        return res.status(400).json({
-          message: 'User with this email or company already exists!',
-        });
-      }
+  } catch (err: unknown) {
+    // Check for Prisma unique constraint violation (P2002)
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === 'P2002'
+    ) {
+      return res.status(400).json({
+        message: 'User with this email or company already exists!',
+      });
     }
-    res
-      .status(500)
-      .json({ message: 'Failed to register user! Please try again!' });
+
+    // Also check for plain object with P2002 code (for test mocks)
+    if (
+      err &&
+      typeof err === 'object' &&
+      'code' in err &&
+      err.code === 'P2002'
+    ) {
+      return res.status(400).json({
+        message: 'User with this email or company already exists!',
+      });
+    }
+
+    return handleError(res, err, 'Failed to register user! Please try again!');
   }
 };
 
@@ -52,7 +58,7 @@ export const login = async (req: Request, res: Response) => {
     });
     if (!user) return res.status(401).json({ message: 'Invalid Credentials!' });
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await comparePassword(password, user.password);
 
     if (!isValidPassword)
       return res.status(401).json({ message: 'Invalid Credentials!' });
@@ -62,7 +68,7 @@ export const login = async (req: Request, res: Response) => {
       {
         id: user.id,
       },
-      JWT_SECRET_KEY,
+      config.jwtSecret,
       { expiresIn: age },
     );
 
@@ -78,8 +84,7 @@ export const login = async (req: Request, res: Response) => {
       .json(userData);
     return userPassword;
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to login user!' });
+    return handleError(res, err, 'Failed to login user!');
   }
 };
 

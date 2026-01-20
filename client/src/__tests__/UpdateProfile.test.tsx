@@ -68,7 +68,7 @@ describe('UpdateProfile', () => {
       screen.getByRole('heading', { name: /update profile/i }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
-    expect(screen.getByLabelText('company')).toBeInTheDocument();
+    expect(screen.getByLabelText('Company')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
   });
@@ -85,7 +85,7 @@ describe('UpdateProfile', () => {
     fireEvent.change(screen.getByLabelText('Name'), {
       target: { value: 'John Doe Updated' },
     });
-    fireEvent.change(screen.getByLabelText('company'), {
+    fireEvent.change(screen.getByLabelText('Company'), {
       target: { value: 'johndoeupdated' },
     });
     fireEvent.change(screen.getByLabelText('Email'), {
@@ -144,7 +144,7 @@ describe('UpdateProfile', () => {
     fireEvent.change(screen.getByLabelText('Name'), {
       target: { value: 'John Doe Updated' },
     });
-    fireEvent.change(screen.getByLabelText('company'), {
+    fireEvent.change(screen.getByLabelText('Company'), {
       target: { value: 'johndoeupdated' },
     });
     fireEvent.change(screen.getByLabelText('Email'), {

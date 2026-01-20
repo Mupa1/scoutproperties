@@ -59,19 +59,37 @@ jobs:
             set -e
             cd ${{ secrets.VPS_APP_PATH }}
 
-            echo "📦 Removing old containers (if any)..."
-            docker compose -f docker-compose.yml rm -sf server client || true
-
             echo "📥 Pulling latest server & client images..."
             docker compose -f docker-compose.yml pull server client
 
-            echo "🔄 Restarting server & client containers..."
-            docker compose -f docker-compose.yml up -d server client
+            echo "🔄 Bringing up services (safe: does NOT delete volumes/DB)..."
+            docker compose -f docker-compose.yml up -d --remove-orphans
 
-            echo "🗄 Running migrations (server only)..."
-            docker exec scoutproperties-server npx prisma migrate deploy || echo "No migrations"
+            echo "⏳ Waiting for MongoDB to be healthy..."
+            for i in $(seq 1 45); do
+              STATUS=$(docker inspect -f '{{.State.Health.Status}}' scoutproperties-mongo 2>/dev/null || echo "starting")
+              echo "Mongo health: $STATUS"
+              if [ "$STATUS" = "healthy" ]; then
+                break
+              fi
+              sleep 2
+            done
+
+            echo "⏳ Waiting for Server to be healthy..."
+            for i in $(seq 1 45); do
+              STATUS=$(docker inspect -f '{{.State.Health.Status}}' scoutproperties-server 2>/dev/null || echo "starting")
+              echo "Server health: $STATUS"
+              if [ "$STATUS" = "healthy" ]; then
+                break
+              fi
+              sleep 2
+            done
+
+            echo "🗄 Syncing Prisma schema (Mongo)..."
+            docker exec scoutproperties-server npx prisma db push
 
             echo "🧹 Cleaning up old Docker images..."
             docker image prune -f
 
             echo "✅ Deployment finished"
+            docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"

@@ -30,6 +30,7 @@ export type ListingsDataType = {
   bathroom: number;
   price: number;
   address: string;
+  city: string;
   latitude: number;
   longitude: number;
   type?: 'Buy' | 'Rent';
@@ -78,6 +79,7 @@ export interface ListingDetailsProps {
   bathroom: number;
   price: number;
   address: string;
+  city: string;
   latitude: number;
   longitude: number;
   listingDetails: ListingDetails;

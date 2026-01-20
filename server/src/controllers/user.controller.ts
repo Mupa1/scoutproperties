@@ -1,6 +1,7 @@
-import bcrypt from 'bcrypt';
 import { Response } from 'express';
 
+import { handleError } from '../lib/errors';
+import { hashPassword } from '../lib/password';
 import { prisma } from '../lib/prisma';
 import { CustomRequest } from '../types';
 
@@ -9,43 +10,43 @@ export const getUsers = async (req: CustomRequest, res: Response) => {
     const users = await prisma.user.findMany();
     res.status(200).json(users);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to get users!' });
+    return handleError(res, err, 'Failed to get users!');
   }
 };
 
 export const getUser = async (req: CustomRequest, res: Response) => {
-  const id = req.params.id;
+  const { id } = req.params;
+  const idString = typeof id === 'string' ? id : id[0];
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id },
+      where: { id: idString },
     });
     res.status(200).json(user);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to get user!' });
+    return handleError(res, err, 'Failed to get user!');
   }
 };
 
 export const updateUser = async (req: CustomRequest, res: Response) => {
-  const id = req.params.id;
+  const { id } = req.params;
+  const idString = typeof id === 'string' ? id : id[0];
   const tokenUserId = req.userId;
 
   const { password, avatar, ...inputs } = req.body;
 
-  if (id !== tokenUserId) {
+  if (idString !== tokenUserId) {
     return res.status(403).json({ message: 'Not Authorized!' });
   }
 
   let updatedPassword = null;
   try {
     if (password) {
-      updatedPassword = await bcrypt.hash(password, 10);
+      updatedPassword = await hashPassword(password);
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id },
+      where: { id: idString },
       data: {
         ...inputs,
         ...(updatedPassword && { password: updatedPassword }),
@@ -58,21 +59,20 @@ export const updateUser = async (req: CustomRequest, res: Response) => {
     res.status(200).json(rest);
     return userPassword;
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to update users!' });
+    return handleError(res, err, 'Failed to update users!');
   }
 };
 
 export const deleteUser = async (req: CustomRequest, res: Response) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
+    const idString = typeof id === 'string' ? id : id[0];
     await prisma.user.delete({
-      where: { id },
+      where: { id: idString },
     });
     res.status(200).json({ message: 'User deleted successfully!' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to delete user' });
+    return handleError(res, err, 'Failed to delete user');
   }
 };
 
@@ -85,7 +85,6 @@ export const profileListings = async (req: CustomRequest, res: Response) => {
 
     res.status(200).json(userListings);
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: 'Failed to get profile posts!' });
+    return handleError(res, err, 'Failed to get profile posts!');
   }
 };

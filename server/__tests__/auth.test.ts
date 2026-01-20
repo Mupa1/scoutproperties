@@ -64,9 +64,9 @@ describe('Auth API', () => {
         password: 'password123',
       });
 
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(400);
       expect(response.body.message).toBe(
-        'Failed to register user! Please try again!',
+        'User with this email or company already exists!',
       );
     });
   });

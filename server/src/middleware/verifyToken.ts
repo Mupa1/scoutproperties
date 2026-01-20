@@ -1,19 +1,11 @@
-import dotenv from 'dotenv';
 import { NextFunction, Response } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 
+import { config } from '../lib/config';
 import { CustomRequest } from '../types';
-
-dotenv.config();
 
 interface JwtPayload {
   id: string;
-}
-
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-
-if (!JWT_SECRET_KEY) {
-  throw new Error('JWT_SECRET_KEY is not defined in the environment variables');
 }
 
 export const verifyToken = (
@@ -29,7 +21,7 @@ export const verifyToken = (
 
   jwt.verify(
     token,
-    JWT_SECRET_KEY,
+    config.jwtSecret,
     (err: VerifyErrors | null, decoded: string | unknown) => {
       if (err) {
         return res.status(403).json({ message: 'Token is not valid' });

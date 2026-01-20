@@ -11,7 +11,7 @@ services:
   mongodb:
     image: mongo:7
     container_name: scoutproperties-mongo
-    restart: always
+    restart: unless-stopped
     networks:
       - scoutproperties-network
     volumes:
@@ -19,20 +19,26 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-    command: ["--replSet", "rs0", "--bind_ip", "127.0.0.1"] # Bind to localhost only
     ports:
-      - "127.0.0.1:27017:27017" # Only accessible locally
+      - "127.0.0.1:27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "-u", "${MONGO_INITDB_ROOT_USERNAME}", "-p", "${MONGO_INITDB_ROOT_PASSWORD}", "--authenticationDatabase", "admin", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 15s
+      retries: 10
+      start_period: 60s
 
   server:
     image: ghcr.io/mupa1/scoutproperties-server:latest
     container_name: scoutproperties-server
-    restart: always
+    restart: unless-stopped
     networks:
       - scoutproperties-network
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     ports:
-      - "3001:3000"   # 👈 IMPORTANT (avoid portfolio-v3 conflict)
+      - "127.0.0.1:3001:3000"
     env_file:
       - .env
     environment:
@@ -43,15 +49,17 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 10s
+      timeout: 3s
       retries: 5
 
   client:
     image: ghcr.io/mupa1/scoutproperties-client:latest
     container_name: scoutproperties-client
-    restart: always
+    restart: unless-stopped
     networks:
       - scoutproperties-network
     depends_on:
-      - server
+      server:
+        condition: service_healthy
     ports:
       - "5173:80"

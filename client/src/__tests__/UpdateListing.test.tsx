@@ -1,4 +1,3 @@
-import React from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
@@ -20,27 +19,21 @@ vi.mock('@/components/shared/UploadWidget', () => ({
   ),
 }));
 
-vi.mock('react-quill', () => {
-  return {
-    __esModule: true,
-    default: React.forwardRef(
-      (
-        {
-          value,
-          onChange,
-        }: { value: string; onChange: (value: string) => void },
-        ref: React.Ref<HTMLTextAreaElement>,
-      ) => (
-        <textarea
-          ref={ref}
-          aria-label="Description"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      ),
-    ),
-  };
-});
+vi.mock('@/components/shared/RichTextEditor', () => ({
+  RichTextEditor: ({
+    value,
+    onChange,
+  }: {
+    value: string;
+    onChange: (value: string) => void;
+  }) => (
+    <textarea
+      aria-label="Description"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
 
 describe('UpdateListing Component', () => {
   const mockUpdateListing = vi.fn();
