@@ -9,14 +9,4 @@ export default {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  transform: {
-    '^.+\\.ts$': [
-      'ts-jest',
-      {
-        tsconfig: {
-          types: ['jest', 'node'],
-        },
-      },
-    ],
-  },
 };

@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { AxiosError } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vitest';
 
 import { axiosInstance } from '@/lib/services/axiosInstance';
 import { QueryProvider } from '@/providers/QueryProvider';
@@ -14,27 +14,9 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 
 describe('Mutation hooks', () => {
   const mock = new MockAdapter(axiosInstance);
-  const originalLocation = window.location;
-
-  beforeEach(() => {
-    // Mock window.location to prevent navigation errors in tests
-    Object.defineProperty(window, 'location', {
-      value: {
-        ...originalLocation,
-        href: '',
-        pathname: '/',
-      },
-      writable: true,
-    });
-  });
 
   afterEach(() => {
     mock.reset();
-    // Restore original location
-    Object.defineProperty(window, 'location', {
-      value: originalLocation,
-      writable: true,
-    });
   });
 
   test('useSignup hook should successfully sign up a user', async () => {

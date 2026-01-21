@@ -6,29 +6,14 @@ import { axiosInstance } from '@/lib/services/axiosInstance';
 import { NewUser } from '@/types';
 
 let mock: MockAdapter;
-const originalLocation = window.location;
 
 beforeEach(() => {
   mock = new MockAdapter(axiosInstance);
-  // Mock window.location to prevent navigation errors in tests
-  Object.defineProperty(window, 'location', {
-    value: {
-      ...originalLocation,
-      href: '',
-      pathname: '/',
-    },
-    writable: true,
-  });
 });
 
 afterEach(() => {
   mock.restore();
   vi.restoreAllMocks();
-  // Restore original location
-  Object.defineProperty(window, 'location', {
-    value: originalLocation,
-    writable: true,
-  });
 });
 
 process.on('unhandledRejection', (reason, promise) => {
