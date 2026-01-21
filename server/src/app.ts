@@ -9,28 +9,19 @@ import userRoute from './routes/user.route';
 
 const app = express();
 
-const CLIENT_URL = 'http://localhost:4173';
-const CLIENT_PROD_URL = 'https://www.scout-properties.com';
-const SERVER_URL = 'http://localhost:3000';
-const SERVER_PROD_URL = 'https://www.api.scout-properties.com';
-
-const allowedOrigins = [
-  CLIENT_URL,
-  CLIENT_PROD_URL,
-  SERVER_URL,
-  SERVER_PROD_URL,
-];
+const allowedOrigins = new Set([
+  'http://localhost:4173',
+  'https://www.scout-properties.com',
+  'https://scout-properties.com',
+]);
 
 const corsOptions: CorsOptions = {
-  origin: function (
-    origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
-  ) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // curl/server-to-server
+    if (allowedOrigins.has(origin)) return callback(null, true);
+
+    // Don't throw -> don't produce 500
+    return callback(null, false);
   },
   credentials: true,
 };
